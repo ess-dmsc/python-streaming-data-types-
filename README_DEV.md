@@ -18,8 +18,13 @@ pre-commit run --all-files
 This command can also be used to run the hooks manually.
 
 ### Adding new schemas checklist (important)
+* Generate Python bindings for the schema using FlatBuffers' `flatc` executable
+* Add the generated bindings to the project
 * Add unit-tests (see existing tests for an example)
 * Update `fbschemas.__init__.py` to include the new serialiser and deserialiser
+* Check whether the serialised data produced by the new code can be verified in C++
+  * Don't worry if it cannot be - it seems to be an inherent FlatBuffers issue
+* Add the schema and verifiability to the table of schemas in `README.md`
 
 ### Tox
 Tox allows the unit tests to be run against multiple versions of Python.
