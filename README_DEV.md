@@ -46,7 +46,7 @@ tox
 
 #### Steps
 
-Delete any old builds you may have:
+Delete any old builds you may have (IMPORTANT!):
 ```
 rm -rf build dist
 ```

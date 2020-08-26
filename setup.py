@@ -22,7 +22,7 @@ setup(
     author="ScreamingUdder",
     url="https://github.com/ess-dmsc/python-streaming-data-types",
     license="BSD 2-Clause License",
-    packages=find_packages(exclude="tests"),
+    packages=find_packages(exclude=["tests", "tests.*"]),
     python_requires=">=3.6.0",
     install_requires=["flatbuffers", "numpy"],
     extras_require={"dev": ["flake8", "pre-commit", "pytest", "tox"]},
