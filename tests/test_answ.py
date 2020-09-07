@@ -1,0 +1,49 @@
+import pytest
+from streaming_data_types.action_response_answ import serialise_answ, deserialise_answ, ActionType, ActionOutcome
+from streaming_data_types import SERIALISERS, DESERIALISERS
+
+
+class TestEncoder(object):
+    def test_serialise_and_deserialise_answ_message(self):
+        """
+        Round-trip to check what we serialise is what we get back.
+        """
+
+        original_entry = {
+            "service_id": "some_service_id_1234",
+            "job_id": "some_job_id_abcdef",
+            "action": ActionType.ActionType.SetStopTime,
+            "outcome": ActionOutcome.ActionOutcome.Failure,
+            "message": "some random error message",
+        }
+
+        buf = serialise_answ(**original_entry)
+        entry = deserialise_answ(buf)
+
+        assert entry.service_id == original_entry["service_id"]
+        assert entry.job_id == original_entry["job_id"]
+        assert entry.message == original_entry["message"]
+        assert entry.action == original_entry["action"]
+        assert entry.outcome == original_entry["outcome"]
+
+    def test_if_buffer_has_wrong_id_then_throws(self):
+        original_entry = {
+            "service_id": "some_service_id_1234",
+            "job_id": "some_job_id_abcdef",
+            "action": ActionType.ActionType.SetStopTime,
+            "outcome": ActionOutcome.ActionOutcome.Failure,
+            "message": "some random error message",
+        }
+
+        buf = serialise_answ(**original_entry)
+
+        # Manually hack the id
+        buf = bytearray(buf)
+        buf[4:8] = b"1234"
+
+        with pytest.raises(RuntimeError):
+            deserialise_answ(buf)
+
+    def test_schema_type_is_in_global_serialisers_list(self):
+        assert "answ" in SERIALISERS
+        assert "answ" in DESERIALISERS
