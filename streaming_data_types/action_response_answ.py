@@ -1,9 +1,9 @@
 import flatbuffers
-import streaming_data_types.fbschemas.action_response_answ.ActionOutcome as ActionOutcome
+from streaming_data_types.fbschemas.action_response_answ.ActionOutcome import ActionOutcome
 import streaming_data_types.fbschemas.action_response_answ.ActionResponse as ActionResponse
-import streaming_data_types.fbschemas.action_response_answ.ActionType as ActionType
+from streaming_data_types.fbschemas.action_response_answ.ActionType import ActionType
 from streaming_data_types.utils import check_schema_identifier
-from typing import Optional, Union
+from typing import Union
 from collections import namedtuple
 
 FILE_IDENTIFIER = b"answ"

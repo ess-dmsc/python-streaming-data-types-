@@ -12,8 +12,8 @@ class TestEncoder(object):
         original_entry = {
             "service_id": "some_service_id_1234",
             "job_id": "some_job_id_abcdef",
-            "action": ActionType.ActionType.SetStopTime,
-            "outcome": ActionOutcome.ActionOutcome.Failure,
+            "action": ActionType.SetStopTime,
+            "outcome": ActionOutcome.Failure,
             "message": "some random error message",
         }
 
@@ -30,8 +30,8 @@ class TestEncoder(object):
         original_entry = {
             "service_id": "some_service_id_1234",
             "job_id": "some_job_id_abcdef",
-            "action": ActionType.ActionType.SetStopTime,
-            "outcome": ActionOutcome.ActionOutcome.Failure,
+            "action": ActionType.SetStopTime,
+            "outcome": ActionOutcome.Failure,
             "message": "some random error message",
         }
 
