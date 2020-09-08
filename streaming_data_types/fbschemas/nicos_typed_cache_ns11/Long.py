@@ -6,6 +6,7 @@ import flatbuffers
 from flatbuffers.compat import import_numpy
 np = import_numpy()
 
+
 class Long(object):
     __slots__ = ['_tab']
 
@@ -18,7 +19,9 @@ class Long(object):
 
     @classmethod
     def LongBufferHasIdentifier(cls, buf, offset, size_prefixed=False):
-        return flatbuffers.util.BufferHasIdentifier(buf, offset, b"\x6E\x73\x31\x31", size_prefixed=size_prefixed)
+        return flatbuffers.util.BufferHasIdentifier(buf, offset,
+                                                    b"\x6E\x73\x31\x31",
+                                                    size_prefixed=size_prefixed)
 
     # Long
     def Init(self, buf, pos):
@@ -28,9 +31,18 @@ class Long(object):
     def Value(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(4))
         if o != 0:
-            return self._tab.Get(flatbuffers.number_types.Int64Flags, o + self._tab.Pos)
+            return self._tab.Get(flatbuffers.number_types.Int64Flags,
+                                 o + self._tab.Pos)
         return 0
 
-def LongStart(builder): builder.StartObject(1)
-def LongAddValue(builder, value): builder.PrependInt64Slot(0, value, 0)
-def LongEnd(builder): return builder.EndObject()
+
+def LongStart(builder):
+    builder.StartObject(1)
+
+
+def LongAddValue(builder, value):
+    builder.PrependInt64Slot(0, value, 0)
+
+
+def LongEnd(builder):
+    return builder.EndObject()
