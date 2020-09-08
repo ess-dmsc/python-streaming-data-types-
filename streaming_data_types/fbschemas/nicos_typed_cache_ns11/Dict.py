@@ -6,6 +6,7 @@ import flatbuffers
 from flatbuffers.compat import import_numpy
 np = import_numpy()
 
+
 class Dict(object):
     __slots__ = ['_tab']
 
@@ -18,7 +19,9 @@ class Dict(object):
 
     @classmethod
     def DictBufferHasIdentifier(cls, buf, offset, size_prefixed=False):
-        return flatbuffers.util.BufferHasIdentifier(buf, offset, b"\x6E\x73\x31\x31", size_prefixed=size_prefixed)
+        return flatbuffers.util.BufferHasIdentifier(buf, offset,
+                                                    b"\x6E\x73\x31\x31",
+                                                    size_prefixed=size_prefixed)
 
     # Dict
     def Init(self, buf, pos):
@@ -49,7 +52,19 @@ class Dict(object):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(4))
         return o == 0
 
-def DictStart(builder): builder.StartObject(1)
-def DictAddValue(builder, value): builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(value), 0)
-def DictStartValueVector(builder, numElems): return builder.StartVector(4, numElems, 4)
-def DictEnd(builder): return builder.EndObject()
+
+def DictStart(builder):
+    builder.StartObject(1)
+
+
+def DictAddValue(builder, value):
+    builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.
+                                        UOffsetTFlags.py_type(value), 0)
+
+
+def DictStartValueVector(builder, numElems):
+    return builder.StartVector(4, numElems, 4)
+
+
+def DictEnd(builder):
+    return builder.EndObject()
