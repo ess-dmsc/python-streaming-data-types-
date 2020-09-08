@@ -6,6 +6,7 @@ import flatbuffers
 from flatbuffers.compat import import_numpy
 np = import_numpy()
 
+
 class Bool(object):
     __slots__ = ['_tab']
 
@@ -18,7 +19,9 @@ class Bool(object):
 
     @classmethod
     def BoolBufferHasIdentifier(cls, buf, offset, size_prefixed=False):
-        return flatbuffers.util.BufferHasIdentifier(buf, offset, b"\x6E\x73\x31\x31", size_prefixed=size_prefixed)
+        return flatbuffers.util.BufferHasIdentifier(buf, offset,
+                                                    b"\x6E\x73\x31\x31",
+                                                    size_prefixed=size_prefixed)
 
     # Bool
     def Init(self, buf, pos):
@@ -28,9 +31,18 @@ class Bool(object):
     def Value(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(4))
         if o != 0:
-            return bool(self._tab.Get(flatbuffers.number_types.BoolFlags, o + self._tab.Pos))
+            return bool(self._tab.Get(flatbuffers.number_types.BoolFlags,
+                                      o + self._tab.Pos))
         return False
 
-def BoolStart(builder): builder.StartObject(1)
-def BoolAddValue(builder, value): builder.PrependBoolSlot(0, value, 0)
-def BoolEnd(builder): return builder.EndObject()
+
+def BoolStart(builder):
+    builder.StartObject(1)
+
+
+def BoolAddValue(builder, value):
+    builder.PrependBoolSlot(0, value, 0)
+
+
+def BoolEnd(builder):
+    return builder.EndObject()
