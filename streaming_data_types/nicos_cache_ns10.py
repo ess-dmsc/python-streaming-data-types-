@@ -7,9 +7,8 @@ from streaming_data_types.utils import check_schema_identifier
 FILE_IDENTIFIER = b"ns10"
 
 
-def serialise_ns10(
-    key: str, value: str, time_stamp: float = 0, ttl: float = 0, expired: bool = False
-):
+def serialise_ns10(key: str, value: str, time_stamp: float = 0,
+                   ttl: float = 0, expired: bool = False):
     builder = flatbuffers.Builder(128)
 
     value_offset = builder.CreateString(value)
@@ -42,6 +41,7 @@ def deserialise_ns10(buffer):
     expired = entry.Expired() if entry.Expired() else False
     value = entry.Value() if entry.Value() else b""
 
-    Entry = namedtuple("Entry", ("key", "time_stamp", "ttl", "expired", "value"))
+    Entry = namedtuple("Entry", ("key", "time_stamp", "ttl",
+                                 "expired", "value"))
 
     return Entry(key.decode().strip(), time_stamp, ttl, expired, value.decode())
