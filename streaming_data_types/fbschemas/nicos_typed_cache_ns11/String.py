@@ -6,6 +6,7 @@ import flatbuffers
 from flatbuffers.compat import import_numpy
 np = import_numpy()
 
+
 class String(object):
     __slots__ = ['_tab']
 
@@ -18,7 +19,9 @@ class String(object):
 
     @classmethod
     def StringBufferHasIdentifier(cls, buf, offset, size_prefixed=False):
-        return flatbuffers.util.BufferHasIdentifier(buf, offset, b"\x6E\x73\x31\x31", size_prefixed=size_prefixed)
+        return flatbuffers.util.BufferHasIdentifier(buf, offset,
+                                                    b"\x6E\x73\x31\x31",
+                                                    size_prefixed=size_prefixed)
 
     # String
     def Init(self, buf, pos):
@@ -31,6 +34,15 @@ class String(object):
             return self._tab.String(o + self._tab.Pos)
         return None
 
-def StringStart(builder): builder.StartObject(1)
-def StringAddValue(builder, value): builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(value), 0)
-def StringEnd(builder): return builder.EndObject()
+
+def StringStart(builder):
+    builder.StartObject(1)
+
+
+def StringAddValue(builder, value):
+    builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.
+                                        UOffsetTFlags.py_type(value), 0)
+
+
+def StringEnd(builder):
+    return builder.EndObject()
