@@ -1,15 +1,15 @@
 from collections import namedtuple
 import flatbuffers
-from streaming_data_types.\
-    fbschemas.nicos_typed_cache_ns11 import TypedCacheEntry
+from streaming_data_types.fbschemas.nicos_typed_cache_ns11 import TypedCacheEntry
 from streaming_data_types.utils import check_schema_identifier
 
 
 FILE_IDENTIFIER = b"ns11"
 
 
-def serialise_ns10(key: str, value: str, time_stamp: float = 0,
-                   ttl: float = 0, expired: bool = False):
+def serialise_ns11(
+    key: str, value: str, time_stamp: float = 0, ttl: float = 0, expired: bool = False
+):
     builder = flatbuffers.Builder(128)
 
     value_offset = builder.CreateString(value)
@@ -31,7 +31,7 @@ def serialise_ns10(key: str, value: str, time_stamp: float = 0,
     return bytes(buffer)
 
 
-def deserialise_ns10(buffer):
+def deserialise_ns11(buffer):
     check_schema_identifier(buffer, FILE_IDENTIFIER)
 
     entry = TypedCacheEntry.TypedCacheEntry.GetRootAsTypedCacheEntry(buffer, 0)
@@ -42,7 +42,6 @@ def deserialise_ns10(buffer):
     expired = entry.Expired() if entry.Expired() else False
     value = entry.Value() if entry.Value() else b""
 
-    Entry = namedtuple("Entry", ("key", "time_stamp", "ttl",
-                                 "expired", "value"))
+    Entry = namedtuple("Entry", ("key", "time_stamp", "ttl", "expired", "value"))
 
     return Entry(key.decode().strip(), time_stamp, ttl, expired, value.decode())
