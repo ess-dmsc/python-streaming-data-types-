@@ -6,6 +6,7 @@ import flatbuffers
 from flatbuffers.compat import import_numpy
 np = import_numpy()
 
+
 class ArrayElement(object):
     __slots__ = ['_tab']
 
@@ -18,7 +19,9 @@ class ArrayElement(object):
 
     @classmethod
     def ArrayElementBufferHasIdentifier(cls, buf, offset, size_prefixed=False):
-        return flatbuffers.util.BufferHasIdentifier(buf, offset, b"\x6E\x73\x31\x31", size_prefixed=size_prefixed)
+        return flatbuffers.util.BufferHasIdentifier(buf, offset,
+                                                    b"\x6E\x73\x31\x31",
+                                                    size_prefixed=size_prefixed)
 
     # ArrayElement
     def Init(self, buf, pos):
@@ -28,7 +31,8 @@ class ArrayElement(object):
     def VType(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(4))
         if o != 0:
-            return self._tab.Get(flatbuffers.number_types.Uint8Flags, o + self._tab.Pos)
+            return self._tab.Get(flatbuffers.number_types.Uint8Flags,
+                                 o + self._tab.Pos)
         return 0
 
     # ArrayElement
@@ -41,7 +45,19 @@ class ArrayElement(object):
             return obj
         return None
 
-def ArrayElementStart(builder): builder.StartObject(2)
-def ArrayElementAddVType(builder, vType): builder.PrependUint8Slot(0, vType, 0)
-def ArrayElementAddV(builder, v): builder.PrependUOffsetTRelativeSlot(1, flatbuffers.number_types.UOffsetTFlags.py_type(v), 0)
-def ArrayElementEnd(builder): return builder.EndObject()
+
+def ArrayElementStart(builder):
+    builder.StartObject(2)
+
+
+def ArrayElementAddVType(builder, vType):
+    builder.PrependUint8Slot(0, vType, 0)
+
+
+def ArrayElementAddV(builder, v):
+    builder.PrependUOffsetTRelativeSlot(1, flatbuffers.number_types.
+                                        UOffsetTFlags.py_type(v), 0)
+
+
+def ArrayElementEnd(builder):
+    return builder.EndObject()
