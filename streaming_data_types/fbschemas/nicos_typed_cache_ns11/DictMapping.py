@@ -6,6 +6,7 @@ import flatbuffers
 from flatbuffers.compat import import_numpy
 np = import_numpy()
 
+
 class DictMapping(object):
     __slots__ = ['_tab']
 
@@ -18,7 +19,9 @@ class DictMapping(object):
 
     @classmethod
     def DictMappingBufferHasIdentifier(cls, buf, offset, size_prefixed=False):
-        return flatbuffers.util.BufferHasIdentifier(buf, offset, b"\x6E\x73\x31\x31", size_prefixed=size_prefixed)
+        return flatbuffers.util.BufferHasIdentifier(buf, offset,
+                                                    b"\x6E\x73\x31\x31",
+                                                    size_prefixed=size_prefixed)
 
     # DictMapping
     def Init(self, buf, pos):
@@ -28,7 +31,8 @@ class DictMapping(object):
     def KType(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(4))
         if o != 0:
-            return self._tab.Get(flatbuffers.number_types.Uint8Flags, o + self._tab.Pos)
+            return self._tab.Get(flatbuffers.number_types.Uint8Flags,
+                                 o + self._tab.Pos)
         return 0
 
     # DictMapping
@@ -45,7 +49,8 @@ class DictMapping(object):
     def VType(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(8))
         if o != 0:
-            return self._tab.Get(flatbuffers.number_types.Uint8Flags, o + self._tab.Pos)
+            return self._tab.Get(flatbuffers.number_types.Uint8Flags,
+                                 o + self._tab.Pos)
         return 0
 
     # DictMapping
@@ -58,9 +63,28 @@ class DictMapping(object):
             return obj
         return None
 
-def DictMappingStart(builder): builder.StartObject(4)
-def DictMappingAddKType(builder, kType): builder.PrependUint8Slot(0, kType, 0)
-def DictMappingAddK(builder, k): builder.PrependUOffsetTRelativeSlot(1, flatbuffers.number_types.UOffsetTFlags.py_type(k), 0)
-def DictMappingAddVType(builder, vType): builder.PrependUint8Slot(2, vType, 0)
-def DictMappingAddV(builder, v): builder.PrependUOffsetTRelativeSlot(3, flatbuffers.number_types.UOffsetTFlags.py_type(v), 0)
-def DictMappingEnd(builder): return builder.EndObject()
+
+def DictMappingStart(builder):
+    builder.StartObject(4)
+
+
+def DictMappingAddKType(builder, kType):
+    builder.PrependUint8Slot(0, kType, 0)
+
+
+def DictMappingAddK(builder, k):
+    builder.PrependUOffsetTRelativeSlot(1, flatbuffers.number_types.
+                                        UOffsetTFlags.py_type(k), 0)
+
+
+def DictMappingAddVType(builder, vType):
+    builder.PrependUint8Slot(2, vType, 0)
+
+
+def DictMappingAddV(builder, v):
+    builder.PrependUOffsetTRelativeSlot(3, flatbuffers.number_types.
+                                        UOffsetTFlags.py_type(v), 0)
+
+
+def DictMappingEnd(builder):
+    return builder.EndObject()
