@@ -19,7 +19,9 @@ class Array(object):
 
     @classmethod
     def ArrayBufferHasIdentifier(cls, buf, offset, size_prefixed=False):
-        return flatbuffers.util.BufferHasIdentifier(buf, offset, b"\x6E\x73\x31\x31", size_prefixed=size_prefixed)
+        return flatbuffers.util.BufferHasIdentifier(buf, offset,
+                                                    b"\x6E\x73\x31\x31",
+                                                    size_prefixed=size_prefixed)
 
     # Array
     def Init(self, buf, pos):
@@ -54,11 +56,28 @@ class Array(object):
     def ArrayType(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(6))
         if o != 0:
-            return self._tab.Get(flatbuffers.number_types.Int8Flags, o + self._tab.Pos)
+            return self._tab.Get(flatbuffers.number_types.Int8Flags,
+                                 o + self._tab.Pos)
         return 0
 
-def ArrayStart(builder): builder.StartObject(2)
-def ArrayAddValue(builder, value): builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(value), 0)
-def ArrayStartValueVector(builder, numElems): return builder.StartVector(4, numElems, 4)
-def ArrayAddArrayType(builder, arrayType): builder.PrependInt8Slot(1, arrayType, 0)
-def ArrayEnd(builder): return builder.EndObject()
+
+def ArrayStart(builder):
+    builder.StartObject(2)
+
+
+def ArrayAddValue(builder, value):
+    builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.
+                                        UOffsetTFlags.py_type(value), 0)
+
+
+def ArrayStartValueVector(builder, numElems):
+    return builder.StartVector(4, numElems, 4)
+
+
+def ArrayAddArrayType(builder, arrayType):
+    builder.PrependInt8Slot(1, arrayType, 0)
+
+
+def ArrayEnd(builder):
+    return builder.EndObject()
+
