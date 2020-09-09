@@ -8,7 +8,12 @@ FILE_IDENTIFIER = b"ns11"
 
 
 def serialise_ns11(
-    key: str, value: str, time_stamp: float = 0, ttl: float = 0, expired: bool = False
+    key: str,
+    valueType: int,
+    value: str,
+    time_stamp: float = 0,
+    ttl: float = 0,
+    expired: bool = False,
 ):
     builder = flatbuffers.Builder(128)
 
@@ -17,6 +22,7 @@ def serialise_ns11(
 
     TypedCacheEntry.TypedCacheEntryStart(builder)
     TypedCacheEntry.TypedCacheEntryAddValue(builder, value_offset)
+    TypedCacheEntry.TypedCacheEntryAddValueType(builder, valueType)
     TypedCacheEntry.TypedCacheEntryAddExpired(builder, expired)
     TypedCacheEntry.TypedCacheEntryAddTtl(builder, ttl)
     TypedCacheEntry.TypedCacheEntryAddTime(builder, time_stamp)
@@ -41,7 +47,12 @@ def deserialise_ns11(buffer):
     ttl = entry.Ttl() if entry.Ttl() else 0
     expired = entry.Expired() if entry.Expired() else False
     value = entry.Value() if entry.Value() else b""
+    valueType = entry.ValueType() if entry.ValueType() else 0
 
-    Entry = namedtuple("Entry", ("key", "time_stamp", "ttl", "expired", "value"))
+    Entry = namedtuple(
+        "Entry", ("key", "time_stamp", "ttl", "expired", "value", "valueType")
+    )
 
-    return Entry(key.decode().strip(), time_stamp, ttl, expired, value.decode())
+    return Entry(
+        key.decode().strip(), time_stamp, ttl, expired, value.decode(), valueType
+    )
