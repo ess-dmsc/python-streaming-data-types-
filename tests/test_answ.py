@@ -12,6 +12,7 @@ class TestEncoder(object):
         original_entry = {
             "service_id": "some_service_id_1234",
             "job_id": "some_job_id_abcdef",
+            "command_id": "some command id",
             "action": ActionType.SetStopTime,
             "outcome": ActionOutcome.Failure,
             "message": "some random error message",
@@ -21,6 +22,7 @@ class TestEncoder(object):
         entry = deserialise_answ(buf)
 
         assert entry.service_id == original_entry["service_id"]
+        assert entry.command_id == original_entry["command_id"]
         assert entry.job_id == original_entry["job_id"]
         assert entry.message == original_entry["message"]
         assert entry.action == original_entry["action"]
@@ -30,6 +32,7 @@ class TestEncoder(object):
         original_entry = {
             "service_id": "some_service_id_1234",
             "job_id": "some_job_id_abcdef",
+            "command_id": "some command id",
             "action": ActionType.SetStopTime,
             "outcome": ActionOutcome.Failure,
             "message": "some random error message",

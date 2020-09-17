@@ -59,10 +59,18 @@ class ActionResponse(object):
             return self._tab.String(o + self._tab.Pos)
         return None
 
-def ActionResponseStart(builder): builder.StartObject(5)
+    # ActionResponse
+    def CommandId(self):
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(14))
+        if o != 0:
+            return self._tab.String(o + self._tab.Pos)
+        return None
+
+def ActionResponseStart(builder): builder.StartObject(6)
 def ActionResponseAddServiceId(builder, serviceId): builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(serviceId), 0)
 def ActionResponseAddJobId(builder, jobId): builder.PrependUOffsetTRelativeSlot(1, flatbuffers.number_types.UOffsetTFlags.py_type(jobId), 0)
 def ActionResponseAddAction(builder, action): builder.PrependInt8Slot(2, action, 0)
 def ActionResponseAddOutcome(builder, outcome): builder.PrependInt8Slot(3, outcome, 0)
 def ActionResponseAddMessage(builder, message): builder.PrependUOffsetTRelativeSlot(4, flatbuffers.number_types.UOffsetTFlags.py_type(message), 0)
+def ActionResponseAddCommandId(builder, commandId): builder.PrependUOffsetTRelativeSlot(5, flatbuffers.number_types.UOffsetTFlags.py_type(commandId), 0)
 def ActionResponseEnd(builder): return builder.EndObject()
