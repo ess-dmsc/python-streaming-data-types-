@@ -1,19 +1,6 @@
 # Python Streaming Data Types
 ## For developers
 
-### Install local (development) version
-
-First, uninstall existing version of the Python streaming data types package.
-
-```
-pip uninstall ess-streaming-data-types
-```
-
-Then, from the _python-streaming-data-types_ root directory, run the following command:
-
-```
-pip install --user -e ./
-```
 ### Install the commit hooks (important)
 There are commit hooks for Black and Flake8.
 
@@ -46,6 +33,18 @@ See the tox.ini file for which versions are supported.
 From the top directory:
 ```
 tox
+```
+
+### Installing the development version locally
+First, uninstall any existing versions of the Python streaming data types package:
+
+```
+pip uninstall ess-streaming-data-types
+```
+Then, from the _python-streaming-data-types_ root directory, run the following command:
+
+```
+pip install --user -e ./
 ```
 
 ### Building the package locally and deploying it to PyPI
