@@ -3,12 +3,11 @@ from streaming_data_types.status_x5f2 import serialise_x5f2, deserialise_x5f2
 from streaming_data_types import SERIALISERS, DESERIALISERS
 
 
-class TestEncoder(object):
+class TestSerialisationX52f:
     def test_serialises_and_deserialises_x5f2_message_correctly(self):
         """
         Round-trip to check what we serialise is what we get back.
         """
-
         original_entry = {
             "software_name": "nicos/test",
             "software_version": "1.0.0",
