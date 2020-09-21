@@ -3,7 +3,7 @@
 
 ### Install local (development) version
 
-First, uninstall existing version of the Python streaming data types pacakge.
+First, uninstall existing version of the Python streaming data types package.
 
 ```
 pip uninstall ess-streaming-data-types
