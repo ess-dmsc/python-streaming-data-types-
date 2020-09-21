@@ -34,7 +34,10 @@ class TestSerialisationRf5k:
         """
         Round-trip to check what we serialise is what we get back.
         """
-        original_entry = {"config_change": UpdateType.REMOVEALL, "streams": []}
+        original_entry = {
+            "config_change": UpdateType.REMOVEALL, 
+            "streams": [],
+        }
 
         buf = serialise_rf5k(**original_entry)
         entry = deserialise_rf5k(buf)
