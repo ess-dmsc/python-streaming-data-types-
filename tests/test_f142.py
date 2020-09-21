@@ -6,7 +6,7 @@ from streaming_data_types.fbschemas.logdata_f142.AlarmStatus import AlarmStatus
 from streaming_data_types import SERIALISERS, DESERIALISERS
 
 
-class TestSerialisationf142:
+class TestSerialisationF142:
     original_entry = {
         "source_name": "some_source",
         "value": 578214,
