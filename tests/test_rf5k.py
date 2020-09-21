@@ -35,7 +35,7 @@ class TestSerialisationRf5k:
         Round-trip to check what we serialise is what we get back.
         """
         original_entry = {
-            "config_change": UpdateType.REMOVEALL, 
+            "config_change": UpdateType.REMOVEALL,
             "streams": [],
         }
 
