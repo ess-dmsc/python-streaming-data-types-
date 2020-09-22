@@ -8,21 +8,25 @@ from streaming_data_types.fbschemas.nicos_typed_cache_ns11.Bool import (
     BoolStart,
     BoolAddValue,
     BoolEnd,
+    Bool,
 )
 from streaming_data_types.fbschemas.nicos_typed_cache_ns11.Double import (
     DoubleStart,
     DoubleAddValue,
     DoubleEnd,
+    Double,
 )
 from streaming_data_types.fbschemas.nicos_typed_cache_ns11.Long import (
     LongStart,
     LongAddValue,
     LongEnd,
+    Long,
 )
 from streaming_data_types.fbschemas.nicos_typed_cache_ns11.String import (
     StringStart,
     StringAddValue,
     StringEnd,
+    String,
 )
 from streaming_data_types.fbschemas.nicos_typed_cache_ns11.Value import Value
 from streaming_data_types.utils import check_schema_identifier
@@ -134,23 +138,54 @@ def _serialise_value(
             )
 
 
-# TODO: Following function should be rewritten.
+_map_fb_enum_to_type = {
+    Value.Long: Long,
+    Value.Double: Double,
+    Value.String: String,
+    Value.Bool: Bool,
+}
+
+
+def _decode_if_scalar_string(value: np.ndarray):
+    if value.ndim == 0 and (
+        np.issubdtype(value.dtype, np.unicode_)
+        or np.issubdtype(value.dtype, np.string_)
+    ):
+        return value.item().decode()
+    return value
+
+
 def deserialise_ns11(buffer):
     check_schema_identifier(buffer, FILE_IDENTIFIER)
 
-    entry = TypedCacheEntry.TypedCacheEntry.GetRootAsTypedCacheEntry(buffer, 0)
+    typed_entry = TypedCacheEntry.TypedCacheEntry()
+
+    entry = typed_entry.GetRootAsTypedCacheEntry(buffer, 0)
+
+    value_offset = entry.Value()
+    value_fb = _map_fb_enum_to_type[entry.ValueType()]()
+    value_fb.Init(value_offset.Bytes, value_offset.Pos)
+
+    try:
+        value = value_fb.ValueAsNumpy()
+    except AttributeError:
+        try:
+            value = np.array(value_fb.Value())
+        except TypeError:
+            value = np.array(
+                [str(value_fb.Value(n), "utf-8") for n in range(value_fb.ValueLength())]
+            )
+
+    value = _decode_if_scalar_string(value)
 
     key = entry.Key() if entry.Key() else b""
     time_stamp = entry.Time()
     ttl = entry.Ttl() if entry.Ttl() else 0
     expired = entry.Expired() if entry.Expired() else False
-    value = entry.Value() if entry.Value() else b""
     valueType = entry.ValueType() if entry.ValueType() else 0
 
     Entry = namedtuple(
         "Entry", ("key", "time_stamp", "ttl", "expired", "value", "valueType")
     )
 
-    return Entry(
-        key.decode().strip(), time_stamp, ttl, expired, value.decode(), valueType
-    )
+    return Entry(key.decode().strip(), time_stamp, ttl, expired, value, valueType)
