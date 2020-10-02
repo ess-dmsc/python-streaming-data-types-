@@ -3,12 +3,11 @@ from streaming_data_types.action_response_answ import serialise_answ, deserialis
 from streaming_data_types import SERIALISERS, DESERIALISERS
 
 
-class TestEncoder(object):
+class TestSerialisationAnsw:
     def test_serialise_and_deserialise_answ_message(self):
         """
         Round-trip to check what we serialise is what we get back.
         """
-
         original_entry = {
             "service_id": "some_service_id_1234",
             "job_id": "some_job_id_abcdef",
