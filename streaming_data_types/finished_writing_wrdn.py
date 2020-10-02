@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Union
 import flatbuffers
 from streaming_data_types.fbschemas.finished_writing_wrdn import FinishedWriting
 from streaming_data_types.utils import check_schema_identifier
