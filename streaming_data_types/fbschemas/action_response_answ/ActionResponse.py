@@ -53,24 +53,40 @@ class ActionResponse(object):
         return 0
 
     # ActionResponse
-    def Message(self):
+    def StatusCode(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(12))
+        if o != 0:
+            return self._tab.Get(flatbuffers.number_types.Int32Flags, o + self._tab.Pos)
+        return 0
+
+    # ActionResponse
+    def StopTime(self):
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(14))
+        if o != 0:
+            return self._tab.Get(flatbuffers.number_types.Uint64Flags, o + self._tab.Pos)
+        return 0
+
+    # ActionResponse
+    def Message(self):
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(16))
         if o != 0:
             return self._tab.String(o + self._tab.Pos)
         return None
 
     # ActionResponse
     def CommandId(self):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(14))
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(18))
         if o != 0:
             return self._tab.String(o + self._tab.Pos)
         return None
 
-def ActionResponseStart(builder): builder.StartObject(6)
+def ActionResponseStart(builder): builder.StartObject(8)
 def ActionResponseAddServiceId(builder, serviceId): builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(serviceId), 0)
 def ActionResponseAddJobId(builder, jobId): builder.PrependUOffsetTRelativeSlot(1, flatbuffers.number_types.UOffsetTFlags.py_type(jobId), 0)
 def ActionResponseAddAction(builder, action): builder.PrependInt8Slot(2, action, 0)
 def ActionResponseAddOutcome(builder, outcome): builder.PrependInt8Slot(3, outcome, 0)
-def ActionResponseAddMessage(builder, message): builder.PrependUOffsetTRelativeSlot(4, flatbuffers.number_types.UOffsetTFlags.py_type(message), 0)
-def ActionResponseAddCommandId(builder, commandId): builder.PrependUOffsetTRelativeSlot(5, flatbuffers.number_types.UOffsetTFlags.py_type(commandId), 0)
+def ActionResponseAddStatusCode(builder, statusCode): builder.PrependInt32Slot(4, statusCode, 0)
+def ActionResponseAddStopTime(builder, stopTime): builder.PrependUint64Slot(5, stopTime, 0)
+def ActionResponseAddMessage(builder, message): builder.PrependUOffsetTRelativeSlot(6, flatbuffers.number_types.UOffsetTFlags.py_type(message), 0)
+def ActionResponseAddCommandId(builder, commandId): builder.PrependUOffsetTRelativeSlot(7, flatbuffers.number_types.UOffsetTFlags.py_type(commandId), 0)
 def ActionResponseEnd(builder): return builder.EndObject()

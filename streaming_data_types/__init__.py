@@ -6,6 +6,7 @@ from streaming_data_types.run_start_pl72 import deserialise_pl72, serialise_pl72
 from streaming_data_types.run_stop_6s4t import deserialise_6s4t, serialise_6s4t
 from streaming_data_types.status_x5f2 import deserialise_x5f2, serialise_x5f2
 from streaming_data_types.action_response_answ import deserialise_answ, serialise_answ
+from streaming_data_types.finished_writing_wrdn import deserialise_wrdn, serialise_wrdn
 from streaming_data_types.epics_connection_info_ep00 import (
     deserialise_ep00,
     serialise_ep00,
@@ -29,6 +30,7 @@ SERIALISERS = {
     "tdct": serialise_tdct,
     "rf5k": serialise_rf5k,
     "answ": serialise_answ,
+    "wrdn": serialise_wrdn,
 }
 
 
@@ -44,4 +46,5 @@ DESERIALISERS = {
     "tdct": deserialise_tdct,
     "rf5k": deserialise_rf5k,
     "answ": deserialise_answ,
+    "wrdn": deserialise_wrdn,
 }

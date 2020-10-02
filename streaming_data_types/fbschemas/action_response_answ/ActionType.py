@@ -5,6 +5,4 @@
 class ActionType(object):
     StartJob = 0
     SetStopTime = 1
-    StopNow = 2
-    HasStopped = 3
 
