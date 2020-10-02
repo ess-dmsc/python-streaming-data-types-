@@ -1,5 +1,10 @@
 import pytest
-from streaming_data_types.action_response_answ import serialise_answ, deserialise_answ, ActionType, ActionOutcome
+from streaming_data_types.action_response_answ import (
+    serialise_answ,
+    deserialise_answ,
+    ActionType,
+    ActionOutcome,
+)
 from streaming_data_types import SERIALISERS, DESERIALISERS
 
 

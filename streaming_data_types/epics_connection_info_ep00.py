@@ -39,7 +39,7 @@ def serialise_ep00(
 
 
 EpicsConnection = namedtuple(
-    "EpicsConnection", ("timestamp", "type", "source_name", "service_id",),
+    "EpicsConnection", ("timestamp", "type", "source_name", "service_id")
 )
 
 

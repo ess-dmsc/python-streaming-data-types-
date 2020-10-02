@@ -13,7 +13,7 @@ def serialise_wrdn(
     error_encountered: bool,
     file_name: str,
     metadata: str = "",
-    message: str = ""
+    message: str = "",
 ) -> bytes:
     builder = flatbuffers.Builder(500)
 
@@ -46,14 +46,17 @@ def serialise_wrdn(
 
 
 WritingFinished = namedtuple(
-    "FinishedWriting", ("service_id", "job_id", "error_encountered", "file_name", "metadata", "message")
+    "FinishedWriting",
+    ("service_id", "job_id", "error_encountered", "file_name", "metadata", "message"),
 )
 
 
 def deserialise_wrdn(buffer: Union[bytearray, bytes]) -> FinishedWriting:
     check_schema_identifier(buffer, FILE_IDENTIFIER)
 
-    finished_writing = FinishedWriting.FinishedWriting.GetRootAsFinishedWriting(buffer, 0)
+    finished_writing = FinishedWriting.FinishedWriting.GetRootAsFinishedWriting(
+        buffer, 0
+    )
     service_id = finished_writing.ServiceId()
     job_id = finished_writing.JobId()
     has_error = finished_writing.ErrorEncountered()
@@ -62,5 +65,10 @@ def deserialise_wrdn(buffer: Union[bytearray, bytes]) -> FinishedWriting:
     message = finished_writing.Message() if finished_writing.Message() else b""
 
     return WritingFinished(
-        service_id.decode(), job_id.decode(), has_error, file_name.decode(), metadata.decode(), message.decode()
+        service_id.decode(),
+        job_id.decode(),
+        has_error,
+        file_name.decode(),
+        metadata.decode(),
+        message.decode(),
     )

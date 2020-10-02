@@ -59,5 +59,9 @@ def deserialise_6s4t(buffer: Union[bytearray, bytes]) -> RunStopInfo:
     command_id = run_stop.CommandId()
 
     return RunStopInfo(
-        stop_time, run_name.decode(), job_id.decode(), service_id.decode(), command_id.decode()
+        stop_time,
+        run_name.decode(),
+        job_id.decode(),
+        service_id.decode(),
+        command_id.decode(),
     )

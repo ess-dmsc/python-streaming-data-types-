@@ -6,7 +6,7 @@ import flatbuffers
 
 
 class Status(object):
-    __slots__ = ['_tab']
+    __slots__ = ["_tab"]
 
     @classmethod
     def GetRootAsStatus(cls, buf, offset):
@@ -51,14 +51,18 @@ class Status(object):
     def ProcessId(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(12))
         if o != 0:
-            return self._tab.Get(flatbuffers.number_types.Uint32Flags, o + self._tab.Pos)
+            return self._tab.Get(
+                flatbuffers.number_types.Uint32Flags, o + self._tab.Pos
+            )
         return 0
 
     # Status
     def UpdateInterval(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(14))
         if o != 0:
-            return self._tab.Get(flatbuffers.number_types.Uint32Flags, o + self._tab.Pos)
+            return self._tab.Get(
+                flatbuffers.number_types.Uint32Flags, o + self._tab.Pos
+            )
         return 0
 
     # Status
@@ -69,12 +73,47 @@ class Status(object):
         return None
 
 
-def StatusStart(builder): builder.StartObject(7)
-def StatusAddSoftwareName(builder, softwareName): builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(softwareName), 0)
-def StatusAddSoftwareVersion(builder, softwareVersion): builder.PrependUOffsetTRelativeSlot(1, flatbuffers.number_types.UOffsetTFlags.py_type(softwareVersion), 0)
-def StatusAddServiceId(builder, serviceId): builder.PrependUOffsetTRelativeSlot(2, flatbuffers.number_types.UOffsetTFlags.py_type(serviceId), 0)
-def StatusAddHostName(builder, hostName): builder.PrependUOffsetTRelativeSlot(3, flatbuffers.number_types.UOffsetTFlags.py_type(hostName), 0)
-def StatusAddProcessId(builder, processId): builder.PrependUint32Slot(4, processId, 0)
-def StatusAddUpdateInterval(builder, updateInterval): builder.PrependUint32Slot(5, updateInterval, 0)
-def StatusAddStatusJson(builder, statusJson): builder.PrependUOffsetTRelativeSlot(6, flatbuffers.number_types.UOffsetTFlags.py_type(statusJson), 0)
-def StatusEnd(builder): return builder.EndObject()
+def StatusStart(builder):
+    builder.StartObject(7)
+
+
+def StatusAddSoftwareName(builder, softwareName):
+    builder.PrependUOffsetTRelativeSlot(
+        0, flatbuffers.number_types.UOffsetTFlags.py_type(softwareName), 0
+    )
+
+
+def StatusAddSoftwareVersion(builder, softwareVersion):
+    builder.PrependUOffsetTRelativeSlot(
+        1, flatbuffers.number_types.UOffsetTFlags.py_type(softwareVersion), 0
+    )
+
+
+def StatusAddServiceId(builder, serviceId):
+    builder.PrependUOffsetTRelativeSlot(
+        2, flatbuffers.number_types.UOffsetTFlags.py_type(serviceId), 0
+    )
+
+
+def StatusAddHostName(builder, hostName):
+    builder.PrependUOffsetTRelativeSlot(
+        3, flatbuffers.number_types.UOffsetTFlags.py_type(hostName), 0
+    )
+
+
+def StatusAddProcessId(builder, processId):
+    builder.PrependUint32Slot(4, processId, 0)
+
+
+def StatusAddUpdateInterval(builder, updateInterval):
+    builder.PrependUint32Slot(5, updateInterval, 0)
+
+
+def StatusAddStatusJson(builder, statusJson):
+    builder.PrependUOffsetTRelativeSlot(
+        6, flatbuffers.number_types.UOffsetTFlags.py_type(statusJson), 0
+    )
+
+
+def StatusEnd(builder):
+    return builder.EndObject()

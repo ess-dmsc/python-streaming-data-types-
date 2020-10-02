@@ -12,9 +12,9 @@ from typing import List, Union
 
 FILE_IDENTIFIER = b"rf5k"
 
-ConfigurationUpdate = namedtuple("ConfigurationUpdate", ("config_change", "streams"),)
+ConfigurationUpdate = namedtuple("ConfigurationUpdate", ("config_change", "streams"))
 
-StreamInfo = namedtuple("StreamInfo", ("channel", "schema", "topic", "protocol"),)
+StreamInfo = namedtuple("StreamInfo", ("channel", "schema", "topic", "protocol"))
 
 
 def deserialise_rf5k(buffer: Union[bytearray, bytes]) -> ConfigurationUpdate:
