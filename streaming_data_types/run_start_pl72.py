@@ -18,6 +18,7 @@ def serialise_pl72(
     service_id: str = "",
     instrument_name: str = "TEST",
     broker: str = "localhost:9092",
+    metadata: str = "{}"
 ) -> bytes:
     builder = flatbuffers.Builder(136)
 
@@ -35,6 +36,7 @@ def serialise_pl72(
     instrument_name_offset = builder.CreateString(instrument_name)
     run_name_offset = builder.CreateString(run_name)
     filename_offset = builder.CreateString(filename)
+    metadata_offset = builder.CreateString(metadata)
 
     # Build the actual buffer
     RunStart.RunStartStart(builder)
@@ -48,6 +50,7 @@ def serialise_pl72(
     RunStart.RunStartAddStartTime(builder, start_time)
     RunStart.RunStartAddFilename(builder, filename_offset)
     RunStart.RunStartAddNPeriods(builder, 1)
+    RunStart.RunStartAddMetadata(builder, metadata_offset)
 
     run_start_message = RunStart.RunStartEnd(builder)
     builder.Finish(run_start_message)
@@ -70,6 +73,7 @@ RunStartInfo = namedtuple(
         "service_id",
         "instrument_name",
         "broker",
+        "metadata"
     ),
 )
 
@@ -85,6 +89,7 @@ def deserialise_pl72(buffer: Union[bytearray, bytes]) -> RunStartInfo:
     nexus_structure = run_start.NexusStructure() if run_start.NexusStructure() else b""
     instrument_name = run_start.InstrumentName() if run_start.InstrumentName() else b""
     run_name = run_start.RunName() if run_start.RunName() else b""
+    metadata = run_start.Metadata() if run_start.Metadata() else b""
 
     return RunStartInfo(
         job_id.decode(),
@@ -96,4 +101,5 @@ def deserialise_pl72(buffer: Union[bytearray, bytes]) -> RunStartInfo:
         service_id.decode(),
         instrument_name.decode(),
         broker.decode(),
+        metadata.decode()
     )

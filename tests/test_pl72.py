@@ -14,6 +14,7 @@ class TestSerialisationPl72:
         "service_id": "filewriter1",
         "instrument_name": "LOKI",
         "broker": "localhost:9092",
+        "metadata": "{3:1}"
     }
 
     def test_serialises_and_deserialises_pl72_message_correctly(self):
@@ -33,6 +34,7 @@ class TestSerialisationPl72:
             deserialised_tuple.instrument_name == self.original_entry["instrument_name"]
         )
         assert deserialised_tuple.broker == self.original_entry["broker"]
+        assert deserialised_tuple.metadata == self.original_entry["metadata"]
 
     def test_if_buffer_has_wrong_id_then_throws(self):
         buf = serialise_pl72(**self.original_entry)
