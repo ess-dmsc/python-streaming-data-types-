@@ -1,9 +1,24 @@
 from collections import namedtuple
-from typing import Any, Callable, Dict
+from typing import Any, Callable, Dict, Union, List, Set, Tuple
 
 import flatbuffers
 import numpy as np
 from streaming_data_types.fbschemas.nicos_typed_cache_ns11 import TypedCacheEntry
+from streaming_data_types.fbschemas.nicos_typed_cache_ns11.Array import (
+    ArrayStartValueVector,
+    ArrayStart,
+    ArrayAddArrayType,
+    ArrayEnd,
+    ArrayAddValue,
+    Array,
+)
+from streaming_data_types.fbschemas.nicos_typed_cache_ns11.ArrayElement import (
+    ArrayElementStart,
+    ArrayElementAddV,
+    ArrayElementAddVType,
+    ArrayElementEnd,
+)
+from streaming_data_types.fbschemas.nicos_typed_cache_ns11.ArrayType import ArrayType
 from streaming_data_types.fbschemas.nicos_typed_cache_ns11.Bool import (
     BoolStart,
     BoolAddValue,
@@ -82,6 +97,76 @@ def _serialise_double(builder: flatbuffers.Builder, data: np.ndarray):
     TypedCacheEntry.TypedCacheEntryAddValueType(builder, Value.Double)
 
 
+def _serialise_double_array(
+    builder: flatbuffers.Builder, data: np.ndarray, raw_data: Union[List, Set, Tuple]
+):
+    if isinstance(raw_data, list):
+        _serialise_double_list(builder, data)
+    if isinstance(raw_data, set):
+        _serialise_double_set(builder, data)
+    if isinstance(raw_data, tuple):
+        _serialise_double_tuple(builder, data)
+
+
+def _serialise_double_list(builder: flatbuffers.Builder, data: np.ndarray):
+    _init_double_array_serialisation(builder, data)
+
+    ArrayElementAddVType(builder, Value.Double)
+    value_offset = ArrayElementEnd(builder)
+
+    ArrayStart(builder)
+    ArrayAddArrayType(builder, ArrayType.ListType)
+    ArrayAddValue(builder, value_offset)
+
+    _end_array_serialisation(builder)
+
+
+def _serialise_double_tuple(builder: flatbuffers.Builder, data: np.ndarray):
+    _init_double_array_serialisation(builder, data)
+
+    ArrayElementAddVType(builder, Value.Double)
+    value_offset = ArrayElementEnd(builder)
+
+    ArrayStart(builder)
+    ArrayAddArrayType(builder, ArrayType.TupleType)
+    ArrayAddValue(builder, value_offset)
+
+    _end_array_serialisation(builder)
+
+
+def _serialise_double_set(builder: flatbuffers.Builder, data: np.ndarray):
+    _init_double_array_serialisation(builder, data)
+
+    ArrayElementAddVType(builder, Value.Double)
+    value_offset = ArrayElementEnd(builder)
+
+    ArrayStart(builder)
+    ArrayAddArrayType(builder, ArrayType.SetType)
+    ArrayAddValue(builder, value_offset)
+
+    _end_array_serialisation(builder)
+
+
+def _init_double_array_serialisation(builder: flatbuffers.Builder, data: np.ndarray):
+    ArrayStartValueVector(builder, len(data))
+    if data.dtype == "float64":
+        for single_value in reversed(data):
+            builder.PrependFloat64(single_value)
+    if data.dtype == "float32":
+        for single_value in reversed(data):
+            builder.PrependFloat32(single_value)
+    array_offset = builder.EndVector(len(data))
+    ArrayElementStart(builder)
+    ArrayElementAddV(builder, array_offset)
+
+
+def _end_array_serialisation(builder):
+    array_position = ArrayEnd(builder)
+    TypedCacheEntry.TypedCacheEntryStart(builder)
+    TypedCacheEntry.TypedCacheEntryAddValue(builder, array_position)
+    TypedCacheEntry.TypedCacheEntryAddValueType(builder, Value.Array)
+
+
 def _serialise_bool(builder: flatbuffers.Builder, data: np.ndarray):
     BoolStart(builder)
     BoolAddValue(builder, data.item())
@@ -99,6 +184,11 @@ _map_scalar_type_to_serialiser = {
     np.dtype("bool"): _serialise_bool,
 }
 
+_map_array_type_to_serialiser = {
+    np.dtype("float32"): _serialise_double_array,
+    np.dtype("float64"): _serialise_double_array,
+}
+
 
 def serialise_ns11(
     value: Any,
@@ -109,11 +199,28 @@ def serialise_ns11(
 ):
     builder = flatbuffers.Builder(128)
     key_offset = builder.CreateString(key)
-    value = np.array(value)
+    raw_value = value
 
-    if value.ndim == 0:
+    if isinstance(raw_value, set):
+        np_value = np.array(list(raw_value))
+    else:
+        np_value = np.array(raw_value)
+
+    if np_value.ndim == 0:
         _serialise_value(
-            builder, value, _serialise_string, _map_scalar_type_to_serialiser
+            builder,
+            np_value,
+            raw_value,
+            _serialise_string,
+            _map_scalar_type_to_serialiser,
+        )
+    elif np_value.ndim == 1:
+        _serialise_value(
+            builder,
+            np_value,
+            raw_value,
+            _serialise_string,
+            _map_array_type_to_serialiser,
         )
     return bytes(_complete_buffer(builder, key_offset, time_stamp, ttl, expired))
 
@@ -121,6 +228,7 @@ def serialise_ns11(
 def _serialise_value(
     builder: flatbuffers.Builder,
     value: Any,
+    raw_value: Any,
     string_serialiser: Callable,
     serialisers_map: Dict,
 ):
@@ -130,7 +238,7 @@ def _serialise_value(
         string_serialiser(builder, value)
     else:
         try:
-            serialisers_map[value.dtype](builder, value)
+            serialisers_map[value.dtype](builder, value, raw_value)
         except KeyError:
             raise NotImplementedError(
                 f"Cannot serialise data of type {value.dtype}, must use one of "
@@ -143,6 +251,7 @@ _map_fb_enum_to_type = {
     Value.Double: Double,
     Value.String: String,
     Value.Bool: Bool,
+    Value.Array: Array,
 }
 
 

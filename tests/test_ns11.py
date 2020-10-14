@@ -25,6 +25,39 @@ class TestSerialisationNs11:
         assert entry.expired == original_entry["expired"]
         assert entry.value == original_entry["value"]
 
+    def test_serialises_and_deserialises_double_list(self):
+        original_entry = {
+            "key": "some_key",
+            "time_stamp": 123456,
+            "ttl": 567890,
+            "expired": True,
+            "value": [1.0, 2.0, 3.0],
+        }
+
+        serialise_ns11(**original_entry)
+
+    def test_serialises_and_deserialises_double_tuple(self):
+        original_entry = {
+            "key": "some_key",
+            "time_stamp": 123456,
+            "ttl": 567890,
+            "expired": True,
+            "value": (1.0, 2.0, 3.0),
+        }
+
+        serialise_ns11(**original_entry)
+
+    def test_serialises_and_deserialises_double_set(self):
+        original_entry = {
+            "key": "some_key",
+            "time_stamp": 123456,
+            "ttl": 567890,
+            "expired": True,
+            "value": {1.0, 2.0, 3.0},
+        }
+
+        serialise_ns11(**original_entry)
+
     def test_if_buffer_has_wrong_id_then_throws(self):
         original_entry = {
             "key": "some_key",
