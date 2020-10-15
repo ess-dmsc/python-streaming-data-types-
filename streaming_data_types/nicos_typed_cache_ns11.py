@@ -78,6 +78,69 @@ def _serialise_long(builder: flatbuffers.Builder, data: np.ndarray):
     TypedCacheEntry.TypedCacheEntryAddValueType(builder, Value.Long)
 
 
+def _serialise_long_array(
+    builder: flatbuffers.Builder, data: np.ndarray, raw_data: Union[List, Set, Tuple]
+):
+    if isinstance(raw_data, list):
+        _serialise_long_list(builder, data)
+    if isinstance(raw_data, set):
+        _serialise_long_set(builder, data)
+    if isinstance(raw_data, tuple):
+        _serialise_long_tuple(builder, data)
+
+
+def _serialise_long_list(builder: flatbuffers.Builder, data: np.ndarray):
+    _init_long_array_serialisation(builder, data)
+
+    ArrayElementAddVType(builder, Value.Long)
+    value_offset = ArrayElementEnd(builder)
+
+    ArrayStart(builder)
+    ArrayAddArrayType(builder, ArrayType.ListType)
+    ArrayAddValue(builder, value_offset)
+
+    _end_array_serialisation(builder)
+
+
+def _serialise_long_tuple(builder: flatbuffers.Builder, data: np.ndarray):
+    _init_long_array_serialisation(builder, data)
+
+    ArrayElementAddVType(builder, Value.Long)
+    value_offset = ArrayElementEnd(builder)
+
+    ArrayStart(builder)
+    ArrayAddArrayType(builder, ArrayType.TupleType)
+    ArrayAddValue(builder, value_offset)
+
+    _end_array_serialisation(builder)
+
+
+def _serialise_long_set(builder: flatbuffers.Builder, data: np.ndarray):
+    _init_long_array_serialisation(builder, data)
+
+    ArrayElementAddVType(builder, Value.Long)
+    value_offset = ArrayElementEnd(builder)
+
+    ArrayStart(builder)
+    ArrayAddArrayType(builder, ArrayType.SetType)
+    ArrayAddValue(builder, value_offset)
+
+    _end_array_serialisation(builder)
+
+
+def _init_long_array_serialisation(builder: flatbuffers.Builder, data: np.ndarray):
+    ArrayStartValueVector(builder, len(data))
+    if data.dtype == "int64":
+        for single_value in reversed(data):
+            builder.PrependInt64(single_value)
+    if data.dtype == "int32":
+        for single_value in reversed(data):
+            builder.PrependInt32(single_value)
+    array_offset = builder.EndVector(len(data))
+    ArrayElementStart(builder)
+    ArrayElementAddV(builder, array_offset)
+
+
 def _serialise_string(builder: flatbuffers.Builder, data: np.ndarray):
     string_offset = builder.CreateString(data.item())
     StringStart(builder)
@@ -185,6 +248,8 @@ _map_scalar_type_to_serialiser = {
 }
 
 _map_array_type_to_serialiser = {
+    np.dtype("int32"): _serialise_long_array,
+    np.dtype("int64"): _serialise_long_array,
     np.dtype("float32"): _serialise_double_array,
     np.dtype("float64"): _serialise_double_array,
 }
