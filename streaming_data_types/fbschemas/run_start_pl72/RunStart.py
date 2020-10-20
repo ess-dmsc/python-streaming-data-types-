@@ -3,6 +3,9 @@
 # namespace:
 
 import flatbuffers
+from flatbuffers.compat import import_numpy
+
+np = import_numpy()
 
 
 class RunStart(object):
@@ -14,6 +17,12 @@ class RunStart(object):
         x = RunStart()
         x.Init(buf, n + offset)
         return x
+
+    @classmethod
+    def RunStartBufferHasIdentifier(cls, buf, offset, size_prefixed=False):
+        return flatbuffers.util.BufferHasIdentifier(
+            buf, offset, b"\x70\x6C\x37\x32", size_prefixed=size_prefixed
+        )
 
     # RunStart
     def Init(self, buf, pos):
@@ -100,16 +109,23 @@ class RunStart(object):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(24))
         if o != 0:
             x = self._tab.Indirect(o + self._tab.Pos)
-            from .SpectraDetectorMapping import SpectraDetectorMapping
+            from SpectraDetectorMapping import SpectraDetectorMapping
 
             obj = SpectraDetectorMapping()
             obj.Init(self._tab.Bytes, x)
             return obj
         return None
 
+    # RunStart
+    def Metadata(self):
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(26))
+        if o != 0:
+            return self._tab.String(o + self._tab.Pos)
+        return None
+
 
 def RunStartStart(builder):
-    builder.StartObject(11)
+    builder.StartObject(12)
 
 
 def RunStartAddStartTime(builder, startTime):
@@ -169,6 +185,12 @@ def RunStartAddNPeriods(builder, nPeriods):
 def RunStartAddDetectorSpectrumMap(builder, detectorSpectrumMap):
     builder.PrependUOffsetTRelativeSlot(
         10, flatbuffers.number_types.UOffsetTFlags.py_type(detectorSpectrumMap), 0
+    )
+
+
+def RunStartAddMetadata(builder, metadata):
+    builder.PrependUOffsetTRelativeSlot(
+        11, flatbuffers.number_types.UOffsetTFlags.py_type(metadata), 0
     )
 
 

@@ -38,18 +38,19 @@ def deserialise_x5f2(buffer):
         log_message.HostName().decode("utf-8"),
         log_message.ProcessId(),
         log_message.UpdateInterval(),
-        log_message.StatusJson().decode("utf-8")
+        log_message.StatusJson().decode("utf-8"),
     )
 
 
 def serialise_x5f2(
-        software_name: str,
-        software_version: str,
-        service_id: str,
-        host_name: str,
-        process_id: int,
-        update_interval: int,
-        status_json: str) -> bytes:
+    software_name: str,
+    software_version: str,
+    service_id: str,
+    host_name: str,
+    process_id: int,
+    update_interval: int,
+    status_json: str,
+) -> bytes:
     """
     Serialise status message as an x5f2 FlatBuffers message.
 

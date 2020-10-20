@@ -2,7 +2,7 @@ from typing import Optional, Union
 import flatbuffers
 from streaming_data_types.fbschemas.run_stop_6s4t import RunStop
 from streaming_data_types.utils import check_schema_identifier
-from collections import namedtuple
+from typing import NamedTuple
 
 FILE_IDENTIFIER = b"6s4t"
 
@@ -11,6 +11,7 @@ def serialise_6s4t(
     job_id: str,
     run_name: str = "test_run",
     service_id: str = "",
+    command_id: str = "",
     stop_time: Optional[int] = None,
 ) -> bytes:
     builder = flatbuffers.Builder(136)
@@ -23,6 +24,7 @@ def serialise_6s4t(
     service_id_offset = builder.CreateString(service_id)
     job_id_offset = builder.CreateString(job_id)
     run_name_offset = builder.CreateString(run_name)
+    command_id_offset = builder.CreateString(command_id)
 
     # Build the actual buffer
     RunStop.RunStopStart(builder)
@@ -30,6 +32,7 @@ def serialise_6s4t(
     RunStop.RunStopAddJobId(builder, job_id_offset)
     RunStop.RunStopAddRunName(builder, run_name_offset)
     RunStop.RunStopAddStopTime(builder, stop_time)
+    RunStop.RunStopAddCommandId(builder, command_id_offset)
 
     run_stop_message = RunStop.RunStopEnd(builder)
     builder.Finish(run_stop_message)
@@ -40,8 +43,15 @@ def serialise_6s4t(
     return bytes(buffer)
 
 
-RunStopInfo = namedtuple(
-    "RunStopInfo", ("stop_time", "run_name", "job_id", "service_id")
+RunStopInfo = NamedTuple(
+    "RunStopInfo",
+    (
+        ("stop_time", int),
+        ("run_name", str),
+        ("job_id", str),
+        ("service_id", str),
+        ("command_id", str),
+    ),
 )
 
 
@@ -53,7 +63,12 @@ def deserialise_6s4t(buffer: Union[bytearray, bytes]) -> RunStopInfo:
     job_id = run_stop.JobId() if run_stop.JobId() else b""
     run_name = run_stop.RunName() if run_stop.RunName() else b""
     stop_time = run_stop.StopTime()
+    command_id = run_stop.CommandId()
 
     return RunStopInfo(
-        stop_time, run_name.decode(), job_id.decode(), service_id.decode()
+        stop_time=stop_time,
+        run_name=run_name.decode(),
+        job_id=job_id.decode(),
+        service_id=service_id.decode(),
+        command_id=command_id.decode(),
     )

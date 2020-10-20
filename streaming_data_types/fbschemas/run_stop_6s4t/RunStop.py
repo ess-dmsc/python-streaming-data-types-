@@ -3,6 +3,9 @@
 # namespace:
 
 import flatbuffers
+from flatbuffers.compat import import_numpy
+
+np = import_numpy()
 
 
 class RunStop(object):
@@ -14,6 +17,12 @@ class RunStop(object):
         x = RunStop()
         x.Init(buf, n + offset)
         return x
+
+    @classmethod
+    def RunStopBufferHasIdentifier(cls, buf, offset, size_prefixed=False):
+        return flatbuffers.util.BufferHasIdentifier(
+            buf, offset, b"\x36\x73\x34\x74", size_prefixed=size_prefixed
+        )
 
     # RunStop
     def Init(self, buf, pos):
@@ -49,9 +58,16 @@ class RunStop(object):
             return self._tab.String(o + self._tab.Pos)
         return None
 
+    # RunStop
+    def CommandId(self):
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(12))
+        if o != 0:
+            return self._tab.String(o + self._tab.Pos)
+        return None
+
 
 def RunStopStart(builder):
-    builder.StartObject(4)
+    builder.StartObject(5)
 
 
 def RunStopAddStopTime(builder, stopTime):
@@ -73,6 +89,12 @@ def RunStopAddJobId(builder, jobId):
 def RunStopAddServiceId(builder, serviceId):
     builder.PrependUOffsetTRelativeSlot(
         3, flatbuffers.number_types.UOffsetTFlags.py_type(serviceId), 0
+    )
+
+
+def RunStopAddCommandId(builder, commandId):
+    builder.PrependUOffsetTRelativeSlot(
+        4, flatbuffers.number_types.UOffsetTFlags.py_type(commandId), 0
     )
 
 

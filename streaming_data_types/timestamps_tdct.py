@@ -46,7 +46,7 @@ def serialise_tdct(
     return bytes(buffer)
 
 
-Timestamps = namedtuple("Timestamps", ("name", "timestamps", "sequence_counter",),)
+Timestamps = namedtuple("Timestamps", ("name", "timestamps", "sequence_counter"))
 
 
 def deserialise_tdct(buffer: Union[bytearray, bytes]) -> Timestamps:
@@ -57,4 +57,4 @@ def deserialise_tdct(buffer: Union[bytearray, bytes]) -> Timestamps:
 
     timestamps_array = timestamps.TimestampsAsNumpy()
 
-    return Timestamps(name.decode(), timestamps_array, timestamps.SequenceCounter(),)
+    return Timestamps(name.decode(), timestamps_array, timestamps.SequenceCounter())

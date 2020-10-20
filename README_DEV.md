@@ -35,6 +35,18 @@ From the top directory:
 tox
 ```
 
+### Installing the development version locally
+First, uninstall any existing versions of the Python streaming data types package:
+
+```
+pip uninstall ess-streaming-data-types
+```
+Then, from the _python-streaming-data-types_ root directory, run the following command:
+
+```
+pip install --user -e ./
+```
+
 ### Building the package locally and deploying it to PyPI
 **First update the version number in setup.py and push the update to the repository.**
 
@@ -68,7 +80,7 @@ twine upload --repository-url https://test.pypi.org/legacy/ dist/*
 
 The new module can then be installed from test.pypi.org like so:
 ```
-pip uninstall ess_streaming_data_types    # Remove old version if present
+pip uninstall ess-streaming-data-types    # Remove old version if present
 pip install -i https://test.pypi.org/simple/ ess-streaming-data-types
 ```
 Unfortunately, flatbuffers is not on test.pypi.org so the following error may occur:
