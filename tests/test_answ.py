@@ -6,6 +6,7 @@ from streaming_data_types.action_response_answ import (
     ActionOutcome,
 )
 from streaming_data_types import SERIALISERS, DESERIALISERS
+from datetime import datetime
 
 
 class TestSerialisationAnsw:
@@ -20,6 +21,10 @@ class TestSerialisationAnsw:
             "action": ActionType.SetStopTime,
             "outcome": ActionOutcome.Failure,
             "message": "some random error message",
+            "status_code": 123456789,
+            "stop_time": datetime(
+                year=2021, month=2, day=12, hour=2, minute=12, second=12
+            ),
         }
 
         buf = serialise_answ(**original_entry)
@@ -31,6 +36,8 @@ class TestSerialisationAnsw:
         assert entry.message == original_entry["message"]
         assert entry.action == original_entry["action"]
         assert entry.outcome == original_entry["outcome"]
+        assert entry.status_code == original_entry["status_code"]
+        assert entry.stop_time == original_entry["stop_time"]
 
     def test_if_buffer_has_wrong_id_then_throws(self):
         original_entry = {
@@ -40,6 +47,10 @@ class TestSerialisationAnsw:
             "action": ActionType.SetStopTime,
             "outcome": ActionOutcome.Failure,
             "message": "some random error message",
+            "status_code": 123456789,
+            "stop_time": datetime(
+                year=2021, month=2, day=12, hour=2, minute=12, second=12
+            ),
         }
 
         buf = serialise_answ(**original_entry)

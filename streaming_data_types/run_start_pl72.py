@@ -3,7 +3,7 @@ from typing import Optional, Union
 import flatbuffers
 from streaming_data_types.fbschemas.run_start_pl72 import RunStart
 from streaming_data_types.utils import check_schema_identifier
-from collections import namedtuple
+from typing import NamedTuple
 
 FILE_IDENTIFIER = b"pl72"
 
@@ -61,19 +61,19 @@ def serialise_pl72(
     return bytes(buffer)
 
 
-RunStartInfo = namedtuple(
+RunStartInfo = NamedTuple(
     "RunStartInfo",
     (
-        "job_id",
-        "filename",
-        "start_time",
-        "stop_time",
-        "run_name",
-        "nexus_structure",
-        "service_id",
-        "instrument_name",
-        "broker",
-        "metadata",
+        ("job_id", str),
+        ("filename", str),
+        ("start_time", int),
+        ("stop_time", int),
+        ("run_name", str),
+        ("nexus_structure", str),
+        ("service_id", str),
+        ("instrument_name", str),
+        ("broker", str),
+        ("metadata", str),
     ),
 )
 
@@ -92,14 +92,14 @@ def deserialise_pl72(buffer: Union[bytearray, bytes]) -> RunStartInfo:
     metadata = run_start.Metadata() if run_start.Metadata() else b""
 
     return RunStartInfo(
-        job_id.decode(),
-        filename.decode(),
-        run_start.StartTime(),
-        run_start.StopTime(),
-        run_name.decode(),
-        nexus_structure.decode(),
-        service_id.decode(),
-        instrument_name.decode(),
-        broker.decode(),
-        metadata.decode(),
+        job_id=job_id.decode(),
+        filename=filename.decode(),
+        start_time=run_start.StartTime(),
+        stop_time=run_start.StopTime(),
+        run_name=run_name.decode(),
+        nexus_structure=nexus_structure.decode(),
+        service_id=service_id.decode(),
+        instrument_name=instrument_name.decode(),
+        broker=broker.decode(),
+        metadata=metadata.decode(),
     )

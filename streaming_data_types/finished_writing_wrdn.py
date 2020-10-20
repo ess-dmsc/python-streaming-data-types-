@@ -2,7 +2,7 @@ from typing import Union
 import flatbuffers
 from streaming_data_types.fbschemas.finished_writing_wrdn import FinishedWriting
 from streaming_data_types.utils import check_schema_identifier
-from collections import namedtuple
+from typing import NamedTuple
 
 FILE_IDENTIFIER = b"wrdn"
 
@@ -45,9 +45,16 @@ def serialise_wrdn(
     return bytes(buffer)
 
 
-WritingFinished = namedtuple(
+WritingFinished = NamedTuple(
     "FinishedWriting",
-    ("service_id", "job_id", "error_encountered", "file_name", "metadata", "message"),
+    (
+        ("service_id", str),
+        ("job_id", str),
+        ("error_encountered", bool),
+        ("file_name", str),
+        ("metadata", str),
+        ("message", str),
+    ),
 )
 
 
@@ -65,10 +72,10 @@ def deserialise_wrdn(buffer: Union[bytearray, bytes]) -> FinishedWriting:
     message = finished_writing.Message() if finished_writing.Message() else b""
 
     return WritingFinished(
-        service_id.decode(),
-        job_id.decode(),
-        has_error,
-        file_name.decode(),
-        metadata.decode(),
-        message.decode(),
+        service_id=service_id.decode(),
+        job_id=job_id.decode(),
+        error_encountered=has_error,
+        file_name=file_name.decode(),
+        metadata=metadata.decode(),
+        message=message.decode(),
     )

@@ -2,7 +2,7 @@ from typing import Optional, Union
 import flatbuffers
 from streaming_data_types.fbschemas.run_stop_6s4t import RunStop
 from streaming_data_types.utils import check_schema_identifier
-from collections import namedtuple
+from typing import NamedTuple
 
 FILE_IDENTIFIER = b"6s4t"
 
@@ -43,8 +43,15 @@ def serialise_6s4t(
     return bytes(buffer)
 
 
-RunStopInfo = namedtuple(
-    "RunStopInfo", ("stop_time", "run_name", "job_id", "service_id", "command_id")
+RunStopInfo = NamedTuple(
+    "RunStopInfo",
+    (
+        ("stop_time", int),
+        ("run_name", str),
+        ("job_id", str),
+        ("service_id", str),
+        ("command_id", str),
+    ),
 )
 
 
@@ -59,9 +66,9 @@ def deserialise_6s4t(buffer: Union[bytearray, bytes]) -> RunStopInfo:
     command_id = run_stop.CommandId()
 
     return RunStopInfo(
-        stop_time,
-        run_name.decode(),
-        job_id.decode(),
-        service_id.decode(),
-        command_id.decode(),
+        stop_time=stop_time,
+        run_name=run_name.decode(),
+        job_id=job_id.decode(),
+        service_id=service_id.decode(),
+        command_id=command_id.decode(),
     )
