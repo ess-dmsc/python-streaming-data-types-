@@ -3,7 +3,7 @@ import flatbuffers
 from streaming_data_types.fbschemas.finished_writing_wrdn import FinishedWriting
 from streaming_data_types.utils import check_schema_identifier
 from typing import NamedTuple
-from typing import Union
+from typing import Optional
 
 FILE_IDENTIFIER = b"wrdn"
 
@@ -13,8 +13,8 @@ def serialise_wrdn(
     job_id: str,
     error_encountered: bool,
     file_name: str,
-    metadata: Union[str, None] = None,
-    message: Union[str, None] = None,
+    metadata: Optional[str] = None,
+    message: Optional[str] = None,
 ) -> bytes:
     builder = flatbuffers.Builder(500)
 
@@ -53,8 +53,8 @@ WritingFinished = NamedTuple(
         ("job_id", str),
         ("error_encountered", bool),
         ("file_name", str),
-        ("metadata", Union[str, None]),
-        ("message", Union[str, None]),
+        ("metadata", Optional[str]),
+        ("message", Optional[str]),
     ),
 )
 
