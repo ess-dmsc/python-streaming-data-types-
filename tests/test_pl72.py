@@ -14,7 +14,7 @@ class TestSerialisationPl72:
         "service_id": "filewriter1",
         "instrument_name": "LOKI",
         "broker": "localhost:9092",
-        "metadata": "{3:1}"
+        "metadata": "{3:1}",
     }
 
     def test_serialises_and_deserialises_pl72_message_correctly(self):

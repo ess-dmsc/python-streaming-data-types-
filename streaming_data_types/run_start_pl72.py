@@ -18,7 +18,7 @@ def serialise_pl72(
     service_id: str = "",
     instrument_name: str = "TEST",
     broker: str = "localhost:9092",
-    metadata: str = "{}"
+    metadata: str = "{}",
 ) -> bytes:
     builder = flatbuffers.Builder(136)
 
@@ -73,7 +73,7 @@ RunStartInfo = namedtuple(
         "service_id",
         "instrument_name",
         "broker",
-        "metadata"
+        "metadata",
     ),
 )
 
@@ -101,5 +101,5 @@ def deserialise_pl72(buffer: Union[bytearray, bytes]) -> RunStartInfo:
         service_id.decode(),
         instrument_name.decode(),
         broker.decode(),
-        metadata.decode()
+        metadata.decode(),
     )

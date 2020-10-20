@@ -18,7 +18,8 @@ https://github.com/ess-dmsc/streaming-data-types
 |tdct|Timestamps|Y|
 |ep00|EPICS connection info|Y|
 |rf5k|Forwarder configuration update|Y|
-|answ|File-writer command response|?|
+|answ|File-writer command response|n/a|
+|wrdn|File-writer finished writing|n/a|
 
 \* whether it passes verification via the C++ FlatBuffers library.
 

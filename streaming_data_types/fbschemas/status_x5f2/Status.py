@@ -3,6 +3,9 @@
 # namespace:
 
 import flatbuffers
+from flatbuffers.compat import import_numpy
+
+np = import_numpy()
 
 
 class Status(object):
@@ -14,6 +17,12 @@ class Status(object):
         x = Status()
         x.Init(buf, n + offset)
         return x
+
+    @classmethod
+    def StatusBufferHasIdentifier(cls, buf, offset, size_prefixed=False):
+        return flatbuffers.util.BufferHasIdentifier(
+            buf, offset, b"\x78\x35\x66\x32", size_prefixed=size_prefixed
+        )
 
     # Status
     def Init(self, buf, pos):
