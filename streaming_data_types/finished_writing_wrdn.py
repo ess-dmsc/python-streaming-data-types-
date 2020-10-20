@@ -3,6 +3,7 @@ import flatbuffers
 from streaming_data_types.fbschemas.finished_writing_wrdn import FinishedWriting
 from streaming_data_types.utils import check_schema_identifier
 from typing import NamedTuple
+from typing import Union
 
 FILE_IDENTIFIER = b"wrdn"
 
@@ -12,17 +13,17 @@ def serialise_wrdn(
     job_id: str,
     error_encountered: bool,
     file_name: str,
-    metadata: str = "",
-    message: str = "",
+    metadata: Union[str, None] = None,
+    message: Union[str, None] = None,
 ) -> bytes:
     builder = flatbuffers.Builder(500)
 
     service_id_offset = builder.CreateString(service_id)
     job_id_offset = builder.CreateString(job_id)
     file_name_offset = builder.CreateString(file_name)
-    if metadata:
+    if metadata is not None:
         metadata_offset = builder.CreateString(metadata)
-    if message:
+    if message is not None:
         message_offset = builder.CreateString(message)
 
     # Build the actual buffer
@@ -52,8 +53,8 @@ WritingFinished = NamedTuple(
         ("job_id", str),
         ("error_encountered", bool),
         ("file_name", str),
-        ("metadata", str),
-        ("message", str),
+        ("metadata", Union[str, None]),
+        ("message", Union[str, None]),
     ),
 )
 
@@ -68,14 +69,18 @@ def deserialise_wrdn(buffer: Union[bytearray, bytes]) -> FinishedWriting:
     job_id = finished_writing.JobId()
     has_error = finished_writing.ErrorEncountered()
     file_name = finished_writing.FileName() if finished_writing.FileName() else b""
-    metadata = finished_writing.Metadata() if finished_writing.Metadata() else b""
-    message = finished_writing.Message() if finished_writing.Message() else b""
+    metadata = (
+        finished_writing.Metadata().decode() if finished_writing.Metadata() else None
+    )
+    message = (
+        finished_writing.Message().decode() if finished_writing.Message() else None
+    )
 
     return WritingFinished(
         service_id=service_id.decode(),
         job_id=job_id.decode(),
         error_encountered=has_error,
         file_name=file_name.decode(),
-        metadata=metadata.decode(),
-        message=message.decode(),
+        metadata=metadata,
+        message=message,
     )
