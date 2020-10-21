@@ -34,7 +34,8 @@ class TestSerialisationNs11:
             "value": [1, 2, 3],
         }
 
-        serialise_ns11(**original_entry)
+        buf = serialise_ns11(**original_entry)
+        deserialise_ns11(buf)
 
     def test_serialises_and_deserialises_double_list(self):
         original_entry = {

@@ -329,6 +329,13 @@ def _decode_if_scalar_string(value: np.ndarray):
     return value
 
 
+def _deserialise_array(val, buffer):
+    print("OK")
+    new_entry = val.Value(0).GetRootAsArrayElement(buffer, 0)
+    value = new_entry.V()
+    print(value)
+
+
 def deserialise_ns11(buffer):
     check_schema_identifier(buffer, FILE_IDENTIFIER)
 
@@ -340,6 +347,9 @@ def deserialise_ns11(buffer):
     value_fb = _map_fb_enum_to_type[entry.ValueType()]()
     value_fb.Init(value_offset.Bytes, value_offset.Pos)
 
+    if isinstance(value_fb, Array):
+        _deserialise_array(value_fb, buffer)
+
     try:
         value = value_fb.ValueAsNumpy()
     except AttributeError:
@@ -349,8 +359,12 @@ def deserialise_ns11(buffer):
             value = np.array(
                 [str(value_fb.Value(n), "utf-8") for n in range(value_fb.ValueLength())]
             )
-
     value = _decode_if_scalar_string(value)
+
+    return _finalise_deserialise_ns11(entry, value)
+
+
+def _finalise_deserialise_ns11(entry, value):
 
     key = entry.Key() if entry.Key() else b""
     time_stamp = entry.Time()
