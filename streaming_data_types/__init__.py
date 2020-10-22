@@ -16,7 +16,7 @@ from streaming_data_types.forwarder_config_update_rf5k import (
     deserialise_rf5k,
     serialise_rf5k,
 )
-from streaming_data_types.area_detector_NDAr import deserialise_ndar
+from streaming_data_types.area_detector_NDAr import deserialise_ndar, serialise_ndar
 
 
 SERIALISERS = {
@@ -32,6 +32,7 @@ SERIALISERS = {
     "rf5k": serialise_rf5k,
     "answ": serialise_answ,
     "wrdn": serialise_wrdn,
+    "NDAr": serialise_ndar,
 }
 
 

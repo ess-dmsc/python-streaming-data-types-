@@ -1,9 +1,49 @@
 from typing import Union
-from streaming_data_types.fbschemas.NDAr_NDArray_schema import NDArray, NDAttribute
+import flatbuffers
+from streaming_data_types.fbschemas.NDAr_NDArray_schema import NDArray
 from streaming_data_types.utils import check_schema_identifier
 from collections import namedtuple
+import time
 
 FILE_IDENTIFIER = b"NDAr"
+
+
+def serialise_ndar(
+    id: str,
+    dims: list,
+    data_type: int,
+    data: list,
+) -> bytes:
+    builder = flatbuffers.Builder(1024)
+
+    # Build dims
+    NDArray.NDArrayStartDimsVector(builder, len(dims))
+    # FlatBuffers builds arrays backwards
+    for s in reversed(dims):
+        builder.PrependUint64(s)
+    dims_offset = builder.EndVector(len(dims))
+
+    # Build data
+    NDArray.NDArrayStartPDataVector(builder, len(data))
+    # FlatBuffers builds arrays backwards
+    for s in reversed(data):
+        builder.PrependUint8(s)
+    data_offset = builder.EndVector(len(data))
+
+    # Build the actual buffer
+    NDArray.NDArrayStart(builder)
+    NDArray.NDArrayAddDataType(builder, data_type)
+    NDArray.NDArrayAddDims(builder, dims_offset)
+    NDArray.NDArrayAddId(builder, id)
+    NDArray.NDArrayAddPData(builder, data_offset)
+    NDArray.NDArrayAddTimeStamp(builder, int(time.time() * 1000))
+    nd_array_message = NDArray.NDArrayEnd(builder)
+    builder.Finish(nd_array_message)
+
+    # Generate the output and replace the file_identifier
+    buffer = builder.Output()
+    buffer[4:8] = FILE_IDENTIFIER
+    return bytes(buffer)
 
 
 nd_Array = namedtuple(
