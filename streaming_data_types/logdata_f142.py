@@ -168,14 +168,14 @@ def _complete_buffer(
             LogData.LogDataAddSeverity(builder, alarm_severity)
 
     log_msg = LogData.LogDataEnd(builder)
-    builder.Finish(log_msg)
-    buff = builder.Output()
-    buff[4:8] = FILE_IDENTIFIER
-    return buff
+
+    builder.Finish(log_msg, file_identifier=FILE_IDENTIFIER)
+    return bytes(builder.Output())
 
 
 def _setup_builder(source_name: str) -> Tuple[flatbuffers.Builder, int]:
     builder = flatbuffers.Builder(1024)
+    builder.ForceDefaults(True)
     source = builder.CreateString(source_name)
     return builder, source
 

@@ -11,6 +11,7 @@ def serialise_ns10(
     key: str, value: str, time_stamp: float = 0, ttl: float = 0, expired: bool = False
 ):
     builder = flatbuffers.Builder(128)
+    builder.ForceDefaults(True)
 
     value_offset = builder.CreateString(value)
     key_offset = builder.CreateString(key)
@@ -22,13 +23,9 @@ def serialise_ns10(
     CacheEntry.CacheEntryAddTime(builder, time_stamp)
     CacheEntry.CacheEntryAddKey(builder, key_offset)
     cache_entry_message = CacheEntry.CacheEntryEnd(builder)
-    builder.Finish(cache_entry_message)
 
-    # Generate the output and replace the file_identifier
-    buffer = builder.Output()
-    buffer[4:8] = FILE_IDENTIFIER
-
-    return bytes(buffer)
+    builder.Finish(cache_entry_message, file_identifier=FILE_IDENTIFIER)
+    return bytes(builder.Output())
 
 
 def deserialise_ns10(buffer):

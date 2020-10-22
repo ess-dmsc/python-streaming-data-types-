@@ -1,8 +1,9 @@
-from typing import Optional, Union
+from typing import Union
 import flatbuffers
 from streaming_data_types.fbschemas.run_stop_6s4t import RunStop
 from streaming_data_types.utils import check_schema_identifier
 from typing import NamedTuple
+from datetime import datetime
 
 FILE_IDENTIFIER = b"6s4t"
 
@@ -12,13 +13,16 @@ def serialise_6s4t(
     run_name: str = "test_run",
     service_id: str = "",
     command_id: str = "",
-    stop_time: Optional[int] = None,
+    stop_time: Union[int, datetime, None] = None,
 ) -> bytes:
-    builder = flatbuffers.Builder(136)
+    builder = flatbuffers.Builder(500)
+    builder.ForceDefaults(True)
 
     if service_id is None:
         service_id = ""
-    if stop_time is None:
+    if type(stop_time) is datetime:
+        stop_time = int(stop_time.timestamp() * 1000)
+    elif stop_time is None:
         stop_time = 0
 
     service_id_offset = builder.CreateString(service_id)
@@ -35,12 +39,9 @@ def serialise_6s4t(
     RunStop.RunStopAddCommandId(builder, command_id_offset)
 
     run_stop_message = RunStop.RunStopEnd(builder)
-    builder.Finish(run_stop_message)
+    builder.Finish(run_stop_message, file_identifier=FILE_IDENTIFIER)
 
-    # Generate the output and replace the file_identifier
-    buffer = builder.Output()
-    buffer[4:8] = FILE_IDENTIFIER
-    return bytes(buffer)
+    return bytes(builder.Output())
 
 
 RunStopInfo = NamedTuple(
