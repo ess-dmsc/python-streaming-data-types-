@@ -15,7 +15,7 @@ def serialise_ndar(
     data: list,
 ) -> bytes:
     builder = flatbuffers.Builder(1024)
-builder.ForceDefaults(True)
+    builder.ForceDefaults(True)
 
     # Build dims
     NDArray.NDArrayStartDimsVector(builder, len(dims))
@@ -39,12 +39,9 @@ builder.ForceDefaults(True)
     NDArray.NDArrayAddPData(builder, data_offset)
     NDArray.NDArrayAddTimeStamp(builder, int(time.time() * 1000))
     nd_array_message = NDArray.NDArrayEnd(builder)
-    builder.Finish(nd_array_message)
 
-    # Generate the output and replace the file_identifier
-    buffer = builder.Output()
-    buffer[4:8] = FILE_IDENTIFIER
-    return bytes(buffer)
+    builder.Finish(nd_array_message, file_identifier=FILE_IDENTIFIER)
+    return bytes(builder.Output())
 
 
 nd_Array = namedtuple(
