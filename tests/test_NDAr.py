@@ -1,5 +1,5 @@
 import pytest
-from streaming_data_types.area_detector_NDAr import serialise_ndar, deserialise_ndar, get_data
+from streaming_data_types.area_detector_NDAr import serialise_ndar, deserialise_ndar
 from streaming_data_types.fbschemas.NDAr_NDArray_schema.DType import DType
 from streaming_data_types import SERIALISERS, DESERIALISERS
 import numpy as np
