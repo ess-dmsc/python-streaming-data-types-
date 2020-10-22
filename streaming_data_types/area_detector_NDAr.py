@@ -4,6 +4,7 @@ from streaming_data_types.fbschemas.NDAr_NDArray_schema import NDArray
 from streaming_data_types.utils import check_schema_identifier
 from collections import namedtuple
 import time
+import numpy as np
 
 FILE_IDENTIFIER = b"NDAr"
 
@@ -47,29 +48,33 @@ def serialise_ndar(
 nd_Array = namedtuple(
     "NDArray",
     (
-        "data_type",
         "id",
         "timestamp",
-        "dims",
         "data",
     ),
 )
+
+
+def get_data(fb_arr):
+    """
+    Converts the data array into the correct type.
+    """
+    raw_data = fb_arr.PDataAsNumpy()
+    numpy_arr_type = [np.int8, np.uint8, np.int16, np.uint16, np.int32, np.uint32, np.int64, np.uint64,
+                      np.float32, np.float64]
+    return raw_data.view(numpy_arr_type[fb_arr.DataType()]).reshape(fb_arr.DimsAsNumpy())
 
 
 def deserialise_ndar(buffer: Union[bytearray, bytes]) -> NDArray:
     check_schema_identifier(buffer, FILE_IDENTIFIER)
 
     nd_array = NDArray.NDArray.GetRootAsNDArray(buffer, 0)
-    id = nd_array.Id() if nd_array.Id() else b""
-    timestamp = nd_array.TimeStamp() if nd_array.TimeStamp() else b""
-    data_type = nd_array.DataType() if nd_array.DataType() else b""
-    dims = nd_array.DimsAsNumpy()
-    data = nd_array.PDataAsNumpy()
+    id = nd_array.Id()
+    timestamp = nd_array.TimeStamp()
+    data = get_data(nd_array)
 
     return nd_Array(
-        data_type=data_type,
         id=id,
         timestamp=timestamp,
-        dims=dims,
         data=data,
     )

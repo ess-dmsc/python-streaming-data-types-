@@ -1,35 +1,51 @@
 import pytest
-from streaming_data_types.area_detector_NDAr import serialise_ndar, deserialise_ndar
+from streaming_data_types.area_detector_NDAr import serialise_ndar, deserialise_ndar, get_data
+from streaming_data_types.fbschemas.NDAr_NDArray_schema.DType import DType
 from streaming_data_types import SERIALISERS, DESERIALISERS
 import numpy as np
 
 
 class TestSerialisationNDAr:
-    def test_serialises_and_deserialises_NDAr_message_correctly(self):
+    def test_serialises_and_deserialises_NDAr_message_correctly_float64_1_pixel(self):
         """
         Round-trip to check what we serialise is what we get back.
         """
         original_entry = {
             "id": 754,
-            "dims": [10, 10],
-            "data_type": 1,
-            "data": [0, 0, 100, 200, 250],
+            "dims": [1, 1],
+            "data_type": DType.Float64,
+            "data": [54, 78, 100, 156, 43, 1, 23, 0],
         }
 
         buf = serialise_ndar(**original_entry)
         entry = deserialise_ndar(buf)
 
         assert entry.id == original_entry["id"]
-        assert np.array_equal(entry.dims, original_entry["dims"])
-        assert entry.data_type == original_entry["data_type"]
-        assert np.array_equal(entry.data, original_entry["data"])
+        assert np.array_equal(entry.data, [[3.1991794446845865e-308]])
+
+    def test_serialises_and_deserialises_NDAr_message_correctly_int32_3_pixel(self):
+        """
+        Round-trip to check what we serialise is what we get back.
+        """
+        original_entry = {
+            "id": 754,
+            "dims": [1, 3],
+            "data_type": DType.Int32,
+            "data": [54, 78, 100, 200, 32, 19, 2, 156, 43, 1, 23, 0],
+        }
+
+        buf = serialise_ndar(**original_entry)
+        entry = deserialise_ndar(buf)
+
+        assert entry.id == original_entry["id"]
+        assert np.array_equal(entry.data, [[-932950474, -1677585632, 1507627]])
 
     def test_if_buffer_has_wrong_id_then_throws(self):
         original_entry = {
             "id": 754,
             "dims": [10, 10],
             "data_type": 0,
-            "data": [0, 0, 100, 200, 300],
+            "data": [0, 0, 100, 200, 250],
         }
 
         buf = serialise_ndar(**original_entry)
