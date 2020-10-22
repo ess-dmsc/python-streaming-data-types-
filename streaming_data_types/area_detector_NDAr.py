@@ -15,6 +15,7 @@ def serialise_ndar(
     data: list,
 ) -> bytes:
     builder = flatbuffers.Builder(1024)
+builder.ForceDefaults(True)
 
     # Build dims
     NDArray.NDArrayStartDimsVector(builder, len(dims))
