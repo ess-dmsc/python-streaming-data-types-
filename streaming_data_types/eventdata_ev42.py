@@ -69,6 +69,7 @@ def serialise_ev42(
     :return:
     """
     builder = flatbuffers.Builder(1024)
+    builder.ForceDefaults(True)
 
     source = builder.CreateString(source_name)
 
@@ -108,9 +109,6 @@ def serialise_ev42(
         EventMessage.EventMessageAddFacilitySpecificData(builder, isis_data)
 
     data = EventMessage.EventMessageEnd(builder)
-    builder.Finish(data)
 
-    # Generate the output and replace the file_identifier
-    buffer = builder.Output()
-    buffer[4:8] = FILE_IDENTIFIER
-    return bytes(buffer)
+    builder.Finish(data, file_identifier=FILE_IDENTIFIER)
+    return bytes(builder.Output())

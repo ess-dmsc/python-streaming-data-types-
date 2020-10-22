@@ -23,6 +23,7 @@ def serialise_answ(
     stop_time: datetime,
 ) -> bytes:
     builder = flatbuffers.Builder(500)
+    builder.ForceDefaults(True)
     service_id_offset = builder.CreateString(service_id)
     job_id_offset = builder.CreateString(job_id)
     message_offset = builder.CreateString(message)
@@ -39,11 +40,8 @@ def serialise_answ(
     ActionResponse.ActionResponseAddStopTime(builder, int(stop_time.timestamp() * 1000))
 
     out_message = ActionResponse.ActionResponseEnd(builder)
-    builder.Finish(out_message)
-    output_buffer = builder.Output()
-    output_buffer[4:8] = FILE_IDENTIFIER
-
-    return bytes(output_buffer)
+    builder.Finish(out_message, file_identifier=FILE_IDENTIFIER)
+    return bytes(builder.Output())
 
 
 Response = NamedTuple(

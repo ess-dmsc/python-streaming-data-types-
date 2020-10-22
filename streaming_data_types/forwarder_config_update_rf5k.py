@@ -76,6 +76,7 @@ def serialise_rf5k(config_change: UpdateType, streams: List[StreamInfo]) -> byte
     :return:
     """
     builder = flatbuffers.Builder(1024)
+    builder.ForceDefaults(True)
 
     if streams:
         # We have to use multiple loops/list comprehensions here because we cannot create strings after we have
@@ -104,9 +105,6 @@ def serialise_rf5k(config_change: UpdateType, streams: List[StreamInfo]) -> byte
         ConfigUpdate.ConfigUpdateAddStreams(builder, streams_offset)
     ConfigUpdate.ConfigUpdateAddConfigChange(builder, config_change)
     data = ConfigUpdate.ConfigUpdateEnd(builder)
-    builder.Finish(data)
 
-    # Generate the output and replace the file_identifier
-    buffer = builder.Output()
-    buffer[4:8] = FILE_IDENTIFIER
-    return bytes(buffer)
+    builder.Finish(data, file_identifier=FILE_IDENTIFIER)
+    return bytes(builder.Output())

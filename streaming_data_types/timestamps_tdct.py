@@ -21,7 +21,8 @@ def serialise_tdct(
     timestamps: Union[np.ndarray, List],
     sequence_counter: Optional[int] = None,
 ) -> bytes:
-    builder = flatbuffers.Builder(136)
+    builder = flatbuffers.Builder(1024)
+    builder.ForceDefaults(True)
 
     timestamps = np.atleast_1d(np.array(timestamps)).astype(np.uint64)
 
@@ -38,12 +39,9 @@ def serialise_tdct(
     if sequence_counter is not None:
         timestampAddSequenceCounter(builder, sequence_counter)
     timestamps_message = timestampEnd(builder)
-    builder.Finish(timestamps_message)
 
-    # Generate the output and replace the file_identifier
-    buffer = builder.Output()
-    buffer[4:8] = FILE_IDENTIFIER
-    return bytes(buffer)
+    builder.Finish(timestamps_message, file_identifier=FILE_IDENTIFIER)
+    return bytes(builder.Output())
 
 
 Timestamps = namedtuple("Timestamps", ("name", "timestamps", "sequence_counter"))

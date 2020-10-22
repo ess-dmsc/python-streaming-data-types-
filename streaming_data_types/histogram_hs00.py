@@ -117,6 +117,7 @@ def serialise_hs00(histogram):
     info_offset = None
 
     builder = flatbuffers.Builder(1024)
+    builder.ForceDefaults(True)
     if "source" in histogram:
         source_offset = builder.CreateString(histogram["source"])
     if "info" in histogram:
@@ -176,12 +177,9 @@ def serialise_hs00(histogram):
             builder, histogram["last_metadata_timestamp"]
         )
     hist_message = EventHistogram.EventHistogramEnd(builder)
-    builder.Finish(hist_message)
 
-    # Generate the output and replace the file_identifier
-    buffer = builder.Output()
-    buffer[4:8] = FILE_IDENTIFIER
-    return bytes(buffer)
+    builder.Finish(hist_message, file_identifier=FILE_IDENTIFIER)
+    return bytes(builder.Output())
 
 
 def _serialise_array(builder, data_len, data):

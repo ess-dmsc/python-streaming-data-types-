@@ -17,6 +17,7 @@ def serialise_wrdn(
     message: Optional[str] = None,
 ) -> bytes:
     builder = flatbuffers.Builder(500)
+    builder.ForceDefaults(True)
 
     service_id_offset = builder.CreateString(service_id)
     job_id_offset = builder.CreateString(job_id)
@@ -38,12 +39,9 @@ def serialise_wrdn(
         FinishedWriting.FinishedWritingAddMessage(builder, message_offset)
 
     finished_writing_message = FinishedWriting.FinishedWritingEnd(builder)
-    builder.Finish(finished_writing_message)
 
-    # Generate the output and replace the file_identifier
-    buffer = builder.Output()
-    buffer[4:8] = FILE_IDENTIFIER
-    return bytes(buffer)
+    builder.Finish(finished_writing_message, file_identifier=FILE_IDENTIFIER)
+    return bytes(builder.Output())
 
 
 WritingFinished = NamedTuple(

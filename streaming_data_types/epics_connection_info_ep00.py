@@ -17,6 +17,7 @@ def serialise_ep00(
     service_id: Optional[str] = None,
 ) -> bytes:
     builder = flatbuffers.Builder(136)
+    builder.ForceDefaults(True)
 
     if service_id is not None:
         service_id_offset = builder.CreateString(service_id)
@@ -30,12 +31,8 @@ def serialise_ep00(
     EpicsConnectionInfo.EpicsConnectionInfoAddTimestamp(builder, timestamp_ns)
 
     end = EpicsConnectionInfo.EpicsConnectionInfoEnd(builder)
-    builder.Finish(end)
-
-    # Generate the output and replace the file_identifier
-    buffer = builder.Output()
-    buffer[4:8] = FILE_IDENTIFIER
-    return bytes(buffer)
+    builder.Finish(end, file_identifier=FILE_IDENTIFIER)
+    return bytes(builder.Output())
 
 
 EpicsConnection = namedtuple(

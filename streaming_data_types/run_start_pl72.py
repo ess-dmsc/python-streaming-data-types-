@@ -1,9 +1,10 @@
 import time
-from typing import Optional, Union
+from typing import Union
 import flatbuffers
 from streaming_data_types.fbschemas.run_start_pl72 import RunStart
 from streaming_data_types.utils import check_schema_identifier
 from typing import NamedTuple
+from datetime import datetime
 
 FILE_IDENTIFIER = b"pl72"
 
@@ -11,8 +12,8 @@ FILE_IDENTIFIER = b"pl72"
 def serialise_pl72(
     job_id: str,
     filename: str,
-    start_time: Optional[int] = None,
-    stop_time: Optional[int] = None,
+    start_time: Union[int, datetime, None] = None,
+    stop_time: Union[int, datetime, None] = None,
     run_name: str = "test_run",
     nexus_structure: str = "{}",
     service_id: str = "",
@@ -20,13 +21,18 @@ def serialise_pl72(
     broker: str = "localhost:9092",
     metadata: str = "{}",
 ) -> bytes:
-    builder = flatbuffers.Builder(136)
+    builder = flatbuffers.Builder(512)
+    builder.ForceDefaults(True)
 
-    if start_time is None:
+    if type(start_time) is datetime:
+        start_time = int(start_time.timestamp() * 1000)
+    elif start_time is None:
         start_time = int(time.time() * 1000)
     if service_id is None:
         service_id = ""
-    if stop_time is None:
+    if type(stop_time) is datetime:
+        stop_time = int(stop_time.timestamp() * 1000)
+    elif stop_time is None:
         stop_time = 0
 
     service_id_offset = builder.CreateString(service_id)
@@ -53,12 +59,9 @@ def serialise_pl72(
     RunStart.RunStartAddMetadata(builder, metadata_offset)
 
     run_start_message = RunStart.RunStartEnd(builder)
-    builder.Finish(run_start_message)
 
-    # Generate the output and replace the file_identifier
-    buffer = builder.Output()
-    buffer[4:8] = FILE_IDENTIFIER
-    return bytes(buffer)
+    builder.Finish(run_start_message, file_identifier=FILE_IDENTIFIER)
+    return bytes(builder.Output())
 
 
 RunStartInfo = NamedTuple(

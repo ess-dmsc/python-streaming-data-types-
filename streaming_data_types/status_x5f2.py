@@ -65,6 +65,7 @@ def serialise_x5f2(
     """
 
     builder = flatbuffers.Builder(1024)
+    builder.ForceDefaults(True)
 
     software_name = builder.CreateString(software_name)
     software_version = builder.CreateString(software_version)
@@ -84,9 +85,6 @@ def serialise_x5f2(
     Status.StatusAddStatusJson(builder, status_json)
 
     data = Status.StatusEnd(builder)
-    builder.Finish(data)
+    builder.Finish(data, file_identifier=FILE_IDENTIFIER)
 
-    # Generate the output and replace the file_identifier
-    buffer = builder.Output()
-    buffer[4:8] = FILE_IDENTIFIER
-    return bytes(buffer)
+    return bytes(builder.Output())
