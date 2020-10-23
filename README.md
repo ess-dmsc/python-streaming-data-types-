@@ -20,6 +20,7 @@ https://github.com/ess-dmsc/streaming-data-types
 |rf5k|Forwarder configuration update|Y|
 |answ|File-writer command response|n/a|
 |wrdn|File-writer finished writing|n/a|
+|NDAr|NDArray schema for area detector images|n/a|
 
 \* whether it passes verification via the C++ FlatBuffers library.
 
