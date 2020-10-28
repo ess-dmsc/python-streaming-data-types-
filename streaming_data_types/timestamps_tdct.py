@@ -4,7 +4,6 @@ from streaming_data_types.fbschemas.timestamps_tdct.timestamp import (
     timestampAddName,
     timestampAddTimestamps,
     timestampAddSequenceCounter,
-    timestampStartTimestampsVector,
     timestampEnd,
 )
 import flatbuffers
@@ -28,10 +27,7 @@ def serialise_tdct(
 
     name_offset = builder.CreateString(name)
 
-    timestampStartTimestampsVector(builder, len(timestamps))
-    for single_value in reversed(timestamps):
-        builder.PrependUint64(single_value)
-    array_offset = builder.EndVector(len(timestamps))
+    array_offset = builder.CreateNumpyVector(timestamps)
 
     timestampStart(builder)
     timestampAddName(builder, name_offset)
