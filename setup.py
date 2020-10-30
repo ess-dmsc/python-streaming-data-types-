@@ -15,7 +15,7 @@ except Exception as error:
 
 setup(
     name="ess_streaming_data_types",
-    version="0.9.4",
+    version="0.9.5",
     description=DESCRIPTION,
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
