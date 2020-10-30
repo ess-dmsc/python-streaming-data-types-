@@ -1,5 +1,3 @@
-from functools import reduce
-import operator
 import flatbuffers
 import numpy
 import streaming_data_types.fbschemas.histogram_hs00.ArrayFloat as ArrayFloat
@@ -93,7 +91,7 @@ def _serialise_metadata(builder, length, edges, unit, label):
     unit_offset = builder.CreateString(unit)
     label_offset = builder.CreateString(label)
 
-    bins_offset, bin_type = _serialise_array(builder, len(edges), edges)
+    bins_offset, bin_type = _serialise_array(builder, edges)
 
     DimensionMetaData.DimensionMetaDataStart(builder)
     DimensionMetaData.DimensionMetaDataAddLength(builder, length)
@@ -124,12 +122,9 @@ def serialise_hs00(histogram):
         info_offset = builder.CreateString(histogram["info"])
 
     # Build shape array
-    rank = len(histogram["current_shape"])
-    EventHistogram.EventHistogramStartCurrentShapeVector(builder, rank)
-    # FlatBuffers builds arrays backwards
-    for s in reversed(histogram["current_shape"]):
-        builder.PrependUint32(s)
-    shape_offset = builder.EndVector(rank)
+    shape_offset = builder.CreateNumpyVector(
+        numpy.array(histogram["current_shape"]).astype(numpy.uint32)
+    )
 
     # Build dimensions metadata
     metadata = []
@@ -142,6 +137,7 @@ def serialise_hs00(histogram):
             )
         )
 
+    rank = len(histogram["current_shape"])
     EventHistogram.EventHistogramStartDimMetadataVector(builder, rank)
     # FlatBuffers builds arrays backwards
     for m in reversed(metadata):
@@ -149,14 +145,11 @@ def serialise_hs00(histogram):
     metadata_vector = builder.EndVector(rank)
 
     # Build the data
-    data_len = reduce(operator.mul, histogram["current_shape"], 1)
-    data_offset, data_type = _serialise_array(builder, data_len, histogram["data"])
+    data_offset, data_type = _serialise_array(builder, histogram["data"])
 
     errors_offset = None
     if "errors" in histogram:
-        errors_offset, error_type = _serialise_array(
-            builder, data_len, histogram["errors"]
-        )
+        errors_offset, error_type = _serialise_array(builder, histogram["errors"])
 
     # Build the actual buffer
     EventHistogram.EventHistogramStart(builder)
@@ -182,72 +175,56 @@ def serialise_hs00(histogram):
     return bytes(builder.Output())
 
 
-def _serialise_array(builder, data_len, data):
+def _serialise_array(builder, data):
     flattened_data = numpy.asarray(data).flatten()
 
     # Carefully preserve explicitly supported types
     if numpy.issubdtype(flattened_data.dtype, numpy.uint32):
-        return _serialise_uint32(builder, data_len, flattened_data)
+        return _serialise_uint32(builder, flattened_data)
     if numpy.issubdtype(flattened_data.dtype, numpy.uint64):
-        return _serialise_uint64(builder, data_len, flattened_data)
+        return _serialise_uint64(builder, flattened_data)
     if numpy.issubdtype(flattened_data.dtype, numpy.float32):
-        return _serialise_float(builder, data_len, flattened_data)
+        return _serialise_float(builder, flattened_data)
     if numpy.issubdtype(flattened_data.dtype, numpy.float64):
-        return _serialise_double(builder, data_len, flattened_data)
+        return _serialise_double(builder, flattened_data)
 
     # Otherwise if it looks like an int then use uint64, or use double as last resort
     if numpy.issubdtype(flattened_data.dtype, numpy.int64):
-        return _serialise_uint64(builder, data_len, flattened_data)
+        return _serialise_uint64(builder, flattened_data)
 
-    return _serialise_double(builder, data_len, flattened_data)
+    return _serialise_double(builder, flattened_data)
 
 
-def _serialise_float(builder, data_len, flattened_data):
+def _serialise_float(builder, flattened_data):
     data_type = Array.ArrayFloat
-    ArrayFloat.ArrayFloatStartValueVector(builder, data_len)
-    # FlatBuffers builds arrays backwards
-    for x in reversed(flattened_data):
-        builder.PrependFloat32(x)
-    data_vector = builder.EndVector(data_len)
+    data_vector = builder.CreateNumpyVector(flattened_data)
     ArrayFloat.ArrayFloatStart(builder)
     ArrayFloat.ArrayFloatAddValue(builder, data_vector)
     data_offset = ArrayFloat.ArrayFloatEnd(builder)
     return data_offset, data_type
 
 
-def _serialise_double(builder, data_len, flattened_data):
+def _serialise_double(builder, flattened_data):
     data_type = Array.ArrayDouble
-    ArrayDouble.ArrayDoubleStartValueVector(builder, data_len)
-    # FlatBuffers builds arrays backwards
-    for x in reversed(flattened_data):
-        builder.PrependFloat64(x)
-    data_vector = builder.EndVector(data_len)
+    data_vector = builder.CreateNumpyVector(flattened_data)
     ArrayDouble.ArrayDoubleStart(builder)
     ArrayDouble.ArrayDoubleAddValue(builder, data_vector)
     data_offset = ArrayDouble.ArrayDoubleEnd(builder)
     return data_offset, data_type
 
 
-def _serialise_uint32(builder, data_len, flattened_data):
+def _serialise_uint32(builder, flattened_data):
     data_type = Array.ArrayUInt
-    ArrayUInt.ArrayUIntStartValueVector(builder, data_len)
-    # FlatBuffers builds arrays backwards
-    for x in reversed(flattened_data):
-        builder.PrependUint32(x)
-    data_vector = builder.EndVector(data_len)
+    data_vector = builder.CreateNumpyVector(flattened_data)
     ArrayUInt.ArrayUIntStart(builder)
     ArrayUInt.ArrayUIntAddValue(builder, data_vector)
     data_offset = ArrayUInt.ArrayUIntEnd(builder)
     return data_offset, data_type
 
 
-def _serialise_uint64(builder, data_len, flattened_data):
+def _serialise_uint64(builder, flattened_data):
     data_type = Array.ArrayULong
-    ArrayULong.ArrayULongStartValueVector(builder, data_len)
-    # FlatBuffers builds arrays backwards
-    for x in reversed(flattened_data):
-        builder.PrependUint64(x)
-    data_vector = builder.EndVector(data_len)
+    data_vector = builder.CreateNumpyVector(flattened_data)
     ArrayULong.ArrayULongStart(builder)
     ArrayULong.ArrayULongAddValue(builder, data_vector)
     data_offset = ArrayULong.ArrayULongEnd(builder)
