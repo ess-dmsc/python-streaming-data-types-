@@ -62,6 +62,10 @@ Response = NamedTuple(
 def deserialise_answ(buffer: Union[bytearray, bytes]):
     check_schema_identifier(buffer, FILE_IDENTIFIER)
     answ_message = ActionResponse.ActionResponse.GetRootAsActionResponse(buffer, 0)
+    max_time = datetime(year=3000, month=1, day=1, hour=0, minute=0, second=0).timestamp()
+    used_timestamp = answ_message.StopTime() / 1000
+    if used_timestamp > max_time:
+        used_timestamp = max_time
     return Response(
         service_id=answ_message.ServiceId().decode("utf-8"),
         job_id=answ_message.JobId().decode("utf-8"),
@@ -70,5 +74,5 @@ def deserialise_answ(buffer: Union[bytearray, bytes]):
         outcome=answ_message.Outcome(),
         message=answ_message.Message().decode("utf-8"),
         status_code=answ_message.StatusCode(),
-        stop_time=datetime.fromtimestamp(answ_message.StopTime() / 1000),
+        stop_time=datetime.fromtimestamp(used_timestamp),
     )
