@@ -1,4 +1,6 @@
 import pytest
+
+from streaming_data_types.exceptions import WrongSchemaException
 from streaming_data_types.run_stop_6s4t import serialise_6s4t, deserialise_6s4t
 from streaming_data_types import SERIALISERS, DESERIALISERS
 
@@ -29,7 +31,7 @@ class TestSerialisation6s4t:
         buf = bytearray(buf)
         buf[4:8] = b"1234"
 
-        with pytest.raises(RuntimeError):
+        with pytest.raises(WrongSchemaException):
             deserialise_6s4t(buf)
 
     def test_schema_type_is_in_global_serialisers_list(self):

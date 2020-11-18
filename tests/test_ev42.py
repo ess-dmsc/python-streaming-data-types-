@@ -2,6 +2,7 @@ import numpy as np
 import pytest
 from streaming_data_types.eventdata_ev42 import serialise_ev42, deserialise_ev42
 from streaming_data_types import SERIALISERS, DESERIALISERS
+from streaming_data_types.exceptions import WrongSchemaException
 
 
 class TestSerialisationEv42:
@@ -90,7 +91,7 @@ class TestSerialisationEv42:
         buf = bytearray(buf)
         buf[4:8] = b"1234"
 
-        with pytest.raises(RuntimeError):
+        with pytest.raises(WrongSchemaException):
             deserialise_ev42(buf)
 
     def test_schema_type_is_in_global_serialisers_list(self):

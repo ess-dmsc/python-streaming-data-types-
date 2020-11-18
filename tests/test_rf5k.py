@@ -1,4 +1,5 @@
 import pytest
+from streaming_data_types.exceptions import WrongSchemaException
 from streaming_data_types.forwarder_config_update_rf5k import (
     serialise_rf5k,
     deserialise_rf5k,
@@ -50,7 +51,7 @@ class TestSerialisationRf5k:
         buf = bytearray(buf)
         buf[4:8] = b"1234"
 
-        with pytest.raises(RuntimeError):
+        with pytest.raises(WrongSchemaException):
             deserialise_rf5k(buf)
 
     def test_schema_type_is_in_global_serialisers_list(self):

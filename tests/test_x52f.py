@@ -1,5 +1,4 @@
 import pytest
-
 from streaming_data_types.exceptions import WrongSchemaException
 from streaming_data_types.status_x5f2 import serialise_x5f2, deserialise_x5f2
 from streaming_data_types import SERIALISERS, DESERIALISERS
