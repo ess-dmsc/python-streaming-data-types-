@@ -2,28 +2,37 @@ from typing import Union, NamedTuple, List
 import flatbuffers
 from streaming_data_types.fbschemas.ADAr_ADArray_schema import ADArray
 from streaming_data_types.fbschemas.ADAr_ADArray_schema.DType import DType
+import streaming_data_types.fbschemas.ADAr_ADArray_schema.Attribute as ADArAttribute
 from streaming_data_types.utils import check_schema_identifier
 import numpy as np
 from datetime import datetime
+from struct import pack
 
 FILE_IDENTIFIER = b"ADAr"
 
-Attribute = NamedTuple(
-    "Attribute", (
-        ("name", str),
-        ("description", str),
-        ("source", str),
-        ("data", Union[np.ndarray, str])
-    )
-)
+
+class Attribute:
+    def __init__(self, name: str, description: str, source: str, data: Union[np.ndarray, str, int, float]):
+        self.name = name
+        self.description = description
+        self.source = source
+        self.data = data
+
+    def __eq__(self, other):
+        data_is_equal = type(self.data) == type(other.data)
+        if type(self.data) is np.ndarray:
+            data_is_equal = data_is_equal and np.array_equal(self.data, other.data)
+        else:
+            data_is_equal = data_is_equal and self.data == other.data
+        return self.name == other.name and self.description == other.description and self.source == other.source and data_is_equal
 
 
 def serialise_ADAr(
-    source_name: str,
-    unique_id: int,
-    timestamp: datetime,
-    data: Union[np.ndarray, str],
-    attributes: List[Attribute] = []
+        source_name: str,
+        unique_id: int,
+        timestamp: datetime,
+        data: Union[np.ndarray, str],
+        attributes: List[Attribute] = []
 ) -> bytes:
     builder = flatbuffers.Builder(1024)
     builder.ForceDefaults(True)
@@ -54,6 +63,38 @@ def serialise_ADAr(
 
     source_name_offset = builder.CreateString(source_name)
 
+    temp_attributes = []
+    for item in attributes:
+        if type(item.data) is np.ndarray:
+            attr_data_type = type_map[item.data.dtype]
+            attr_data = item.data
+        elif type(item.data) is str:
+            attr_data_type = DType.c_string
+            attr_data = np.frombuffer(item.data.encode(), np.uint8)
+        elif type(item.data) is int:
+            attr_data_type = DType.int64
+            attr_data = np.frombuffer(pack("q", item.data), np.uint8)
+        elif type(item.data) is float:
+            attr_data_type = DType.float64
+            attr_data = np.frombuffer(pack("d", item.data), np.uint8)
+        attr_name_offset = builder.CreateString(item.name)
+        attr_desc_offset = builder.CreateString(item.description)
+        attr_src_offset = builder.CreateString(item.source)
+        attr_data_offset = builder.CreateNumpyVector(attr_data.flatten().view(np.uint8))
+        ADArAttribute.AttributeStart(builder)
+        ADArAttribute.AttributeAddName(builder, attr_name_offset)
+        ADArAttribute.AttributeAddDescription(builder, attr_desc_offset)
+        ADArAttribute.AttributeAddSource(builder, attr_src_offset)
+        ADArAttribute.AttributeAddDataType(builder, attr_data_type)
+        ADArAttribute.AttributeAddData(builder, attr_data_offset)
+        attr_offset = ADArAttribute.AttributeEnd(builder)
+        temp_attributes.append(attr_offset)
+
+    ADArray.ADArrayStartAttributesVector(builder, len(attributes))
+    for item in reversed(temp_attributes):
+        builder.PrependUOffsetTRelative(item)
+    attributes_offset = builder.EndVector(len(attributes))
+
     # Build the actual buffer
     ADArray.ADArrayStart(builder)
     ADArray.ADArrayAddSourceName(builder, source_name_offset)
@@ -61,14 +102,15 @@ def serialise_ADAr(
     ADArray.ADArrayAddDimensions(builder, dims_offset)
     ADArray.ADArrayAddId(builder, unique_id)
     ADArray.ADArrayAddData(builder, data_offset)
-    ADArray.ADArrayAddTimestamp(builder, int(timestamp.timestamp()*1e9))
+    ADArray.ADArrayAddTimestamp(builder, int(timestamp.timestamp() * 1e9))
+    ADArray.ADArrayAddAttributes(builder, attributes_offset)
     array_message = ADArray.ADArrayEnd(builder)
 
     builder.Finish(array_message, file_identifier=FILE_IDENTIFIER)
     return bytes(builder.Output())
 
 
-ADArray_t= NamedTuple(
+ADArray_t = NamedTuple(
     "ADArray",
     (
         ("source_name", str),
@@ -80,7 +122,11 @@ ADArray_t= NamedTuple(
 )
 
 
-def get_data(fb_arr):
+def get_payload_data(fb_arr) -> np.ndarray:
+    return get_data(fb_arr).reshape(fb_arr.DimensionsAsNumpy())
+
+
+def get_data(fb_arr) -> np.ndarray:
     """
     Converts the data array into the correct type.
     """
@@ -96,7 +142,7 @@ def get_data(fb_arr):
                 DType.float32: np.float32,
                 DType.float64: np.float64,
                 }
-    return raw_data.view(type_map[fb_arr.DataType()]).reshape(fb_arr.DimensionsAsNumpy())
+    return raw_data.view(type_map[fb_arr.DataType()])
 
 
 def deserialise_ADAr(buffer: Union[bytearray, bytes]) -> ADArray:
@@ -111,12 +157,28 @@ def deserialise_ADAr(buffer: Union[bytearray, bytes]) -> ADArray:
     if ad_array.DataType() == DType.c_string:
         data = ad_array.DataAsNumpy().tobytes().decode()
     else:
-        data = get_data(ad_array)
+        data = get_payload_data(ad_array)
+
+    attributes_list = []
+    for i in range(ad_array.AttributesLength()):
+        attribute_ptr = ad_array.Attributes(i)
+        if attribute_ptr.DataType() == DType.c_string:
+            attr_data = attribute_ptr.DataAsNumpy().tobytes().decode()
+        else:
+            attr_data = get_data(attribute_ptr)
+        temp_attribute = Attribute(name=attribute_ptr.Name().decode(), description=attribute_ptr.Description().decode(),
+                                   source=attribute_ptr.Source().decode(), data=attr_data)
+        if type(temp_attribute.data) is np.ndarray and len(temp_attribute.data) == 1:
+            if np.issubdtype(temp_attribute.data.dtype, np.floating):
+                temp_attribute.data = float(temp_attribute.data[0])
+            elif np.issubdtype(temp_attribute.data.dtype, np.integer):
+                temp_attribute.data = int(temp_attribute.data[0])
+        attributes_list.append(temp_attribute)
 
     return ADArray_t(
         source_name=ad_array.SourceName().decode(),
         unique_id=unique_id,
         timestamp=datetime.fromtimestamp(used_timestamp),
         data=data,
-        attributes=[]
+        attributes=attributes_list
     )

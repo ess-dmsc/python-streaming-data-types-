@@ -1,5 +1,5 @@
 import pytest
-from streaming_data_types.area_detector_ADAr import serialise_ADAr, deserialise_ADAr
+from streaming_data_types.area_detector_ADAr import serialise_ADAr, deserialise_ADAr, Attribute
 from streaming_data_types.fbschemas.ADAr_ADArray_schema.DType import DType
 from streaming_data_types import SERIALISERS, DESERIALISERS
 import numpy as np
@@ -7,7 +7,7 @@ from datetime import datetime
 
 
 class TestSerialisationNDAr:
-    def test_serialises_and_deserialises_ADAr_message_correctly_array(self):
+    def test_serialises_and_deserialises_ADAr_int_array(self):
         """
         Round-trip to check what we serialise is what we get back.
         """
@@ -15,7 +15,34 @@ class TestSerialisationNDAr:
             "source_name": "some source name",
             "unique_id": 754,
             "data": np.array([[1, 2, 3], [3, 4, 5]], dtype=np.uint64),
-            "timestamp": datetime.now()
+            "timestamp": datetime.now(),
+            "attributes": [Attribute("name1", "desc1", "src1", "value"),
+                           Attribute("name2", "desc2", "src2", 11),
+                           Attribute("name3", "desc3", "src3", 3.14),
+                           Attribute("name4", "desc4", "src4", np.linspace(0, 10))]
+        }
+
+        buf = serialise_ADAr(**original_entry)
+        entry = deserialise_ADAr(buf)
+
+        assert entry.unique_id == original_entry["unique_id"]
+        assert entry.source_name == original_entry["source_name"]
+        assert entry.timestamp == original_entry["timestamp"]
+        assert np.array_equal(entry.data, original_entry["data"])
+        assert entry.data.dtype == original_entry["data"].dtype
+        assert len(entry.attributes) == len(original_entry["attributes"])
+        for i in range(len(entry.attributes)):
+            assert entry.attributes[i] == original_entry["attributes"][i]
+
+    def test_serialises_and_deserialises_ADAr_float_array(self):
+        """
+        Round-trip to check what we serialise is what we get back.
+        """
+        original_entry = {
+            "source_name": "some other source name",
+            "unique_id": 789679,
+            "data": np.array([[1.1, 2.2, 3.3], [4.4, 5.5, 6.6]], dtype=np.float32),
+            "timestamp": datetime(year=1992, month=8, day=11, hour=3, minute=34, second=57)
         }
 
         buf = serialise_ADAr(**original_entry)
@@ -27,7 +54,7 @@ class TestSerialisationNDAr:
         assert np.array_equal(entry.data, original_entry["data"])
         assert entry.data.dtype == original_entry["data"].dtype
 
-    def test_serialises_and_deserialises_ADAr_message_correctly_string(self):
+    def test_serialises_and_deserialises_ADAr_string(self):
         """
         Round-trip to check what we serialise is what we get back.
         """
