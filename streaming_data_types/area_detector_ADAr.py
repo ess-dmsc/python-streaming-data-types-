@@ -12,7 +12,13 @@ FILE_IDENTIFIER = b"ADAr"
 
 
 class Attribute:
-    def __init__(self, name: str, description: str, source: str, data: Union[np.ndarray, str, int, float]):
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        source: str,
+        data: Union[np.ndarray, str, int, float],
+    ):
         self.name = name
         self.description = description
         self.source = source
@@ -24,30 +30,36 @@ class Attribute:
             data_is_equal = data_is_equal and np.array_equal(self.data, other.data)
         else:
             data_is_equal = data_is_equal and self.data == other.data
-        return self.name == other.name and self.description == other.description and self.source == other.source and data_is_equal
+        return (
+            self.name == other.name
+            and self.description == other.description
+            and self.source == other.source
+            and data_is_equal
+        )
 
 
 def serialise_ADAr(
-        source_name: str,
-        unique_id: int,
-        timestamp: datetime,
-        data: Union[np.ndarray, str],
-        attributes: List[Attribute] = []
+    source_name: str,
+    unique_id: int,
+    timestamp: datetime,
+    data: Union[np.ndarray, str],
+    attributes: List[Attribute] = [],
 ) -> bytes:
     builder = flatbuffers.Builder(1024)
     builder.ForceDefaults(True)
 
-    type_map = {np.dtype("uint8"): DType.uint8,
-                np.dtype("int8"): DType.int8,
-                np.dtype("uint16"): DType.uint16,
-                np.dtype("int16"): DType.int16,
-                np.dtype("uint32"): DType.uint32,
-                np.dtype("int32"): DType.int32,
-                np.dtype("uint64"): DType.uint64,
-                np.dtype("int64"): DType.int64,
-                np.dtype("float32"): DType.float32,
-                np.dtype("float64"): DType.float64,
-                }
+    type_map = {
+        np.dtype("uint8"): DType.uint8,
+        np.dtype("int8"): DType.int8,
+        np.dtype("uint16"): DType.uint16,
+        np.dtype("int16"): DType.int16,
+        np.dtype("uint32"): DType.uint32,
+        np.dtype("int32"): DType.int32,
+        np.dtype("uint64"): DType.uint64,
+        np.dtype("int64"): DType.int64,
+        np.dtype("float32"): DType.float32,
+        np.dtype("float64"): DType.float64,
+    }
 
     if type(data) is str:
         data = np.frombuffer(data.encode(), np.uint8)
@@ -117,7 +129,7 @@ ADArray_t = NamedTuple(
         ("unique_id", int),
         ("timestamp", datetime),
         ("data", np.ndarray),
-        ("attributes", List[Attribute])
+        ("attributes", List[Attribute]),
     ),
 )
 
@@ -131,17 +143,18 @@ def get_data(fb_arr) -> np.ndarray:
     Converts the data array into the correct type.
     """
     raw_data = fb_arr.DataAsNumpy()
-    type_map = {DType.uint8: np.uint8,
-                DType.int8: np.int8,
-                DType.uint16: np.uint16,
-                DType.int16: np.int16,
-                DType.uint32: np.uint32,
-                DType.int32: np.int32,
-                DType.uint64: np.uint64,
-                DType.int64: np.int64,
-                DType.float32: np.float32,
-                DType.float64: np.float64,
-                }
+    type_map = {
+        DType.uint8: np.uint8,
+        DType.int8: np.int8,
+        DType.uint16: np.uint16,
+        DType.int16: np.int16,
+        DType.uint32: np.uint32,
+        DType.int32: np.int32,
+        DType.uint64: np.uint64,
+        DType.int64: np.int64,
+        DType.float32: np.float32,
+        DType.float64: np.float64,
+    }
     return raw_data.view(type_map[fb_arr.DataType()])
 
 
@@ -150,7 +163,9 @@ def deserialise_ADAr(buffer: Union[bytearray, bytes]) -> ADArray:
 
     ad_array = ADArray.ADArray.GetRootAsADArray(buffer, 0)
     unique_id = ad_array.Id()
-    max_time = datetime(year=9000, month=1, day=1, hour=0, minute=0, second=0).timestamp()
+    max_time = datetime(
+        year=9000, month=1, day=1, hour=0, minute=0, second=0
+    ).timestamp()
     used_timestamp = ad_array.Timestamp() / 1e9
     if used_timestamp > max_time:
         used_timestamp = max_time
@@ -166,8 +181,12 @@ def deserialise_ADAr(buffer: Union[bytearray, bytes]) -> ADArray:
             attr_data = attribute_ptr.DataAsNumpy().tobytes().decode()
         else:
             attr_data = get_data(attribute_ptr)
-        temp_attribute = Attribute(name=attribute_ptr.Name().decode(), description=attribute_ptr.Description().decode(),
-                                   source=attribute_ptr.Source().decode(), data=attr_data)
+        temp_attribute = Attribute(
+            name=attribute_ptr.Name().decode(),
+            description=attribute_ptr.Description().decode(),
+            source=attribute_ptr.Source().decode(),
+            data=attr_data,
+        )
         if type(temp_attribute.data) is np.ndarray and len(temp_attribute.data) == 1:
             if np.issubdtype(temp_attribute.data.dtype, np.floating):
                 temp_attribute.data = float(temp_attribute.data[0])
@@ -180,5 +199,5 @@ def deserialise_ADAr(buffer: Union[bytearray, bytes]) -> ADArray:
         unique_id=unique_id,
         timestamp=datetime.fromtimestamp(used_timestamp),
         data=data,
-        attributes=attributes_list
+        attributes=attributes_list,
     )
