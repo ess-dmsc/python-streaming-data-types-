@@ -58,6 +58,8 @@ pip install --user -e ./
 
 #### Steps
 
+Increase the version number in setup.py.
+
 Delete any old builds you may have (IMPORTANT!):
 ```
 rm -rf build dist
