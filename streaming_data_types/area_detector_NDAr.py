@@ -9,12 +9,7 @@ import numpy as np
 FILE_IDENTIFIER = b"NDAr"
 
 
-def serialise_ndar(
-    id: str,
-    dims: list,
-    data_type: int,
-    data: list,
-) -> bytes:
+def serialise_ndar(id: str, dims: list, data_type: int, data: list) -> bytes:
     builder = flatbuffers.Builder(1024)
     builder.ForceDefaults(True)
 
@@ -45,14 +40,7 @@ def serialise_ndar(
     return bytes(builder.Output())
 
 
-nd_Array = namedtuple(
-    "NDArray",
-    (
-        "id",
-        "timestamp",
-        "data",
-    ),
-)
+nd_Array = namedtuple("NDArray", ("id", "timestamp", "data"))
 
 
 def get_data(fb_arr):
@@ -60,9 +48,21 @@ def get_data(fb_arr):
     Converts the data array into the correct type.
     """
     raw_data = fb_arr.PDataAsNumpy()
-    numpy_arr_type = [np.int8, np.uint8, np.int16, np.uint16, np.int32, np.uint32, np.int64, np.uint64,
-                      np.float32, np.float64]
-    return raw_data.view(numpy_arr_type[fb_arr.DataType()]).reshape(fb_arr.DimsAsNumpy())
+    numpy_arr_type = [
+        np.int8,
+        np.uint8,
+        np.int16,
+        np.uint16,
+        np.int32,
+        np.uint32,
+        np.int64,
+        np.uint64,
+        np.float32,
+        np.float64,
+    ]
+    return raw_data.view(numpy_arr_type[fb_arr.DataType()]).reshape(
+        fb_arr.DimsAsNumpy()
+    )
 
 
 def deserialise_ndar(buffer: Union[bytearray, bytes]) -> NDArray:
@@ -73,8 +73,4 @@ def deserialise_ndar(buffer: Union[bytearray, bytes]) -> NDArray:
     timestamp = nd_array.TimeStamp()
     data = get_data(nd_array)
 
-    return nd_Array(
-        id=id,
-        timestamp=timestamp,
-        data=data,
-    )
+    return nd_Array(id=id, timestamp=timestamp, data=data)
