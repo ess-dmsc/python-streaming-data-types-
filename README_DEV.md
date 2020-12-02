@@ -57,7 +57,7 @@ pip install --user -e ./
 
 #### Steps
 
-**First update the version number in setup.py and push the update to the repository.**
+***First update the version number in setup.py and push the update to the repository.***
 
 Delete any old builds you may have (IMPORTANT!):
 ```
