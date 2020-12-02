@@ -48,7 +48,6 @@ pip install --user -e ./
 ```
 
 ### Building the package locally and deploying it to PyPI
-**First update the version number in setup.py and push the update to the repository.**
 
 #### Requirements
 * A [PyPi](https://pypi.org/) account
@@ -58,7 +57,7 @@ pip install --user -e ./
 
 #### Steps
 
-Increase the version number in setup.py.
+**First update the version number in setup.py and push the update to the repository.**
 
 Delete any old builds you may have (IMPORTANT!):
 ```
