@@ -1,3 +1,4 @@
+from datetime import datetime
 import pytest
 from streaming_data_types.action_response_answ import (
     serialise_answ,
@@ -6,7 +7,7 @@ from streaming_data_types.action_response_answ import (
     ActionOutcome,
 )
 from streaming_data_types import SERIALISERS, DESERIALISERS
-from datetime import datetime
+from streaming_data_types.exceptions import WrongSchemaException
 
 
 class TestSerialisationAnsw:
@@ -59,7 +60,7 @@ class TestSerialisationAnsw:
         buf = bytearray(buf)
         buf[4:8] = b"1234"
 
-        with pytest.raises(RuntimeError):
+        with pytest.raises(WrongSchemaException):
             deserialise_answ(buf)
 
     def test_schema_type_is_in_global_serialisers_list(self):

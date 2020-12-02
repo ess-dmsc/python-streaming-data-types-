@@ -1,5 +1,6 @@
 import pytest
 import numpy as np
+from streaming_data_types.exceptions import WrongSchemaException
 from streaming_data_types.logdata_f142 import serialise_f142, deserialise_f142
 from streaming_data_types.fbschemas.logdata_f142.AlarmSeverity import AlarmSeverity
 from streaming_data_types.fbschemas.logdata_f142.AlarmStatus import AlarmStatus
@@ -174,7 +175,7 @@ class TestSerialisationF142:
         buf = bytearray(buf)
         buf[4:8] = b"1234"
 
-        with pytest.raises(RuntimeError):
+        with pytest.raises(WrongSchemaException):
             deserialise_f142(buf)
 
     def test_schema_type_is_in_global_serialisers_list(self):

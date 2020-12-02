@@ -1,4 +1,5 @@
 import pytest
+from streaming_data_types.exceptions import WrongSchemaException
 from streaming_data_types.run_start_pl72 import serialise_pl72, deserialise_pl72
 from streaming_data_types import SERIALISERS, DESERIALISERS
 
@@ -43,7 +44,7 @@ class TestSerialisationPl72:
         buf = bytearray(buf)
         buf[4:8] = b"1234"
 
-        with pytest.raises(RuntimeError):
+        with pytest.raises(WrongSchemaException):
             deserialise_pl72(buf)
 
     def test_schema_type_is_in_global_serialisers_list(self):

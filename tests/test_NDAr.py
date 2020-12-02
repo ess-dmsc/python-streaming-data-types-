@@ -1,5 +1,6 @@
 import pytest
 from streaming_data_types.area_detector_NDAr import serialise_ndar, deserialise_ndar
+from streaming_data_types.exceptions import WrongSchemaException
 from streaming_data_types.fbschemas.NDAr_NDArray_schema.DType import DType
 from streaming_data_types import SERIALISERS, DESERIALISERS
 import numpy as np
@@ -54,7 +55,7 @@ class TestSerialisationNDAr:
         buf = bytearray(buf)
         buf[4:8] = b"1234"
 
-        with pytest.raises(RuntimeError):
+        with pytest.raises(WrongSchemaException):
             deserialise_ndar(buf)
 
     def test_schema_type_is_in_global_serialisers_list(self):
