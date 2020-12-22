@@ -4,6 +4,7 @@ import streaming_data_types.fbschemas.eventdata_ev42.EventMessage as EventMessag
 import streaming_data_types.fbschemas.eventdata_ev42.FacilityData as FacilityData
 import streaming_data_types.fbschemas.isis_event_info_is84.ISISData as ISISData
 from streaming_data_types.utils import check_schema_identifier
+import numpy as np
 
 
 FILE_IDENTIFIER = b"ev42"
@@ -73,17 +74,8 @@ def serialise_ev42(
 
     source = builder.CreateString(source_name)
 
-    EventMessage.EventMessageStartTimeOfFlightVector(builder, len(time_of_flight))
-    # FlatBuffers builds arrays backwards
-    for x in reversed(time_of_flight):
-        builder.PrependInt32(x)
-    tof_data = builder.EndVector(len(time_of_flight))
-
-    EventMessage.EventMessageStartDetectorIdVector(builder, len(detector_id))
-    # FlatBuffers builds arrays backwards
-    for x in reversed(detector_id):
-        builder.PrependInt32(x)
-    det_data = builder.EndVector(len(detector_id))
+    tof_data = builder.CreateNumpyVector(np.array(time_of_flight).astype(np.uint32))
+    det_data = builder.CreateNumpyVector(np.array(detector_id).astype(np.uint32))
 
     isis_data = None
     if isis_specific:
