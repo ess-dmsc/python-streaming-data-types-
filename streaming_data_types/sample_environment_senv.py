@@ -14,7 +14,6 @@ from streaming_data_types.fbschemas.sample_environment_senv.SampleEnvironmentDat
 from streaming_data_types.fbschemas.sample_environment_senv.Location import Location
 import flatbuffers
 import numpy as np
-from collections import namedtuple
 from typing import Optional, Union, List, NamedTuple
 from streaming_data_types.utils import check_schema_identifier
 from datetime import datetime
@@ -86,6 +85,10 @@ def deserialise_senv(buffer: Union[bytearray, bytes]) -> Response:
     if used_timestamp > max_time:
         used_timestamp = max_time
 
+    value_timestamps = None
+    if not SE_data.TimestampsIsNone():
+        value_timestamps = SE_data.TimestampsAsNumpy()
+
     return Response(
         name=SE_data.Name().decode(),
         channel=SE_data.Channel(),
@@ -94,5 +97,5 @@ def deserialise_senv(buffer: Union[bytearray, bytes]) -> Response:
         ts_location=SE_data.TimestampLocation(),
         message_counter=SE_data.MessageCounter(),
         values=SE_data.ValuesAsNumpy(),
-        value_ts=None,
+        value_ts=value_timestamps,
     )
