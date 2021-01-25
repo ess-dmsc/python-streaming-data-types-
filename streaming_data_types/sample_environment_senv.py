@@ -1,4 +1,16 @@
-from streaming_data_types.fbschemas.sample_environment_senv.SampleEnvironmentData import SampleEnvironmentData, SampleEnvironmentDataStart, SampleEnvironmentDataEnd, SampleEnvironmentDataAddName, SampleEnvironmentDataAddChannel, SampleEnvironmentDataAddMessageCounter, SampleEnvironmentDataAddTimeDelta, SampleEnvironmentDataAddTimestampLocation, SampleEnvironmentDataAddValues, SampleEnvironmentDataAddTimestamps, SampleEnvironmentDataAddPacketTimestamp
+from streaming_data_types.fbschemas.sample_environment_senv.SampleEnvironmentData import (
+    SampleEnvironmentData,
+    SampleEnvironmentDataStart,
+    SampleEnvironmentDataEnd,
+    SampleEnvironmentDataAddName,
+    SampleEnvironmentDataAddChannel,
+    SampleEnvironmentDataAddMessageCounter,
+    SampleEnvironmentDataAddTimeDelta,
+    SampleEnvironmentDataAddTimestampLocation,
+    SampleEnvironmentDataAddValues,
+    SampleEnvironmentDataAddTimestamps,
+    SampleEnvironmentDataAddPacketTimestamp,
+)
 from streaming_data_types.fbschemas.sample_environment_senv.Location import Location
 import flatbuffers
 import numpy as np
@@ -29,7 +41,6 @@ def serialise_senv(
     value_offset = builder.CreateNumpyVector(temp_values)
 
     name_offset = builder.CreateString(name)
-
 
     SampleEnvironmentDataStart(builder)
     SampleEnvironmentDataAddName(builder, name_offset)
@@ -75,4 +86,13 @@ def deserialise_senv(buffer: Union[bytearray, bytes]) -> Response:
     if used_timestamp > max_time:
         used_timestamp = max_time
 
-    return Response(name=SE_data.Name().decode(), channel=SE_data.Channel(), timestamp=datetime.fromtimestamp(used_timestamp), sample_ts_delta=SE_data.TimeDelta(), ts_location=SE_data.TimestampLocation(), message_counter=SE_data.MessageCounter(), values=SE_data.ValuesAsNumpy(), value_ts=None)
+    return Response(
+        name=SE_data.Name().decode(),
+        channel=SE_data.Channel(),
+        timestamp=datetime.fromtimestamp(used_timestamp),
+        sample_ts_delta=SE_data.TimeDelta(),
+        ts_location=SE_data.TimestampLocation(),
+        message_counter=SE_data.MessageCounter(),
+        values=SE_data.ValuesAsNumpy(),
+        value_ts=None,
+    )
