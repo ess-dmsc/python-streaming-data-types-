@@ -1,7 +1,4 @@
-import pytest
 import numpy as np
-
-from streaming_data_types.exceptions import WrongSchemaException
 from streaming_data_types.sample_environment_senv import serialise_senv, deserialise_senv
 from streaming_data_types import SERIALISERS, DESERIALISERS
 from datetime import datetime
@@ -36,4 +33,3 @@ class TestSerialisationSenv:
     def test_schema_type_is_in_global_serialisers_list(self):
         assert "senv" in SERIALISERS
         assert "senv" in DESERIALISERS
-
