@@ -25,7 +25,7 @@ class Attribute:
         self.data = data
 
     def __eq__(self, other):
-        data_is_equal = type(self.data) == type(other.data)
+        data_is_equal = type(self.data) == type(other.data)  # noqa: E721
         if type(self.data) is np.ndarray:
             data_is_equal = data_is_equal and np.array_equal(self.data, other.data)
         else:
