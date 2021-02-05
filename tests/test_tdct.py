@@ -1,5 +1,7 @@
 import pytest
 import numpy as np
+
+from streaming_data_types.exceptions import WrongSchemaException
 from streaming_data_types.timestamps_tdct import serialise_tdct, deserialise_tdct
 from streaming_data_types import SERIALISERS, DESERIALISERS
 
@@ -49,7 +51,7 @@ class TestSerialisationTdct:
         buf = bytearray(buf)
         buf[4:8] = b"1234"
 
-        with pytest.raises(RuntimeError):
+        with pytest.raises(WrongSchemaException):
             deserialise_tdct(buf)
 
     def test_schema_type_is_in_global_serialisers_list(self):

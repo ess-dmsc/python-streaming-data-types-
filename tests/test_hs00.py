@@ -1,5 +1,6 @@
 import numpy as np
 import pytest
+from streaming_data_types.exceptions import WrongSchemaException
 from streaming_data_types.histogram_hs00 import serialise_hs00, deserialise_hs00
 from streaming_data_types import SERIALISERS, DESERIALISERS
 
@@ -167,7 +168,7 @@ class TestSerialisationHs00:
         buf = bytearray(buf)
         buf[4:8] = b"1234"
 
-        with pytest.raises(RuntimeError):
+        with pytest.raises(WrongSchemaException):
             deserialise_hs00(buf)
 
     def test_serialises_and_deserialises_hs00_message_correctly_for_int_array_data(

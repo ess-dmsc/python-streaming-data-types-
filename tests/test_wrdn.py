@@ -1,4 +1,5 @@
 import pytest
+from streaming_data_types.exceptions import WrongSchemaException
 from streaming_data_types.finished_writing_wrdn import serialise_wrdn, deserialise_wrdn
 from streaming_data_types import SERIALISERS, DESERIALISERS
 
@@ -44,7 +45,7 @@ class TestEncoder(object):
         buf = bytearray(buf)
         buf[4:8] = b"1234"
 
-        with pytest.raises(RuntimeError):
+        with pytest.raises(WrongSchemaException):
             deserialise_wrdn(buf)
 
     def test_schema_type_is_in_global_serialisers_list(self):

@@ -48,7 +48,6 @@ pip install --user -e ./
 ```
 
 ### Building the package locally and deploying it to PyPI
-**First update the version number in setup.py and push the update to the repository.**
 
 #### Requirements
 * A [PyPi](https://pypi.org/) account
@@ -57,6 +56,13 @@ pip install --user -e ./
 * Installed all requirements in `requirements-dev.txt`
 
 #### Steps
+
+***First update the __version__ number in streaming_data_types/__init__.py and push the update to the repository.***
+
+Uninstall streaming_data_types if you have previous installed it from PyPi:
+```
+pip uninstall ess_streaming_data_types
+```
 
 Delete any old builds you may have (IMPORTANT!):
 ```
