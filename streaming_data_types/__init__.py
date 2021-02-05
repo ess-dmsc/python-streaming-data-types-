@@ -18,7 +18,7 @@ from streaming_data_types.forwarder_config_update_rf5k import (
 )
 from streaming_data_types.area_detector_NDAr import deserialise_ndar, serialise_ndar
 
-__version__ = "0.9.6"
+__version__ = "0.10.0"
 
 SERIALISERS = {
     "ev42": serialise_ev42,
