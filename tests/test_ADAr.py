@@ -4,7 +4,6 @@ from streaming_data_types.area_detector_ADAr import (
     deserialise_ADAr,
     Attribute,
 )
-from streaming_data_types.fbschemas.ADAr_ADArray_schema.DType import DType
 from streaming_data_types import SERIALISERS, DESERIALISERS
 import numpy as np
 from datetime import datetime
