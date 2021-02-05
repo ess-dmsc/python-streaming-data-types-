@@ -7,6 +7,7 @@ from streaming_data_types.area_detector_ADAr import (
 from streaming_data_types import SERIALISERS, DESERIALISERS
 import numpy as np
 from datetime import datetime
+from streaming_data_types.exceptions import WrongSchemaException
 
 
 class TestSerialisationNDAr:
@@ -94,7 +95,7 @@ class TestSerialisationNDAr:
         buf = bytearray(buf)
         buf[4:8] = b"1234"
 
-        with pytest.raises(RuntimeError):
+        with pytest.raises(WrongSchemaException):
             deserialise_ADAr(buf)
 
     def test_schema_type_is_in_global_serialisers_list(self):
