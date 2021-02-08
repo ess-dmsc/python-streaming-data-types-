@@ -6,23 +6,22 @@ https://github.com/ess-dmsc/streaming-data-types
 
 ## FlatBuffer Schemas
 
-|name|description|verifiable*|
-|----|-----------|----------|
-|hs00|Histogram schema|Y|
-|ns10|NICOS cache entry schema|Y|
-|pl72|Run start|N|
-|6s4t|Run stop|N|
-|f142|Log data|Y|
-|ev42|Event data|Y|
-|x5f2|Status messages|N|
-|tdct|Timestamps|Y|
-|ep00|EPICS connection info|Y|
-|rf5k|Forwarder configuration update|Y|
-|answ|File-writer command response|n/a|
-|wrdn|File-writer finished writing|n/a|
-|NDAr|NDArray schema for area detector images|n/a|
-
-\* whether it passes verification via the C++ FlatBuffers library.
+|name|description|
+|----|-----------|
+|hs00|Histogram schema|
+|ns10|NICOS cache entry schema|
+|pl72|Run start|
+|6s4t|Run stop|
+|f142|Log data|
+|ev42|Event data|
+|x5f2|Status messages|
+|tdct|Timestamps|
+|ep00|EPICS connection info|
+|rf5k|Forwarder configuration update|
+|answ|File-writer command response|
+|wrdn|File-writer finished writing|
+|NDAr|**Deprecated**|
+|ADAr|For storing EPICS areaDetector data|
 
 ### hs00
 Schema for histogram data. It is one of the more complicated to use schemas.
