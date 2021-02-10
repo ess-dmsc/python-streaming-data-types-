@@ -57,7 +57,12 @@ pip install --user -e ./
 
 #### Steps
 
-***First update the version number in setup.py and push the update to the repository.***
+***First update the __version__ number in streaming_data_types/__init__.py and push the update to the repository.***
+
+Uninstall streaming_data_types if you have previous installed it from PyPi:
+```
+pip uninstall ess_streaming_data_types
+```
 
 Delete any old builds you may have (IMPORTANT!):
 ```
