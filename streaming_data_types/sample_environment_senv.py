@@ -39,14 +39,16 @@ def serialise_senv(
         used_timestamps = np.atleast_1d(np.array(value_timestamps)).astype(np.uint64)
         timestamps_offset = builder.CreateNumpyVector(used_timestamps)
 
-    numpy_type_map = {np.dtype("int8"): ValueUnion.Int8Array,
-                      np.dtype("uint8"): ValueUnion.UInt8Array,
-                      np.dtype("int16"): ValueUnion.Int16Array,
-                      np.dtype("uint16"): ValueUnion.UInt16Array,
-                      np.dtype("int32"): ValueUnion.Int32Array,
-                      np.dtype("uint32"): ValueUnion.UInt32Array,
-                      np.dtype("int64"): ValueUnion.Int64Array,
-                      np.dtype("uint64"): ValueUnion.UInt64Array}
+    numpy_type_map = {
+        np.dtype("int8"): ValueUnion.Int8Array,
+        np.dtype("uint8"): ValueUnion.UInt8Array,
+        np.dtype("int16"): ValueUnion.Int16Array,
+        np.dtype("uint16"): ValueUnion.UInt16Array,
+        np.dtype("int32"): ValueUnion.Int32Array,
+        np.dtype("uint32"): ValueUnion.UInt32Array,
+        np.dtype("int64"): ValueUnion.Int64Array,
+        np.dtype("uint64"): ValueUnion.UInt64Array,
+    }
 
     temp_values = np.atleast_1d(np.array(values))
 
@@ -54,7 +56,9 @@ def serialise_senv(
 
     # Some flatbuffer fu in order to avoid >200 lines of code
     builder.StartObject(1)
-    builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(value_array_offset), 0)
+    builder.PrependUOffsetTRelativeSlot(
+        0, flatbuffers.number_types.UOffsetTFlags.py_type(value_array_offset), 0
+    )
     value_offset = builder.EndObject()
 
     name_offset = builder.CreateString(name)
@@ -108,16 +112,27 @@ def deserialise_senv(buffer: Union[bytearray, bytes]) -> Response:
     if not SE_data.TimestampsIsNone():
         value_timestamps = SE_data.TimestampsAsNumpy()
 
-    from flatbuffers.number_types import Int8Flags, Uint8Flags, Int16Flags, Uint16Flags, Int32Flags, Uint32Flags, Int64Flags, Uint64Flags
+    from flatbuffers.number_types import (
+        Int8Flags,
+        Uint8Flags,
+        Int16Flags,
+        Uint16Flags,
+        Int32Flags,
+        Uint32Flags,
+        Int64Flags,
+        Uint64Flags,
+    )
 
-    flag_map = {ValueUnion.Int8Array: Int8Flags,
-                ValueUnion.UInt8Array: Uint8Flags,
-                ValueUnion.Int16Array: Int16Flags,
-                ValueUnion.UInt16Array: Uint16Flags,
-                ValueUnion.Int32Array: Int32Flags,
-                ValueUnion.UInt32Array: Uint32Flags,
-                ValueUnion.Int64Array: Int64Flags,
-                ValueUnion.UInt64Array: Uint64Flags}
+    flag_map = {
+        ValueUnion.Int8Array: Int8Flags,
+        ValueUnion.UInt8Array: Uint8Flags,
+        ValueUnion.Int16Array: Int16Flags,
+        ValueUnion.UInt16Array: Uint16Flags,
+        ValueUnion.Int32Array: Int32Flags,
+        ValueUnion.UInt32Array: Uint32Flags,
+        ValueUnion.Int64Array: Int64Flags,
+        ValueUnion.UInt64Array: Uint64Flags,
+    }
 
     # Some flatbuffers fu in order to avoid >200 lines of code
     value_offset = SE_data.Values()

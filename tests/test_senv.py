@@ -7,15 +7,15 @@ import pytest
 
 
 entry_1 = {
-        "name": "some_name",
-        "timestamp": datetime.now(),
-        "channel": 42,
-        "message_counter": 123456,
-        "sample_ts_delta": 0.005,
-        "values": np.arange(100, dtype=np.uint16),
-        "value_timestamps": np.arange(50) + 1111,
-        "ts_location": Location.End
-    }
+    "name": "some_name",
+    "timestamp": datetime.now(),
+    "channel": 42,
+    "message_counter": 123456,
+    "sample_ts_delta": 0.005,
+    "values": np.arange(100, dtype=np.uint16),
+    "value_timestamps": np.arange(50) + 1111,
+    "ts_location": Location.End
+}
 
 entry_2 = {
     "name": "some_name_other_name",
