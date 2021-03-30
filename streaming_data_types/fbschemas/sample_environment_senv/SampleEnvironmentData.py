@@ -60,35 +60,25 @@ class SampleEnvironmentData(object):
         return 0
 
     # SampleEnvironmentData
-    def Values(self, j):
+    def ValuesType(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(14))
         if o != 0:
-            a = self._tab.Vector(o)
-            return self._tab.Get(flatbuffers.number_types.Uint16Flags, a + flatbuffers.number_types.UOffsetTFlags.py_type(j * 2))
+            return self._tab.Get(flatbuffers.number_types.Uint8Flags, o + self._tab.Pos)
         return 0
 
     # SampleEnvironmentData
-    def ValuesAsNumpy(self):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(14))
+    def Values(self):
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(16))
         if o != 0:
-            return self._tab.GetVectorAsNumpy(flatbuffers.number_types.Uint16Flags, o)
-        return 0
-
-    # SampleEnvironmentData
-    def ValuesLength(self):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(14))
-        if o != 0:
-            return self._tab.VectorLen(o)
-        return 0
-
-    # SampleEnvironmentData
-    def ValuesIsNone(self):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(14))
-        return o == 0
+            from flatbuffers.table import Table
+            obj = Table(bytearray(), 0)
+            self._tab.Union(obj, o)
+            return obj
+        return None
 
     # SampleEnvironmentData
     def Timestamps(self, j):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(16))
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(18))
         if o != 0:
             a = self._tab.Vector(o)
             return self._tab.Get(flatbuffers.number_types.Uint64Flags, a + flatbuffers.number_types.UOffsetTFlags.py_type(j * 8))
@@ -96,39 +86,39 @@ class SampleEnvironmentData(object):
 
     # SampleEnvironmentData
     def TimestampsAsNumpy(self):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(16))
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(18))
         if o != 0:
             return self._tab.GetVectorAsNumpy(flatbuffers.number_types.Uint64Flags, o)
         return 0
 
     # SampleEnvironmentData
     def TimestampsLength(self):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(16))
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(18))
         if o != 0:
             return self._tab.VectorLen(o)
         return 0
 
     # SampleEnvironmentData
     def TimestampsIsNone(self):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(16))
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(18))
         return o == 0
 
     # SampleEnvironmentData
     def MessageCounter(self):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(18))
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(20))
         if o != 0:
             return self._tab.Get(flatbuffers.number_types.Uint64Flags, o + self._tab.Pos)
         return 0
 
-def SampleEnvironmentDataStart(builder): builder.StartObject(8)
+def SampleEnvironmentDataStart(builder): builder.StartObject(9)
 def SampleEnvironmentDataAddName(builder, Name): builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(Name), 0)
 def SampleEnvironmentDataAddChannel(builder, Channel): builder.PrependInt32Slot(1, Channel, 0)
 def SampleEnvironmentDataAddPacketTimestamp(builder, PacketTimestamp): builder.PrependUint64Slot(2, PacketTimestamp, 0)
 def SampleEnvironmentDataAddTimeDelta(builder, TimeDelta): builder.PrependFloat64Slot(3, TimeDelta, 0.0)
 def SampleEnvironmentDataAddTimestampLocation(builder, TimestampLocation): builder.PrependInt8Slot(4, TimestampLocation, 0)
-def SampleEnvironmentDataAddValues(builder, Values): builder.PrependUOffsetTRelativeSlot(5, flatbuffers.number_types.UOffsetTFlags.py_type(Values), 0)
-def SampleEnvironmentDataStartValuesVector(builder, numElems): return builder.StartVector(2, numElems, 2)
-def SampleEnvironmentDataAddTimestamps(builder, Timestamps): builder.PrependUOffsetTRelativeSlot(6, flatbuffers.number_types.UOffsetTFlags.py_type(Timestamps), 0)
+def SampleEnvironmentDataAddValuesType(builder, ValuesType): builder.PrependUint8Slot(5, ValuesType, 0)
+def SampleEnvironmentDataAddValues(builder, Values): builder.PrependUOffsetTRelativeSlot(6, flatbuffers.number_types.UOffsetTFlags.py_type(Values), 0)
+def SampleEnvironmentDataAddTimestamps(builder, Timestamps): builder.PrependUOffsetTRelativeSlot(7, flatbuffers.number_types.UOffsetTFlags.py_type(Timestamps), 0)
 def SampleEnvironmentDataStartTimestampsVector(builder, numElems): return builder.StartVector(8, numElems, 8)
-def SampleEnvironmentDataAddMessageCounter(builder, MessageCounter): builder.PrependUint64Slot(7, MessageCounter, 0)
+def SampleEnvironmentDataAddMessageCounter(builder, MessageCounter): builder.PrependUint64Slot(8, MessageCounter, 0)
 def SampleEnvironmentDataEnd(builder): return builder.EndObject()
