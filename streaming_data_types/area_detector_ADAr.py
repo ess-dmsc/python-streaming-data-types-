@@ -5,7 +5,7 @@ from streaming_data_types.fbschemas.ADAr_ADArray_schema.DType import DType
 import streaming_data_types.fbschemas.ADAr_ADArray_schema.Attribute as ADArAttribute
 from streaming_data_types.utils import check_schema_identifier
 import numpy as np
-from datetime import datetime
+from datetime import datetime, timezone
 from struct import pack
 
 FILE_IDENTIFIER = b"ADAr"
@@ -197,7 +197,7 @@ def deserialise_ADAr(buffer: Union[bytearray, bytes]) -> ADArray:
     return ADArray_t(
         source_name=ad_array.SourceName().decode(),
         unique_id=unique_id,
-        timestamp=datetime.fromtimestamp(used_timestamp),
+        timestamp=datetime.fromtimestamp(used_timestamp, tz=timezone.utc),
         data=data,
         attributes=attributes_list,
     )

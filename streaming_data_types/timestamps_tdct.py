@@ -8,8 +8,7 @@ from streaming_data_types.fbschemas.timestamps_tdct.timestamp import (
 )
 import flatbuffers
 import numpy as np
-from collections import namedtuple
-from typing import Optional, Union, List
+from typing import Optional, Union, List, NamedTuple
 from streaming_data_types.utils import check_schema_identifier
 
 FILE_IDENTIFIER = b"tdct"
@@ -40,7 +39,10 @@ def serialise_tdct(
     return bytes(builder.Output())
 
 
-Timestamps = namedtuple("Timestamps", ("name", "timestamps", "sequence_counter"))
+Timestamps = NamedTuple(
+    "Timestamps",
+    (("name", str), ("timestamps", np.ndarray), ("sequence_counter", int)),
+)
 
 
 def deserialise_tdct(buffer: Union[bytearray, bytes]) -> Timestamps:

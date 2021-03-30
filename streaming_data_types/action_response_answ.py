@@ -7,7 +7,7 @@ from streaming_data_types.fbschemas.action_response_answ.ActionType import Actio
 from streaming_data_types.utils import check_schema_identifier
 from typing import Union
 from typing import NamedTuple
-from datetime import datetime
+from datetime import datetime, timezone
 
 FILE_IDENTIFIER = b"answ"
 
@@ -62,7 +62,9 @@ Response = NamedTuple(
 def deserialise_answ(buffer: Union[bytearray, bytes]):
     check_schema_identifier(buffer, FILE_IDENTIFIER)
     answ_message = ActionResponse.ActionResponse.GetRootAsActionResponse(buffer, 0)
-    max_time = datetime(year=9000, month=1, day=1, hour=0, minute=0, second=0).timestamp()
+    max_time = datetime(
+        year=9000, month=1, day=1, hour=0, minute=0, second=0
+    ).timestamp()
     used_timestamp = answ_message.StopTime() / 1000
     if used_timestamp > max_time:
         used_timestamp = max_time
@@ -74,5 +76,5 @@ def deserialise_answ(buffer: Union[bytearray, bytes]):
         outcome=answ_message.Outcome(),
         message=answ_message.Message().decode("utf-8"),
         status_code=answ_message.StatusCode(),
-        stop_time=datetime.fromtimestamp(used_timestamp),
+        stop_time=datetime.fromtimestamp(used_timestamp, tz=timezone.utc),
     )

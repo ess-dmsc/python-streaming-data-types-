@@ -6,7 +6,7 @@ from streaming_data_types.area_detector_ADAr import (
 )
 from streaming_data_types import SERIALISERS, DESERIALISERS
 import numpy as np
-from datetime import datetime
+from datetime import datetime, timezone
 from streaming_data_types.exceptions import WrongSchemaException
 
 
@@ -19,7 +19,7 @@ class TestSerialisationNDAr:
             "source_name": "some source name",
             "unique_id": 754,
             "data": np.array([[1, 2, 3], [3, 4, 5]], dtype=np.uint64),
-            "timestamp": datetime.now(),
+            "timestamp": datetime.now(tz=timezone.utc),
             "attributes": [
                 Attribute("name1", "desc1", "src1", "value"),
                 Attribute("name2", "desc2", "src2", 11),
@@ -49,7 +49,13 @@ class TestSerialisationNDAr:
             "unique_id": 789679,
             "data": np.array([[1.1, 2.2, 3.3], [4.4, 5.5, 6.6]], dtype=np.float32),
             "timestamp": datetime(
-                year=1992, month=8, day=11, hour=3, minute=34, second=57
+                year=1992,
+                month=8,
+                day=11,
+                hour=3,
+                minute=34,
+                second=57,
+                tzinfo=timezone.utc,
             ),
         }
 
@@ -70,7 +76,7 @@ class TestSerialisationNDAr:
             "source_name": "some source name",
             "unique_id": 754,
             "data": "hi, this is a string",
-            "timestamp": datetime.now(),
+            "timestamp": datetime.now(tz=timezone.utc),
         }
 
         buf = serialise_ADAr(**original_entry)

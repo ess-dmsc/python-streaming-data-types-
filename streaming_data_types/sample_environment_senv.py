@@ -18,7 +18,7 @@ import flatbuffers
 import numpy as np
 from typing import Optional, Union, List, NamedTuple
 from streaming_data_types.utils import check_schema_identifier
-from datetime import datetime
+from datetime import datetime, timezone
 
 FILE_IDENTIFIER = b"senv"
 
@@ -142,7 +142,7 @@ def deserialise_senv(buffer: Union[bytearray, bytes]) -> Response:
     return Response(
         name=SE_data.Name().decode(),
         channel=SE_data.Channel(),
-        timestamp=datetime.fromtimestamp(used_timestamp),
+        timestamp=datetime.fromtimestamp(used_timestamp, tz=timezone.utc),
         sample_ts_delta=SE_data.TimeDelta(),
         ts_location=SE_data.TimestampLocation(),
         message_counter=SE_data.MessageCounter(),
