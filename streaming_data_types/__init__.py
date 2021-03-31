@@ -20,7 +20,7 @@ from streaming_data_types.area_detector_NDAr import deserialise_ndar, serialise_
 from streaming_data_types.sample_environment_senv import deserialise_senv, serialise_senv
 from streaming_data_types.area_detector_ADAr import deserialise_ADAr, serialise_ADAr
 
-__version__ = "0.10.0"
+__version__ = "0.11.0"
 
 SERIALISERS = {
     "ev42": serialise_ev42,

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 import pytest
 from streaming_data_types.action_response_answ import (
     serialise_answ,
@@ -24,7 +24,13 @@ class TestSerialisationAnsw:
             "message": "some random error message",
             "status_code": 123456789,
             "stop_time": datetime(
-                year=2021, month=2, day=12, hour=2, minute=12, second=12
+                year=2021,
+                month=2,
+                day=12,
+                hour=2,
+                minute=12,
+                second=12,
+                tzinfo=timezone.utc,
             ),
         }
 
@@ -50,7 +56,13 @@ class TestSerialisationAnsw:
             "message": "some random error message",
             "status_code": 123456789,
             "stop_time": datetime(
-                year=2021, month=2, day=12, hour=2, minute=12, second=12
+                year=2021,
+                month=2,
+                day=12,
+                hour=2,
+                minute=12,
+                second=12,
+                tzinfo=timezone.utc,
             ),
         }
 
