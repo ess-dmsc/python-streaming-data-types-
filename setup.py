@@ -1,5 +1,6 @@
 import os
 from setuptools import setup, find_packages
+from streaming_data_types._version import version
 
 DESCRIPTION = "Python utilities for handling ESS streamed data"
 
@@ -12,9 +13,6 @@ try:
 except Exception as error:
     print("COULD NOT GET LONG DESC: {}".format(error))
     LONG_DESCRIPTION = DESCRIPTION
-
-# Import version number
-from streaming_data_types.__init__ import __version__ as version
 
 setup(
     name="ess_streaming_data_types",
