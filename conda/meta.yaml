@@ -1,0 +1,22 @@
+package:
+  name: ess-streaming-data-types
+  version: {{ GIT_DESCRIBE_TAG }}
+
+source:
+  path: ..
+
+build:
+  number: {{ environ.get('GIT_DESCRIBE_NUMBER', 0) }}
+  noarch: python
+  script: python -m pip install --ignore-installed -vv .
+
+requirements:
+  run:
+    - python-flatbuffers >=1.12
+    - numpy
+    - python >=3.6
+
+about:
+  home: https://github.com/ess-dmsc/python-streaming-data-types
+  summary: Python utilities for handling ESS streamed data
+  license: BSD-2-Clause
