@@ -111,6 +111,7 @@ Finally, create a tag on the GitHub repository with the appropriate name, e.g. `
 ### Build and upload conda package
 
 The conda package is used by ESS DMSC DRAM group for the Scipp library.
+Please create the release version tag on github before creating the conda package as it gets the version number from the tag.
 
 #### Steps
 
