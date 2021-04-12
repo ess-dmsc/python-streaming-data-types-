@@ -17,10 +17,14 @@ from streaming_data_types.forwarder_config_update_rf5k import (
     serialise_rf5k,
 )
 from streaming_data_types.area_detector_NDAr import deserialise_ndar, serialise_ndar
-from streaming_data_types.sample_environment_senv import deserialise_senv, serialise_senv
+from streaming_data_types.sample_environment_senv import (
+    deserialise_senv,
+    serialise_senv,
+)
 from streaming_data_types.area_detector_ADAr import deserialise_ADAr, serialise_ADAr
+from streaming_data_types._version import version
 
-__version__ = "0.11.0"
+__version__ = version
 
 SERIALISERS = {
     "ev42": serialise_ev42,

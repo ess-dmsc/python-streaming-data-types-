@@ -107,3 +107,43 @@ After testing installing from test.pypi.org works, push to PyPI:
 twine upload dist/*
 ```
 Finally, create a tag on the GitHub repository with the appropriate name, e.g. `v0.7.0`.
+
+### Build and upload conda package
+
+The conda package is used by ESS DMSC DRAM group for the Scipp library.
+Please create the release version tag on github before creating the conda package as it gets the version number from the tag.
+
+#### Steps
+
+You must first have a conda installation, for example `conda` via pip, or [miniconda](https://docs.conda.io/en/latest/miniconda.html).
+
+From the directory of the ess-streaming-data-types repository, build the package with
+```sh
+conda create -c conda-forge -n build_pysdt_package python=3.7
+conda activate build_pysdt_package
+conda install -c conda-forge conda-build
+conda build -c conda-forge ./conda
+```
+
+If you already have an environment to build in then instead of creating a new one you can run
+```sh
+conda activate build_pysdt_package
+conda env update
+conda build -c conda-forge ./conda
+```
+
+To upload the package, first login
+```sh
+anaconda login
+```
+use the ESS-DMSC-ECDC account or personal account linked to ESS-DMSC organisation.
+
+Find the path for the built package using
+```sh
+conda build ./conda --output
+```
+
+Then upload
+```sh
+anaconda upload --user ESS-DMSC /path/to/package
+```
