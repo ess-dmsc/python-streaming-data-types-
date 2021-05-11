@@ -12,7 +12,7 @@ build:
 
 requirements:
   run:
-    - python-flatbuffers >=1.12
+    - python-flatbuffers ==1.12
     - numpy
     - python >=3.6
 
