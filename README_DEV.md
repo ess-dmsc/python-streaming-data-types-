@@ -99,7 +99,7 @@ Test the module using the existing test-suite (from project root):
 ```
 rm -rf streaming_data_types    # Rename the local source directory
 pytest    # The tests will be run against the pip installed module
-git reset --hard origin/master    # Put everything back to before
+git reset --hard origin/main    # Put everything back to before
 ```
 
 After testing installing from test.pypi.org works, push to PyPI:
