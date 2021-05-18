@@ -117,15 +117,8 @@ Please create the release version tag on github before creating the conda packag
 
 You must first have a conda installation, for example `conda` via pip, or [miniconda](https://docs.conda.io/en/latest/miniconda.html).
 
-If you already have a conda environment from previously building the package then remove it first with
-```sh
-conda env remove -n build_pysdt_package
-```
-
 From the directory of the ess-streaming-data-types repository, build the package with
 ```sh
-conda create -c conda-forge -n build_pysdt_package python=3.7
-conda activate build_pysdt_package
 conda install -c conda-forge conda-build anaconda-client
 conda build -c conda-forge ./conda
 ```
