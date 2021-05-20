@@ -1,7 +1,12 @@
 import pytest
 from streaming_data_types.exceptions import WrongSchemaException
-from streaming_data_types.run_start_pl72 import serialise_pl72, deserialise_pl72
+from streaming_data_types.run_start_pl72 import (
+    serialise_pl72,
+    deserialise_pl72,
+    DetectorSpectrumMap,
+)
 from streaming_data_types import SERIALISERS, DESERIALISERS
+import numpy as np
 
 
 class TestSerialisationPl72:
@@ -16,6 +21,9 @@ class TestSerialisationPl72:
         "instrument_name": "LOKI",
         "broker": "localhost:9092",
         "metadata": "{3:1}",
+        "detector_spectrum_map": DetectorSpectrumMap(
+            np.array([4, 5, 6]), np.array([0, 1, 2]), 3
+        ),
     }
 
     def test_serialises_and_deserialises_pl72_message_correctly(self):
@@ -36,6 +44,10 @@ class TestSerialisationPl72:
         )
         assert deserialised_tuple.broker == self.original_entry["broker"]
         assert deserialised_tuple.metadata == self.original_entry["metadata"]
+        assert (
+            deserialised_tuple.detector_spectrum_map
+            == self.original_entry["detector_spectrum_map"]
+        )
 
     def test_if_buffer_has_wrong_id_then_throws(self):
         buf = serialise_pl72(**self.original_entry)
