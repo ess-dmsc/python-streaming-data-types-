@@ -44,9 +44,18 @@ class TestSerialisationPl72:
         )
         assert deserialised_tuple.broker == self.original_entry["broker"]
         assert deserialised_tuple.metadata == self.original_entry["metadata"]
+
         assert (
-            deserialised_tuple.detector_spectrum_map
-            == self.original_entry["detector_spectrum_map"]
+            deserialised_tuple.detector_spectrum_map.n_spectra
+            == self.original_entry["detector_spectrum_map"].n_spectra
+        )
+        assert np.array_equal(
+            deserialised_tuple.detector_spectrum_map.spectrum_numbers,
+            self.original_entry["detector_spectrum_map"].spectrum_numbers,
+        )
+        assert np.array_equal(
+            deserialised_tuple.detector_spectrum_map.detector_ids,
+            self.original_entry["detector_spectrum_map"].detector_ids,
         )
 
     def test_if_buffer_has_wrong_id_then_throws(self):
