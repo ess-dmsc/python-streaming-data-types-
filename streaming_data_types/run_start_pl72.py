@@ -1,12 +1,27 @@
 import time
-from typing import Union
+from typing import Union, Optional
 import flatbuffers
-from streaming_data_types.fbschemas.run_start_pl72 import RunStart
+from streaming_data_types.fbschemas.run_start_pl72 import (
+    RunStart,
+    SpectraDetectorMapping,
+)
 from streaming_data_types.utils import check_schema_identifier
 from typing import NamedTuple
 from datetime import datetime
+import numpy as np
+from collections import namedtuple
 
 FILE_IDENTIFIER = b"pl72"
+
+
+DetectorSpectrumMap = namedtuple(
+    "DetectorSpectrumMap",
+    (
+        "spectrum_numbers",  # numpy ndarray of int
+        "detector_ids",  # numpy ndarray of int
+        "n_spectra",  # int
+    ),
+)
 
 
 def serialise_pl72(
@@ -20,6 +35,7 @@ def serialise_pl72(
     instrument_name: str = "TEST",
     broker: str = "localhost:9092",
     metadata: str = "{}",
+    detector_spectrum_map: Optional[DetectorSpectrumMap] = None,
 ) -> bytes:
     builder = flatbuffers.Builder(512)
     builder.ForceDefaults(True)
@@ -44,6 +60,28 @@ def serialise_pl72(
     filename_offset = builder.CreateString(filename)
     metadata_offset = builder.CreateString(metadata)
 
+    # Build detector-spectrum map
+    if detector_spectrum_map is not None:
+        spectrum_map_offset = builder.CreateNumpyVector(
+            np.array(detector_spectrum_map.spectrum_numbers).astype(np.int32)
+        )
+        det_id_map_offset = builder.CreateNumpyVector(
+            np.array(detector_spectrum_map.detector_ids).astype(np.int32)
+        )
+        SpectraDetectorMapping.SpectraDetectorMappingStart(builder)
+        SpectraDetectorMapping.SpectraDetectorMappingAddSpectrum(
+            builder, spectrum_map_offset
+        )
+        SpectraDetectorMapping.SpectraDetectorMappingAddDetectorId(
+            builder, det_id_map_offset
+        )
+        SpectraDetectorMapping.SpectraDetectorMappingAddNSpectra(
+            builder, detector_spectrum_map.n_spectra
+        )
+        detector_spectrum_map_offset = SpectraDetectorMapping.SpectraDetectorMappingEnd(
+            builder
+        )
+
     # Build the actual buffer
     RunStart.RunStartStart(builder)
     RunStart.RunStartAddServiceId(builder, service_id_offset)
@@ -57,6 +95,8 @@ def serialise_pl72(
     RunStart.RunStartAddFilename(builder, filename_offset)
     RunStart.RunStartAddNPeriods(builder, 1)
     RunStart.RunStartAddMetadata(builder, metadata_offset)
+    if detector_spectrum_map is not None:
+        RunStart.RunStartAddDetectorSpectrumMap(builder, detector_spectrum_map_offset)
 
     run_start_message = RunStart.RunStartEnd(builder)
 
@@ -77,6 +117,7 @@ RunStartInfo = NamedTuple(
         ("instrument_name", str),
         ("broker", str),
         ("metadata", str),
+        ("detector_spectrum_map", Optional[DetectorSpectrumMap]),
     ),
 )
 
@@ -94,6 +135,15 @@ def deserialise_pl72(buffer: Union[bytearray, bytes]) -> RunStartInfo:
     run_name = run_start.RunName() if run_start.RunName() else b""
     metadata = run_start.Metadata() if run_start.Metadata() else b""
 
+    detector_spectrum_map = None
+    det_spec_map_buf = run_start.DetectorSpectrumMap()
+    if det_spec_map_buf is not None:
+        detector_spectrum_map = DetectorSpectrumMap(
+            det_spec_map_buf.SpectrumAsNumpy(),
+            det_spec_map_buf.DetectorIdAsNumpy(),
+            det_spec_map_buf.NSpectra(),
+        )
+
     return RunStartInfo(
         job_id=job_id.decode(),
         filename=filename.decode(),
@@ -105,4 +155,5 @@ def deserialise_pl72(buffer: Union[bytearray, bytes]) -> RunStartInfo:
         instrument_name=instrument_name.decode(),
         broker=broker.decode(),
         metadata=metadata.decode(),
+        detector_spectrum_map=detector_spectrum_map,
     )
