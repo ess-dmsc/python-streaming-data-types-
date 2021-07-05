@@ -104,22 +104,18 @@ def serialise_pl72(
     return bytes(builder.Output())
 
 
-RunStartInfo = NamedTuple(
-    "RunStartInfo",
-    (
-        ("job_id", str),
-        ("filename", str),
-        ("start_time", int),
-        ("stop_time", int),
-        ("run_name", str),
-        ("nexus_structure", str),
-        ("service_id", str),
-        ("instrument_name", str),
-        ("broker", str),
-        ("metadata", str),
-        ("detector_spectrum_map", Optional[DetectorSpectrumMap]),
-    ),
-)
+class RunStartInfo(NamedTuple):
+    job_id: str
+    filename: str
+    start_time: int
+    stop_time: int
+    nexus_structure: str
+    service_id: str
+    broker: str
+    run_name: str = ""
+    instrument_name: str = ""
+    metadata: str = ""
+    detector_spectrum_map: Optional[DetectorSpectrumMap] = None
 
 
 def deserialise_pl72(buffer: Union[bytearray, bytes]) -> RunStartInfo:
