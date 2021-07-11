@@ -36,7 +36,7 @@ def serialise_senv(
     builder = flatbuffers.Builder(1024)
 
     if value_timestamps is not None:
-        used_timestamps = np.atleast_1d(np.array(value_timestamps)).astype(np.uint64)
+        used_timestamps = np.atleast_1d(np.asarray(value_timestamps)).astype(np.uint64)
         timestamps_offset = builder.CreateNumpyVector(used_timestamps)
 
     numpy_type_map = {
@@ -50,7 +50,7 @@ def serialise_senv(
         np.dtype("uint64"): ValueUnion.UInt64Array,
     }
 
-    temp_values = np.atleast_1d(np.array(values))
+    temp_values = np.atleast_1d(np.asarray(values))
 
     value_array_offset = builder.CreateNumpyVector(temp_values)
 

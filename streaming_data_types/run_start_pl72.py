@@ -63,10 +63,10 @@ def serialise_pl72(
     # Build detector-spectrum map
     if detector_spectrum_map is not None:
         spectrum_map_offset = builder.CreateNumpyVector(
-            np.array(detector_spectrum_map.spectrum_numbers).astype(np.int32)
+            np.asarray(detector_spectrum_map.spectrum_numbers).astype(np.int32)
         )
         det_id_map_offset = builder.CreateNumpyVector(
-            np.array(detector_spectrum_map.detector_ids).astype(np.int32)
+            np.asarray(detector_spectrum_map.detector_ids).astype(np.int32)
         )
         SpectraDetectorMapping.SpectraDetectorMappingStart(builder)
         SpectraDetectorMapping.SpectraDetectorMappingAddSpectrum(
