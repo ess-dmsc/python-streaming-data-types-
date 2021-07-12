@@ -22,7 +22,7 @@ def serialise_tdct(
     builder = flatbuffers.Builder(1024)
     builder.ForceDefaults(True)
 
-    timestamps = np.atleast_1d(np.array(timestamps)).astype(np.uint64)
+    timestamps = np.atleast_1d(np.asarray(timestamps)).astype(np.uint64)
 
     name_offset = builder.CreateString(name)
 

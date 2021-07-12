@@ -68,7 +68,7 @@ def serialise_ADAr(
         data_type = type_map[data.dtype]
 
     # Build dims
-    dims_offset = builder.CreateNumpyVector(np.array(data.shape))
+    dims_offset = builder.CreateNumpyVector(np.asarray(data.shape))
 
     # Build data
     data_offset = builder.CreateNumpyVector(data.flatten().view(np.uint8))

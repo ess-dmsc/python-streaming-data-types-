@@ -74,8 +74,8 @@ def serialise_ev42(
 
     source = builder.CreateString(source_name)
 
-    tof_data = builder.CreateNumpyVector(np.array(time_of_flight).astype(np.uint32))
-    det_data = builder.CreateNumpyVector(np.array(detector_id).astype(np.uint32))
+    tof_data = builder.CreateNumpyVector(np.asarray(time_of_flight).astype(np.uint32))
+    det_data = builder.CreateNumpyVector(np.asarray(detector_id).astype(np.uint32))
 
     isis_data = None
     if isis_specific:
