@@ -36,6 +36,7 @@ def serialise_pl72(
     broker: str = "localhost:9092",
     metadata: str = "{}",
     detector_spectrum_map: Optional[DetectorSpectrumMap] = None,
+    control_topic: str = "",
 ) -> bytes:
     builder = flatbuffers.Builder(512)
     builder.ForceDefaults(True)
@@ -59,6 +60,7 @@ def serialise_pl72(
     run_name_offset = builder.CreateString(run_name)
     filename_offset = builder.CreateString(filename)
     metadata_offset = builder.CreateString(metadata)
+    control_topic_offset = builder.CreateString(control_topic)
 
     # Build detector-spectrum map
     if detector_spectrum_map is not None:
@@ -97,6 +99,7 @@ def serialise_pl72(
     RunStart.RunStartAddMetadata(builder, metadata_offset)
     if detector_spectrum_map is not None:
         RunStart.RunStartAddDetectorSpectrumMap(builder, detector_spectrum_map_offset)
+    RunStart.RunStartAddControlTopic(builder, control_topic_offset)
 
     run_start_message = RunStart.RunStartEnd(builder)
 
@@ -116,6 +119,7 @@ class RunStartInfo(NamedTuple):
     instrument_name: str = ""
     metadata: str = ""
     detector_spectrum_map: Optional[DetectorSpectrumMap] = None
+    control_topic: str = ""
 
 
 def deserialise_pl72(buffer: Union[bytearray, bytes]) -> RunStartInfo:
@@ -130,6 +134,7 @@ def deserialise_pl72(buffer: Union[bytearray, bytes]) -> RunStartInfo:
     instrument_name = run_start.InstrumentName() if run_start.InstrumentName() else b""
     run_name = run_start.RunName() if run_start.RunName() else b""
     metadata = run_start.Metadata() if run_start.Metadata() else b""
+    control_topic = run_start.ControlTopic() if run_start.ControlTopic() else b""
 
     detector_spectrum_map = None
     det_spec_map_buf = run_start.DetectorSpectrumMap()
@@ -152,4 +157,5 @@ def deserialise_pl72(buffer: Union[bytearray, bytes]) -> RunStartInfo:
         broker=broker.decode(),
         metadata=metadata.decode(),
         detector_spectrum_map=detector_spectrum_map,
+        control_topic=control_topic.decode(),
     )
