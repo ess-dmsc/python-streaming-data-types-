@@ -59,7 +59,7 @@ pip install --user -e ./
 
 ***First update the __version__ number in streaming_data_types/__init__.py and push the update to the repository.***
 
-Uninstall streaming_data_types if you have previous installed it from PyPi:
+Uninstall streaming_data_types if you have previously installed it from PyPi:
 ```
 pip uninstall ess_streaming_data_types
 ```
@@ -93,7 +93,7 @@ Unfortunately, flatbuffers is not on test.pypi.org so the following error may oc
 ```
 ERROR: Could not find a version that satisfies the requirement flatbuffers
 ```
-The workaround is install flatbuffers manually first using `pip install flatbuffers` and then rerun the previous command.
+The workaround is to install flatbuffers manually first using `pip install flatbuffers` and then rerun the previous command.
 
 Test the module using the existing test-suite (from project root):
 ```
