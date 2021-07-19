@@ -24,6 +24,7 @@ class TestSerialisationPl72:
         "detector_spectrum_map": DetectorSpectrumMap(
             np.array([4, 5, 6]), np.array([0, 1, 2]), 3
         ),
+        "control_topic": "some_topic_name",
     }
 
     def test_serialises_and_deserialises_pl72_message_correctly(self):
@@ -57,6 +58,7 @@ class TestSerialisationPl72:
             deserialised_tuple.detector_spectrum_map.detector_ids,
             self.original_entry["detector_spectrum_map"].detector_ids,
         )
+        assert deserialised_tuple.control_topic == self.original_entry["control_topic"]
 
     def test_if_buffer_has_wrong_id_then_throws(self):
         buf = serialise_pl72(**self.original_entry)

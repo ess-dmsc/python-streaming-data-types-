@@ -123,9 +123,16 @@ class RunStart(object):
             return self._tab.String(o + self._tab.Pos)
         return None
 
+    # RunStart
+    def ControlTopic(self):
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(28))
+        if o != 0:
+            return self._tab.String(o + self._tab.Pos)
+        return None
+
 
 def RunStartStart(builder):
-    builder.StartObject(12)
+    builder.StartObject(13)
 
 
 def RunStartAddStartTime(builder, startTime):
@@ -191,6 +198,12 @@ def RunStartAddDetectorSpectrumMap(builder, detectorSpectrumMap):
 def RunStartAddMetadata(builder, metadata):
     builder.PrependUOffsetTRelativeSlot(
         11, flatbuffers.number_types.UOffsetTFlags.py_type(metadata), 0
+    )
+
+
+def RunStartAddControlTopic(builder, controlTopic):
+    builder.PrependUOffsetTRelativeSlot(
+        12, flatbuffers.number_types.UOffsetTFlags.py_type(controlTopic), 0
     )
 
 
