@@ -37,8 +37,8 @@ builders = pipeline_builder.createBuilders { container ->
   pipeline_builder.stage("${container.key}: Dependencies") {
     container.sh """
       /opt/miniconda/bin/conda init bash
-      conda install -c anaconda pip
       export PATH=/opt/miniconda/bin:$PATH
+      conda install -c anaconda pip
       python --version
       which python
       ls /opt/miniconda/bin/
