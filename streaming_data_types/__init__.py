@@ -1,4 +1,5 @@
 from streaming_data_types.eventdata_ev42 import deserialise_ev42, serialise_ev42
+from streaming_data_types.eventdata_ev43 import deserialise_ev43, serialise_ev43
 from streaming_data_types.histogram_hs00 import deserialise_hs00, serialise_hs00
 from streaming_data_types.logdata_f142 import deserialise_f142, serialise_f142
 from streaming_data_types.nicos_cache_ns10 import deserialise_ns10, serialise_ns10
@@ -28,6 +29,7 @@ __version__ = version
 
 SERIALISERS = {
     "ev42": serialise_ev42,
+    "ev43": serialise_ev43,
     "hs00": serialise_hs00,
     "f142": serialise_f142,
     "ns10": serialise_ns10,
@@ -47,6 +49,7 @@ SERIALISERS = {
 
 DESERIALISERS = {
     "ev42": deserialise_ev42,
+    "ev43": deserialise_ev43,
     "hs00": deserialise_hs00,
     "f142": deserialise_f142,
     "ns10": deserialise_ns10,
