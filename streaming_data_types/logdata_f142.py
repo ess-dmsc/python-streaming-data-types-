@@ -12,7 +12,6 @@ from streaming_data_types.fbschemas.logdata_f142.ArrayUByte import (
     ArrayUByteStart,
     ArrayUByteAddValue,
     ArrayUByteEnd,
-    ArrayUByteStartValueVector,
 )
 from streaming_data_types.fbschemas.logdata_f142.Byte import (
     Byte,
@@ -25,7 +24,6 @@ from streaming_data_types.fbschemas.logdata_f142.ArrayByte import (
     ArrayByteStart,
     ArrayByteAddValue,
     ArrayByteEnd,
-    ArrayByteStartValueVector,
 )
 from streaming_data_types.fbschemas.logdata_f142.UShort import (
     UShort,
@@ -38,7 +36,6 @@ from streaming_data_types.fbschemas.logdata_f142.ArrayUShort import (
     ArrayUShortStart,
     ArrayUShortAddValue,
     ArrayUShortEnd,
-    ArrayUShortStartValueVector,
 )
 from streaming_data_types.fbschemas.logdata_f142.Short import (
     Short,
@@ -51,7 +48,6 @@ from streaming_data_types.fbschemas.logdata_f142.ArrayShort import (
     ArrayShortStart,
     ArrayShortAddValue,
     ArrayShortEnd,
-    ArrayShortStartValueVector,
 )
 from streaming_data_types.fbschemas.logdata_f142.UInt import (
     UInt,
@@ -64,7 +60,6 @@ from streaming_data_types.fbschemas.logdata_f142.ArrayUInt import (
     ArrayUIntStart,
     ArrayUIntAddValue,
     ArrayUIntEnd,
-    ArrayUIntStartValueVector,
 )
 from streaming_data_types.fbschemas.logdata_f142.Int import (
     Int,
@@ -77,7 +72,6 @@ from streaming_data_types.fbschemas.logdata_f142.ArrayInt import (
     ArrayIntStart,
     ArrayIntAddValue,
     ArrayIntEnd,
-    ArrayIntStartValueVector,
 )
 from streaming_data_types.fbschemas.logdata_f142.ULong import (
     ULong,
@@ -90,7 +84,6 @@ from streaming_data_types.fbschemas.logdata_f142.ArrayULong import (
     ArrayULongStart,
     ArrayULongAddValue,
     ArrayULongEnd,
-    ArrayULongStartValueVector,
 )
 from streaming_data_types.fbschemas.logdata_f142.Long import (
     Long,
@@ -103,7 +96,6 @@ from streaming_data_types.fbschemas.logdata_f142.ArrayLong import (
     ArrayLongStart,
     ArrayLongAddValue,
     ArrayLongEnd,
-    ArrayLongStartValueVector,
 )
 from streaming_data_types.fbschemas.logdata_f142.Float import (
     Float,
@@ -116,7 +108,6 @@ from streaming_data_types.fbschemas.logdata_f142.ArrayFloat import (
     ArrayFloatStart,
     ArrayFloatAddValue,
     ArrayFloatEnd,
-    ArrayFloatStartValueVector,
 )
 from streaming_data_types.fbschemas.logdata_f142.Double import (
     Double,
@@ -129,7 +120,6 @@ from streaming_data_types.fbschemas.logdata_f142.ArrayDouble import (
     ArrayDoubleStart,
     ArrayDoubleAddValue,
     ArrayDoubleEnd,
-    ArrayDoubleStartValueVector,
 )
 from streaming_data_types.fbschemas.logdata_f142.String import (
     String,
