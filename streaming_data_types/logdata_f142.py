@@ -12,7 +12,6 @@ from streaming_data_types.fbschemas.logdata_f142.ArrayUByte import (
     ArrayUByteStart,
     ArrayUByteAddValue,
     ArrayUByteEnd,
-    ArrayUByteStartValueVector,
 )
 from streaming_data_types.fbschemas.logdata_f142.Byte import (
     Byte,
@@ -25,7 +24,6 @@ from streaming_data_types.fbschemas.logdata_f142.ArrayByte import (
     ArrayByteStart,
     ArrayByteAddValue,
     ArrayByteEnd,
-    ArrayByteStartValueVector,
 )
 from streaming_data_types.fbschemas.logdata_f142.UShort import (
     UShort,
@@ -38,7 +36,6 @@ from streaming_data_types.fbschemas.logdata_f142.ArrayUShort import (
     ArrayUShortStart,
     ArrayUShortAddValue,
     ArrayUShortEnd,
-    ArrayUShortStartValueVector,
 )
 from streaming_data_types.fbschemas.logdata_f142.Short import (
     Short,
@@ -51,7 +48,6 @@ from streaming_data_types.fbschemas.logdata_f142.ArrayShort import (
     ArrayShortStart,
     ArrayShortAddValue,
     ArrayShortEnd,
-    ArrayShortStartValueVector,
 )
 from streaming_data_types.fbschemas.logdata_f142.UInt import (
     UInt,
@@ -64,7 +60,6 @@ from streaming_data_types.fbschemas.logdata_f142.ArrayUInt import (
     ArrayUIntStart,
     ArrayUIntAddValue,
     ArrayUIntEnd,
-    ArrayUIntStartValueVector,
 )
 from streaming_data_types.fbschemas.logdata_f142.Int import (
     Int,
@@ -77,7 +72,6 @@ from streaming_data_types.fbschemas.logdata_f142.ArrayInt import (
     ArrayIntStart,
     ArrayIntAddValue,
     ArrayIntEnd,
-    ArrayIntStartValueVector,
 )
 from streaming_data_types.fbschemas.logdata_f142.ULong import (
     ULong,
@@ -90,7 +84,6 @@ from streaming_data_types.fbschemas.logdata_f142.ArrayULong import (
     ArrayULongStart,
     ArrayULongAddValue,
     ArrayULongEnd,
-    ArrayULongStartValueVector,
 )
 from streaming_data_types.fbschemas.logdata_f142.Long import (
     Long,
@@ -103,7 +96,6 @@ from streaming_data_types.fbschemas.logdata_f142.ArrayLong import (
     ArrayLongStart,
     ArrayLongAddValue,
     ArrayLongEnd,
-    ArrayLongStartValueVector,
 )
 from streaming_data_types.fbschemas.logdata_f142.Float import (
     Float,
@@ -116,7 +108,6 @@ from streaming_data_types.fbschemas.logdata_f142.ArrayFloat import (
     ArrayFloatStart,
     ArrayFloatAddValue,
     ArrayFloatEnd,
-    ArrayFloatStartValueVector,
 )
 from streaming_data_types.fbschemas.logdata_f142.Double import (
     Double,
@@ -129,7 +120,6 @@ from streaming_data_types.fbschemas.logdata_f142.ArrayDouble import (
     ArrayDoubleStart,
     ArrayDoubleAddValue,
     ArrayDoubleEnd,
-    ArrayDoubleStartValueVector,
 )
 from streaming_data_types.fbschemas.logdata_f142.String import (
     String,
@@ -191,10 +181,7 @@ def _serialise_byte(builder: flatbuffers.Builder, data: np.ndarray, source: int)
 
 
 def _serialise_bytearray(builder: flatbuffers.Builder, data: np.ndarray, source: int):
-    ArrayByteStartValueVector(builder, len(data))
-    for single_value in reversed(data):
-        builder.PrependInt8(single_value)
-    array_offset = builder.EndVector(len(data))
+    array_offset = builder.CreateNumpyVector(data)
     ArrayByteStart(builder)
     ArrayByteAddValue(builder, array_offset)
     value_position = ArrayByteEnd(builder)
@@ -215,10 +202,7 @@ def _serialise_ubyte(builder: flatbuffers.Builder, data: np.ndarray, source: int
 
 
 def _serialise_ubytearray(builder: flatbuffers.Builder, data: np.ndarray, source: int):
-    ArrayUByteStartValueVector(builder, len(data))
-    for single_value in reversed(data):
-        builder.PrependUint8(single_value)
-    array_offset = builder.EndVector(len(data))
+    array_offset = builder.CreateNumpyVector(data)
     ArrayUByteStart(builder)
     ArrayUByteAddValue(builder, array_offset)
     value_position = ArrayUByteEnd(builder)
@@ -239,10 +223,7 @@ def _serialise_short(builder: flatbuffers.Builder, data: np.ndarray, source: int
 
 
 def _serialise_shortarray(builder: flatbuffers.Builder, data: np.ndarray, source: int):
-    ArrayShortStartValueVector(builder, len(data))
-    for single_value in reversed(data):
-        builder.PrependInt16(single_value)
-    array_offset = builder.EndVector(len(data))
+    array_offset = builder.CreateNumpyVector(data)
     ArrayShortStart(builder)
     ArrayShortAddValue(builder, array_offset)
     value_position = ArrayShortEnd(builder)
@@ -263,10 +244,7 @@ def _serialise_ushort(builder: flatbuffers.Builder, data: np.ndarray, source: in
 
 
 def _serialise_ushortarray(builder: flatbuffers.Builder, data: np.ndarray, source: int):
-    ArrayUShortStartValueVector(builder, len(data))
-    for single_value in reversed(data):
-        builder.PrependUint16(single_value)
-    array_offset = builder.EndVector(len(data))
+    array_offset = builder.CreateNumpyVector(data)
     ArrayUShortStart(builder)
     ArrayUShortAddValue(builder, array_offset)
     value_position = ArrayUShortEnd(builder)
@@ -287,10 +265,7 @@ def _serialise_int(builder: flatbuffers.Builder, data: np.ndarray, source: int):
 
 
 def _serialise_intarray(builder: flatbuffers.Builder, data: np.ndarray, source: int):
-    ArrayIntStartValueVector(builder, len(data))
-    for single_value in reversed(data):
-        builder.PrependInt32(single_value)
-    array_offset = builder.EndVector(len(data))
+    array_offset = builder.CreateNumpyVector(data)
     ArrayIntStart(builder)
     ArrayIntAddValue(builder, array_offset)
     value_position = ArrayIntEnd(builder)
@@ -311,10 +286,7 @@ def _serialise_uint(builder: flatbuffers.Builder, data: np.ndarray, source: int)
 
 
 def _serialise_uintarray(builder: flatbuffers.Builder, data: np.ndarray, source: int):
-    ArrayUIntStartValueVector(builder, len(data))
-    for single_value in reversed(data):
-        builder.PrependUint32(single_value)
-    array_offset = builder.EndVector(len(data))
+    array_offset = builder.CreateNumpyVector(data)
     ArrayUIntStart(builder)
     ArrayUIntAddValue(builder, array_offset)
     value_position = ArrayUIntEnd(builder)
@@ -335,10 +307,7 @@ def _serialise_long(builder: flatbuffers.Builder, data: np.ndarray, source: int)
 
 
 def _serialise_longarray(builder: flatbuffers.Builder, data: np.ndarray, source: int):
-    ArrayLongStartValueVector(builder, len(data))
-    for single_value in reversed(data):
-        builder.PrependInt64(single_value)
-    array_offset = builder.EndVector(len(data))
+    array_offset = builder.CreateNumpyVector(data)
     ArrayLongStart(builder)
     ArrayLongAddValue(builder, array_offset)
     value_position = ArrayLongEnd(builder)
@@ -359,10 +328,7 @@ def _serialise_ulong(builder: flatbuffers.Builder, data: np.ndarray, source: int
 
 
 def _serialise_ulongarray(builder: flatbuffers.Builder, data: np.ndarray, source: int):
-    ArrayULongStartValueVector(builder, len(data))
-    for single_value in reversed(data):
-        builder.PrependUint64(single_value)
-    array_offset = builder.EndVector(len(data))
+    array_offset = builder.CreateNumpyVector(data)
     ArrayULongStart(builder)
     ArrayULongAddValue(builder, array_offset)
     value_position = ArrayULongEnd(builder)
@@ -383,10 +349,7 @@ def _serialise_float(builder: flatbuffers.Builder, data: np.ndarray, source: int
 
 
 def _serialise_floatarray(builder: flatbuffers.Builder, data: np.ndarray, source: int):
-    ArrayFloatStartValueVector(builder, len(data))
-    for single_value in reversed(data):
-        builder.PrependFloat32(single_value)
-    array_offset = builder.EndVector(len(data))
+    array_offset = builder.CreateNumpyVector(data)
     ArrayFloatStart(builder)
     ArrayFloatAddValue(builder, array_offset)
     value_position = ArrayFloatEnd(builder)
@@ -407,10 +370,7 @@ def _serialise_double(builder: flatbuffers.Builder, data: np.ndarray, source: in
 
 
 def _serialise_doublearray(builder: flatbuffers.Builder, data: np.ndarray, source: int):
-    ArrayDoubleStartValueVector(builder, len(data))
-    for single_value in reversed(data):
-        builder.PrependFloat64(single_value)
-    array_offset = builder.EndVector(len(data))
+    array_offset = builder.CreateNumpyVector(data)
     ArrayDoubleStart(builder)
     ArrayDoubleAddValue(builder, array_offset)
     value_position = ArrayDoubleEnd(builder)
