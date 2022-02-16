@@ -1,144 +1,145 @@
+from collections import namedtuple
+from typing import Any, Callable, Dict, Tuple, Union
+
 import flatbuffers
+import numpy as np
+
 from streaming_data_types.fbschemas.logdata_f142 import LogData
-from streaming_data_types.fbschemas.logdata_f142.Value import Value
-from streaming_data_types.fbschemas.logdata_f142.UByte import (
-    UByte,
-    UByteStart,
-    UByteAddValue,
-    UByteEnd,
-)
-from streaming_data_types.fbschemas.logdata_f142.ArrayUByte import (
-    ArrayUByte,
-    ArrayUByteStart,
-    ArrayUByteAddValue,
-    ArrayUByteEnd,
-)
-from streaming_data_types.fbschemas.logdata_f142.Byte import (
-    Byte,
-    ByteStart,
-    ByteAddValue,
-    ByteEnd,
-)
 from streaming_data_types.fbschemas.logdata_f142.ArrayByte import (
     ArrayByte,
-    ArrayByteStart,
     ArrayByteAddValue,
     ArrayByteEnd,
-)
-from streaming_data_types.fbschemas.logdata_f142.UShort import (
-    UShort,
-    UShortStart,
-    UShortAddValue,
-    UShortEnd,
-)
-from streaming_data_types.fbschemas.logdata_f142.ArrayUShort import (
-    ArrayUShort,
-    ArrayUShortStart,
-    ArrayUShortAddValue,
-    ArrayUShortEnd,
-)
-from streaming_data_types.fbschemas.logdata_f142.Short import (
-    Short,
-    ShortStart,
-    ShortAddValue,
-    ShortEnd,
-)
-from streaming_data_types.fbschemas.logdata_f142.ArrayShort import (
-    ArrayShort,
-    ArrayShortStart,
-    ArrayShortAddValue,
-    ArrayShortEnd,
-)
-from streaming_data_types.fbschemas.logdata_f142.UInt import (
-    UInt,
-    UIntStart,
-    UIntAddValue,
-    UIntEnd,
-)
-from streaming_data_types.fbschemas.logdata_f142.ArrayUInt import (
-    ArrayUInt,
-    ArrayUIntStart,
-    ArrayUIntAddValue,
-    ArrayUIntEnd,
-)
-from streaming_data_types.fbschemas.logdata_f142.Int import (
-    Int,
-    IntStart,
-    IntAddValue,
-    IntEnd,
-)
-from streaming_data_types.fbschemas.logdata_f142.ArrayInt import (
-    ArrayInt,
-    ArrayIntStart,
-    ArrayIntAddValue,
-    ArrayIntEnd,
-)
-from streaming_data_types.fbschemas.logdata_f142.ULong import (
-    ULong,
-    ULongStart,
-    ULongAddValue,
-    ULongEnd,
-)
-from streaming_data_types.fbschemas.logdata_f142.ArrayULong import (
-    ArrayULong,
-    ArrayULongStart,
-    ArrayULongAddValue,
-    ArrayULongEnd,
-)
-from streaming_data_types.fbschemas.logdata_f142.Long import (
-    Long,
-    LongStart,
-    LongAddValue,
-    LongEnd,
-)
-from streaming_data_types.fbschemas.logdata_f142.ArrayLong import (
-    ArrayLong,
-    ArrayLongStart,
-    ArrayLongAddValue,
-    ArrayLongEnd,
-)
-from streaming_data_types.fbschemas.logdata_f142.Float import (
-    Float,
-    FloatStart,
-    FloatAddValue,
-    FloatEnd,
-)
-from streaming_data_types.fbschemas.logdata_f142.ArrayFloat import (
-    ArrayFloat,
-    ArrayFloatStart,
-    ArrayFloatAddValue,
-    ArrayFloatEnd,
-)
-from streaming_data_types.fbschemas.logdata_f142.Double import (
-    Double,
-    DoubleStart,
-    DoubleAddValue,
-    DoubleEnd,
+    ArrayByteStart,
 )
 from streaming_data_types.fbschemas.logdata_f142.ArrayDouble import (
     ArrayDouble,
-    ArrayDoubleStart,
     ArrayDoubleAddValue,
     ArrayDoubleEnd,
+    ArrayDoubleStart,
 )
-from streaming_data_types.fbschemas.logdata_f142.String import (
-    String,
-    StringStart,
-    StringAddValue,
-    StringEnd,
+from streaming_data_types.fbschemas.logdata_f142.ArrayFloat import (
+    ArrayFloat,
+    ArrayFloatAddValue,
+    ArrayFloatEnd,
+    ArrayFloatStart,
+)
+from streaming_data_types.fbschemas.logdata_f142.ArrayInt import (
+    ArrayInt,
+    ArrayIntAddValue,
+    ArrayIntEnd,
+    ArrayIntStart,
+)
+from streaming_data_types.fbschemas.logdata_f142.ArrayLong import (
+    ArrayLong,
+    ArrayLongAddValue,
+    ArrayLongEnd,
+    ArrayLongStart,
+)
+from streaming_data_types.fbschemas.logdata_f142.ArrayShort import (
+    ArrayShort,
+    ArrayShortAddValue,
+    ArrayShortEnd,
+    ArrayShortStart,
 )
 from streaming_data_types.fbschemas.logdata_f142.ArrayString import (
     ArrayString,
-    ArrayStringStart,
     ArrayStringAddValue,
     ArrayStringEnd,
+    ArrayStringStart,
     ArrayStringStartValueVector,
 )
+from streaming_data_types.fbschemas.logdata_f142.ArrayUByte import (
+    ArrayUByte,
+    ArrayUByteAddValue,
+    ArrayUByteEnd,
+    ArrayUByteStart,
+)
+from streaming_data_types.fbschemas.logdata_f142.ArrayUInt import (
+    ArrayUInt,
+    ArrayUIntAddValue,
+    ArrayUIntEnd,
+    ArrayUIntStart,
+)
+from streaming_data_types.fbschemas.logdata_f142.ArrayULong import (
+    ArrayULong,
+    ArrayULongAddValue,
+    ArrayULongEnd,
+    ArrayULongStart,
+)
+from streaming_data_types.fbschemas.logdata_f142.ArrayUShort import (
+    ArrayUShort,
+    ArrayUShortAddValue,
+    ArrayUShortEnd,
+    ArrayUShortStart,
+)
+from streaming_data_types.fbschemas.logdata_f142.Byte import (
+    Byte,
+    ByteAddValue,
+    ByteEnd,
+    ByteStart,
+)
+from streaming_data_types.fbschemas.logdata_f142.Double import (
+    Double,
+    DoubleAddValue,
+    DoubleEnd,
+    DoubleStart,
+)
+from streaming_data_types.fbschemas.logdata_f142.Float import (
+    Float,
+    FloatAddValue,
+    FloatEnd,
+    FloatStart,
+)
+from streaming_data_types.fbschemas.logdata_f142.Int import (
+    Int,
+    IntAddValue,
+    IntEnd,
+    IntStart,
+)
+from streaming_data_types.fbschemas.logdata_f142.Long import (
+    Long,
+    LongAddValue,
+    LongEnd,
+    LongStart,
+)
+from streaming_data_types.fbschemas.logdata_f142.Short import (
+    Short,
+    ShortAddValue,
+    ShortEnd,
+    ShortStart,
+)
+from streaming_data_types.fbschemas.logdata_f142.String import (
+    String,
+    StringAddValue,
+    StringEnd,
+    StringStart,
+)
+from streaming_data_types.fbschemas.logdata_f142.UByte import (
+    UByte,
+    UByteAddValue,
+    UByteEnd,
+    UByteStart,
+)
+from streaming_data_types.fbschemas.logdata_f142.UInt import (
+    UInt,
+    UIntAddValue,
+    UIntEnd,
+    UIntStart,
+)
+from streaming_data_types.fbschemas.logdata_f142.ULong import (
+    ULong,
+    ULongAddValue,
+    ULongEnd,
+    ULongStart,
+)
+from streaming_data_types.fbschemas.logdata_f142.UShort import (
+    UShort,
+    UShortAddValue,
+    UShortEnd,
+    UShortStart,
+)
+from streaming_data_types.fbschemas.logdata_f142.Value import Value
 from streaming_data_types.utils import check_schema_identifier
-import numpy as np
-from typing import Any, Tuple, Callable, Dict, Union
-from collections import namedtuple
-
 
 FILE_IDENTIFIER = b"f142"
 

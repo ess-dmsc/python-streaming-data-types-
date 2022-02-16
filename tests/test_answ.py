@@ -1,12 +1,14 @@
 from datetime import datetime, timezone
+
 import pytest
+
+from streaming_data_types import DESERIALISERS, SERIALISERS
 from streaming_data_types.action_response_answ import (
-    serialise_answ,
-    deserialise_answ,
-    ActionType,
     ActionOutcome,
+    ActionType,
+    deserialise_answ,
+    serialise_answ,
 )
-from streaming_data_types import SERIALISERS, DESERIALISERS
 from streaming_data_types.exceptions import WrongSchemaException
 
 

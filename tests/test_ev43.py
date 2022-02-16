@@ -1,7 +1,8 @@
 import numpy as np
 import pytest
-from streaming_data_types.eventdata_ev43 import serialise_ev43, deserialise_ev43
-from streaming_data_types import SERIALISERS, DESERIALISERS
+
+from streaming_data_types import DESERIALISERS, SERIALISERS
+from streaming_data_types.eventdata_ev43 import deserialise_ev43, serialise_ev43
 from streaming_data_types.exceptions import WrongSchemaException
 
 

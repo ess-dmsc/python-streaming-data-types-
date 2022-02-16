@@ -1,8 +1,9 @@
 from collections import namedtuple
+
 import flatbuffers
+
 from streaming_data_types.fbschemas.nicos_cache_ns10 import CacheEntry
 from streaming_data_types.utils import check_schema_identifier
-
 
 FILE_IDENTIFIER = b"ns10"
 

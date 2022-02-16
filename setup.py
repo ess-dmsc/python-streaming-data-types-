@@ -1,5 +1,7 @@
 import os
-from setuptools import setup, find_packages
+
+from setuptools import find_packages, setup
+
 from streaming_data_types._version import version
 
 DESCRIPTION = "Python utilities for handling ESS streamed data"

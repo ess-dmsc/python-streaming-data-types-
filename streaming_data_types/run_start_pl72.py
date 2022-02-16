@@ -1,15 +1,16 @@
 import time
-from typing import Union, Optional
+from collections import namedtuple
+from datetime import datetime
+from typing import NamedTuple, Optional, Union
+
 import flatbuffers
+import numpy as np
+
 from streaming_data_types.fbschemas.run_start_pl72 import (
     RunStart,
     SpectraDetectorMapping,
 )
 from streaming_data_types.utils import check_schema_identifier
-from typing import NamedTuple
-from datetime import datetime
-import numpy as np
-from collections import namedtuple
 
 FILE_IDENTIFIER = b"pl72"
 

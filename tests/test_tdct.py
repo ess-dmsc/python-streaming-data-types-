@@ -1,9 +1,9 @@
-import pytest
 import numpy as np
+import pytest
 
+from streaming_data_types import DESERIALISERS, SERIALISERS
 from streaming_data_types.exceptions import WrongSchemaException
-from streaming_data_types.timestamps_tdct import serialise_tdct, deserialise_tdct
-from streaming_data_types import SERIALISERS, DESERIALISERS
+from streaming_data_types.timestamps_tdct import deserialise_tdct, serialise_tdct
 
 
 class TestSerialisationTdct:

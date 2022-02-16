@@ -1,11 +1,12 @@
 import pytest
+
+from streaming_data_types import DESERIALISERS, SERIALISERS
+from streaming_data_types.epics_connection_info_ep00 import (
+    deserialise_ep00,
+    serialise_ep00,
+)
 from streaming_data_types.exceptions import WrongSchemaException
 from streaming_data_types.fbschemas.epics_connection_info_ep00 import EventType
-from streaming_data_types.epics_connection_info_ep00 import (
-    serialise_ep00,
-    deserialise_ep00,
-)
-from streaming_data_types import SERIALISERS, DESERIALISERS
 
 
 class TestSerialisationEp00:

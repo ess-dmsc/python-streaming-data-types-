@@ -1,14 +1,16 @@
 from collections import namedtuple
+from typing import List, Union
+
 import flatbuffers
 from flatbuffers.packer import struct as flatbuffer_struct
-from streaming_data_types.utils import check_schema_identifier
+
 from streaming_data_types.fbschemas.forwarder_config_update_rf5k import (
-    UpdateType,
     ConfigUpdate,
-    Stream,
     Protocol,
+    Stream,
+    UpdateType,
 )
-from typing import List, Union
+from streaming_data_types.utils import check_schema_identifier
 
 FILE_IDENTIFIER = b"rf5k"
 

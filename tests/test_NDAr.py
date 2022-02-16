@@ -1,9 +1,10 @@
+import numpy as np
 import pytest
-from streaming_data_types.area_detector_NDAr import serialise_ndar, deserialise_ndar
+
+from streaming_data_types import DESERIALISERS, SERIALISERS
+from streaming_data_types.area_detector_NDAr import deserialise_ndar, serialise_ndar
 from streaming_data_types.exceptions import WrongSchemaException
 from streaming_data_types.fbschemas.NDAr_NDArray_schema.DType import DType
-from streaming_data_types import SERIALISERS, DESERIALISERS
-import numpy as np
 
 
 class TestSerialisationNDAr:

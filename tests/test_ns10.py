@@ -1,7 +1,8 @@
 import pytest
+
+from streaming_data_types import DESERIALISERS, SERIALISERS
 from streaming_data_types.exceptions import WrongSchemaException
-from streaming_data_types.nicos_cache_ns10 import serialise_ns10, deserialise_ns10
-from streaming_data_types import SERIALISERS, DESERIALISERS
+from streaming_data_types.nicos_cache_ns10 import deserialise_ns10, serialise_ns10
 
 
 class TestSerialisationNs10:

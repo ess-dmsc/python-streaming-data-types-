@@ -1,13 +1,14 @@
-import numpy as np
-from streaming_data_types.sample_environment_senv import (
-    serialise_senv,
-    deserialise_senv,
-)
-from streaming_data_types import SERIALISERS, DESERIALISERS
 from datetime import datetime, timezone
-from streaming_data_types.fbschemas.sample_environment_senv.Location import Location
+
+import numpy as np
 import pytest
 
+from streaming_data_types import DESERIALISERS, SERIALISERS
+from streaming_data_types.fbschemas.sample_environment_senv.Location import Location
+from streaming_data_types.sample_environment_senv import (
+    deserialise_senv,
+    serialise_senv,
+)
 
 entry_1 = {
     "name": "some_name",

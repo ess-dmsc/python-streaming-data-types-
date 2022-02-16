@@ -1,12 +1,14 @@
-import pytest
-from streaming_data_types.area_detector_ADAr import (
-    serialise_ADAr,
-    deserialise_ADAr,
-    Attribute,
-)
-from streaming_data_types import SERIALISERS, DESERIALISERS
-import numpy as np
 from datetime import datetime, timezone
+
+import numpy as np
+import pytest
+
+from streaming_data_types import DESERIALISERS, SERIALISERS
+from streaming_data_types.area_detector_ADAr import (
+    Attribute,
+    deserialise_ADAr,
+    serialise_ADAr,
+)
 from streaming_data_types.exceptions import WrongSchemaException
 
 

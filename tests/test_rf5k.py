@@ -1,14 +1,15 @@
 import pytest
+
+from streaming_data_types import DESERIALISERS, SERIALISERS
 from streaming_data_types.exceptions import WrongSchemaException
-from streaming_data_types.forwarder_config_update_rf5k import (
-    serialise_rf5k,
-    deserialise_rf5k,
-    StreamInfo,
-    Protocol,
-)
-from streaming_data_types import SERIALISERS, DESERIALISERS
 from streaming_data_types.fbschemas.forwarder_config_update_rf5k.UpdateType import (
     UpdateType,
+)
+from streaming_data_types.forwarder_config_update_rf5k import (
+    Protocol,
+    StreamInfo,
+    deserialise_rf5k,
+    serialise_rf5k,
 )
 
 

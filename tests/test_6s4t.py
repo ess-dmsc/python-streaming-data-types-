@@ -1,8 +1,8 @@
 import pytest
 
+from streaming_data_types import DESERIALISERS, SERIALISERS
 from streaming_data_types.exceptions import WrongSchemaException
-from streaming_data_types.run_stop_6s4t import serialise_6s4t, deserialise_6s4t
-from streaming_data_types import SERIALISERS, DESERIALISERS
+from streaming_data_types.run_stop_6s4t import deserialise_6s4t, serialise_6s4t
 
 
 class TestSerialisation6s4t:

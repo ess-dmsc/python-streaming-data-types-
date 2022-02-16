@@ -1,10 +1,11 @@
-import pytest
 import numpy as np
+import pytest
+
+from streaming_data_types import DESERIALISERS, SERIALISERS
 from streaming_data_types.exceptions import WrongSchemaException
-from streaming_data_types.logdata_f142 import serialise_f142, deserialise_f142
 from streaming_data_types.fbschemas.logdata_f142.AlarmSeverity import AlarmSeverity
 from streaming_data_types.fbschemas.logdata_f142.AlarmStatus import AlarmStatus
-from streaming_data_types import SERIALISERS, DESERIALISERS
+from streaming_data_types.logdata_f142 import deserialise_f142, serialise_f142
 
 
 class TestSerialisationF142:

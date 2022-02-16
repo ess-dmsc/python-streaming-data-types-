@@ -1,12 +1,13 @@
+import numpy as np
 import pytest
+
+from streaming_data_types import DESERIALISERS, SERIALISERS
 from streaming_data_types.exceptions import WrongSchemaException
 from streaming_data_types.run_start_pl72 import (
-    serialise_pl72,
-    deserialise_pl72,
     DetectorSpectrumMap,
+    deserialise_pl72,
+    serialise_pl72,
 )
-from streaming_data_types import SERIALISERS, DESERIALISERS
-import numpy as np
 
 
 class TestSerialisationPl72:

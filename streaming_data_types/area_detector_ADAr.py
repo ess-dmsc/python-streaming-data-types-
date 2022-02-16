@@ -1,12 +1,14 @@
-from typing import Union, NamedTuple, List
-import flatbuffers
-from streaming_data_types.fbschemas.ADAr_ADArray_schema import ADArray
-from streaming_data_types.fbschemas.ADAr_ADArray_schema.DType import DType
-import streaming_data_types.fbschemas.ADAr_ADArray_schema.Attribute as ADArAttribute
-from streaming_data_types.utils import check_schema_identifier
-import numpy as np
 from datetime import datetime, timezone
 from struct import pack
+from typing import List, NamedTuple, Union
+
+import flatbuffers
+import numpy as np
+
+import streaming_data_types.fbschemas.ADAr_ADArray_schema.Attribute as ADArAttribute
+from streaming_data_types.fbschemas.ADAr_ADArray_schema import ADArray
+from streaming_data_types.fbschemas.ADAr_ADArray_schema.DType import DType
+from streaming_data_types.utils import check_schema_identifier
 
 FILE_IDENTIFIER = b"ADAr"
 

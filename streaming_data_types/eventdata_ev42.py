@@ -1,11 +1,12 @@
 from collections import namedtuple
+
 import flatbuffers
+import numpy as np
+
 import streaming_data_types.fbschemas.eventdata_ev42.EventMessage as EventMessage
 import streaming_data_types.fbschemas.eventdata_ev42.FacilityData as FacilityData
 import streaming_data_types.fbschemas.isis_event_info_is84.ISISData as ISISData
 from streaming_data_types.utils import check_schema_identifier
-import numpy as np
-
 
 FILE_IDENTIFIER = b"ev42"
 

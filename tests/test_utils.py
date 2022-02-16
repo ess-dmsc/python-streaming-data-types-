@@ -1,4 +1,5 @@
 import pytest
+
 from streaming_data_types.exceptions import ShortBufferException
 from streaming_data_types.utils import check_schema_identifier
 

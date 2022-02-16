@@ -1,8 +1,9 @@
 import numpy as np
 import pytest
+
+from streaming_data_types import DESERIALISERS, SERIALISERS
 from streaming_data_types.exceptions import WrongSchemaException
-from streaming_data_types.histogram_hs00 import serialise_hs00, deserialise_hs00
-from streaming_data_types import SERIALISERS, DESERIALISERS
+from streaming_data_types.histogram_hs00 import deserialise_hs00, serialise_hs00
 
 
 def create_test_data_with_type(numpy_type):

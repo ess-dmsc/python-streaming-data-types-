@@ -1,14 +1,14 @@
 import flatbuffers
 import numpy
-import streaming_data_types.fbschemas.histogram_hs00.ArrayFloat as ArrayFloat
+
 import streaming_data_types.fbschemas.histogram_hs00.ArrayDouble as ArrayDouble
+import streaming_data_types.fbschemas.histogram_hs00.ArrayFloat as ArrayFloat
 import streaming_data_types.fbschemas.histogram_hs00.ArrayUInt as ArrayUInt
 import streaming_data_types.fbschemas.histogram_hs00.ArrayULong as ArrayULong
 import streaming_data_types.fbschemas.histogram_hs00.DimensionMetaData as DimensionMetaData
 import streaming_data_types.fbschemas.histogram_hs00.EventHistogram as EventHistogram
 from streaming_data_types.fbschemas.histogram_hs00.Array import Array
 from streaming_data_types.utils import check_schema_identifier
-
 
 FILE_IDENTIFIER = b"hs00"
 
