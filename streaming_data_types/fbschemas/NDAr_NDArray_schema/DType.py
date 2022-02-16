@@ -2,6 +2,7 @@
 
 # namespace: FB_Tables
 
+
 class DType(object):
     Int8 = 0
     Uint8 = 1
@@ -14,4 +15,3 @@ class DType(object):
     Float32 = 8
     Float64 = 9
     c_string = 10
-

@@ -1,24 +1,26 @@
-from streaming_data_types.fbschemas.sample_environment_senv.SampleEnvironmentData import (
-    SampleEnvironmentData,
-    SampleEnvironmentDataStart,
-    SampleEnvironmentDataEnd,
-    SampleEnvironmentDataAddName,
-    SampleEnvironmentDataAddChannel,
-    SampleEnvironmentDataAddMessageCounter,
-    SampleEnvironmentDataAddTimeDelta,
-    SampleEnvironmentDataAddTimestampLocation,
-    SampleEnvironmentDataAddValues,
-    SampleEnvironmentDataAddValuesType,
-    SampleEnvironmentDataAddTimestamps,
-    SampleEnvironmentDataAddPacketTimestamp,
-)
-from streaming_data_types.fbschemas.sample_environment_senv.Location import Location
-from streaming_data_types.fbschemas.sample_environment_senv.ValueUnion import ValueUnion
+from datetime import datetime, timezone
+from typing import List, NamedTuple, Optional, Union
+
 import flatbuffers
 import numpy as np
-from typing import Optional, Union, List, NamedTuple
+
+from streaming_data_types.fbschemas.sample_environment_senv.Location import Location
+from streaming_data_types.fbschemas.sample_environment_senv.SampleEnvironmentData import (
+    SampleEnvironmentData,
+    SampleEnvironmentDataAddChannel,
+    SampleEnvironmentDataAddMessageCounter,
+    SampleEnvironmentDataAddName,
+    SampleEnvironmentDataAddPacketTimestamp,
+    SampleEnvironmentDataAddTimeDelta,
+    SampleEnvironmentDataAddTimestampLocation,
+    SampleEnvironmentDataAddTimestamps,
+    SampleEnvironmentDataAddValues,
+    SampleEnvironmentDataAddValuesType,
+    SampleEnvironmentDataEnd,
+    SampleEnvironmentDataStart,
+)
+from streaming_data_types.fbschemas.sample_environment_senv.ValueUnion import ValueUnion
 from streaming_data_types.utils import check_schema_identifier
-from datetime import datetime, timezone
 
 FILE_IDENTIFIER = b"senv"
 
@@ -114,12 +116,12 @@ def deserialise_senv(buffer: Union[bytearray, bytes]) -> Response:
 
     from flatbuffers.number_types import (
         Int8Flags,
-        Uint8Flags,
         Int16Flags,
-        Uint16Flags,
         Int32Flags,
-        Uint32Flags,
         Int64Flags,
+        Uint8Flags,
+        Uint16Flags,
+        Uint32Flags,
         Uint64Flags,
     )
 

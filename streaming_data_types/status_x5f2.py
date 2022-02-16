@@ -1,8 +1,9 @@
 from collections import namedtuple
+
 import flatbuffers
-from streaming_data_types.utils import check_schema_identifier
 
 from streaming_data_types.fbschemas.status_x5f2 import Status
+from streaming_data_types.utils import check_schema_identifier
 
 FILE_IDENTIFIER = b"x5f2"
 

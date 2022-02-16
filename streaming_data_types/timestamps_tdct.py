@@ -1,14 +1,16 @@
-from streaming_data_types.fbschemas.timestamps_tdct.timestamp import (
-    timestamp,
-    timestampStart,
-    timestampAddName,
-    timestampAddTimestamps,
-    timestampAddSequenceCounter,
-    timestampEnd,
-)
+from typing import List, NamedTuple, Optional, Union
+
 import flatbuffers
 import numpy as np
-from typing import Optional, Union, List, NamedTuple
+
+from streaming_data_types.fbschemas.timestamps_tdct.timestamp import (
+    timestamp,
+    timestampAddName,
+    timestampAddSequenceCounter,
+    timestampAddTimestamps,
+    timestampEnd,
+    timestampStart,
+)
 from streaming_data_types.utils import check_schema_identifier
 
 FILE_IDENTIFIER = b"tdct"

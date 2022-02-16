@@ -1,9 +1,9 @@
-from typing import Union
+from typing import NamedTuple, Optional, Union
+
 import flatbuffers
+
 from streaming_data_types.fbschemas.finished_writing_wrdn import FinishedWriting
 from streaming_data_types.utils import check_schema_identifier
-from typing import NamedTuple
-from typing import Optional
 
 FILE_IDENTIFIER = b"wrdn"
 

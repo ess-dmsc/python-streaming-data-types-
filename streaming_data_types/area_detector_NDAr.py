@@ -1,10 +1,12 @@
+import time
+from collections import namedtuple
 from typing import Union
+
 import flatbuffers
+import numpy as np
+
 from streaming_data_types.fbschemas.NDAr_NDArray_schema import NDArray
 from streaming_data_types.utils import check_schema_identifier
-from collections import namedtuple
-import time
-import numpy as np
 
 FILE_IDENTIFIER = b"NDAr"
 
@@ -60,9 +62,21 @@ def get_data(fb_arr):
     Converts the data array into the correct type.
     """
     raw_data = fb_arr.PDataAsNumpy()
-    numpy_arr_type = [np.int8, np.uint8, np.int16, np.uint16, np.int32, np.uint32, np.int64, np.uint64,
-                      np.float32, np.float64]
-    return raw_data.view(numpy_arr_type[fb_arr.DataType()]).reshape(fb_arr.DimsAsNumpy())
+    numpy_arr_type = [
+        np.int8,
+        np.uint8,
+        np.int16,
+        np.uint16,
+        np.int32,
+        np.uint32,
+        np.int64,
+        np.uint64,
+        np.float32,
+        np.float64,
+    ]
+    return raw_data.view(numpy_arr_type[fb_arr.DataType()]).reshape(
+        fb_arr.DimsAsNumpy()
+    )
 
 
 def deserialise_ndar(buffer: Union[bytearray, bytes]) -> NDArray:

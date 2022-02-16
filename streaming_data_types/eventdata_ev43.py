@@ -1,9 +1,10 @@
 from collections import namedtuple
+
 import flatbuffers
-import streaming_data_types.fbschemas.eventdata_ev43.Event43Message as Event43Message
-from streaming_data_types.utils import check_schema_identifier
 import numpy as np
 
+import streaming_data_types.fbschemas.eventdata_ev43.Event43Message as Event43Message
+from streaming_data_types.utils import check_schema_identifier
 
 FILE_IDENTIFIER = b"ev43"
 

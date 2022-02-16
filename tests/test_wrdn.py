@@ -1,7 +1,8 @@
 import pytest
+
+from streaming_data_types import DESERIALISERS, SERIALISERS
 from streaming_data_types.exceptions import WrongSchemaException
-from streaming_data_types.finished_writing_wrdn import serialise_wrdn, deserialise_wrdn
-from streaming_data_types import SERIALISERS, DESERIALISERS
+from streaming_data_types.finished_writing_wrdn import deserialise_wrdn, serialise_wrdn
 
 
 class TestEncoder(object):

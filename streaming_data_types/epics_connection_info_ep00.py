@@ -1,11 +1,13 @@
-from typing import Union, Optional
+from collections import namedtuple
+from typing import Optional, Union
+
 import flatbuffers
+
 from streaming_data_types.fbschemas.epics_connection_info_ep00 import (
     EpicsConnectionInfo,
     EventType,
 )
 from streaming_data_types.utils import check_schema_identifier
-from collections import namedtuple
 
 FILE_IDENTIFIER = b"ep00"
 
@@ -43,8 +45,8 @@ EpicsConnection = namedtuple(
 def deserialise_ep00(buffer: Union[bytearray, bytes]) -> EpicsConnection:
     check_schema_identifier(buffer, FILE_IDENTIFIER)
 
-    epics_connection = EpicsConnectionInfo.EpicsConnectionInfo.GetRootAsEpicsConnectionInfo(
-        buffer, 0
+    epics_connection = (
+        EpicsConnectionInfo.EpicsConnectionInfo.GetRootAsEpicsConnectionInfo(buffer, 0)
     )
 
     source_name = (

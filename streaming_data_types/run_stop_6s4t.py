@@ -1,9 +1,10 @@
-from typing import Union
+from datetime import datetime
+from typing import NamedTuple, Union
+
 import flatbuffers
+
 from streaming_data_types.fbschemas.run_stop_6s4t import RunStop
 from streaming_data_types.utils import check_schema_identifier
-from typing import NamedTuple
-from datetime import datetime
 
 FILE_IDENTIFIER = b"6s4t"
 
