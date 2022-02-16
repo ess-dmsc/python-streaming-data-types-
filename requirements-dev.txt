@@ -1,5 +1,7 @@
 -r requirements.txt
-black
+black==21.9b0   # Pinned to match pre-commit config
+flake8==4.0.1   # Pinned to match pre-commit config
+isort==5.10.1    # Pinned to match pre-commit configblack
 flake8
 pre-commit
 pytest
