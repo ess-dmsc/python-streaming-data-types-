@@ -14,6 +14,7 @@ from streaming_data_types.forwarder_config_update_rf5k import (
     serialise_rf5k,
 )
 from streaming_data_types.histogram_hs00 import deserialise_hs00, serialise_hs00
+from streaming_data_types.histogram_hs01 import deserialise_hs01, serialise_hs01
 from streaming_data_types.logdata_f142 import deserialise_f142, serialise_f142
 from streaming_data_types.nicos_cache_ns10 import deserialise_ns10, serialise_ns10
 from streaming_data_types.run_start_pl72 import deserialise_pl72, serialise_pl72
