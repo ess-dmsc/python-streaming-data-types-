@@ -8,7 +8,8 @@ https://github.com/ess-dmsc/streaming-data-types
 
 |name|description|
 |----|-----------|
-|hs00|Histogram schema|
+|hs00|Histogram schema (deprecated in favour of hs01)|
+|hs01|Histogram schema|
 |ns10|NICOS cache entry schema|
 |pl72|Run start|
 |6s4t|Run stop|
@@ -24,7 +25,7 @@ https://github.com/ess-dmsc/streaming-data-types
 |NDAr|**Deprecated**|
 |ADAr|For storing EPICS areaDetector data|
 
-### hs00
+### hs00 and hs01
 Schema for histogram data. It is one of the more complicated to use schemas.
 It takes a Python dictionary as its input; this dictionary needs to have correctly
 named fields.
