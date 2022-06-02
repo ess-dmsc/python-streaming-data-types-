@@ -8,7 +8,8 @@
 namespace py = pybind11;
 
 PYBIND11_MODULE(fast_f142_serialiser, m) {
-  m.doc() = "A module for a C++ based f142 serialiser that is significantly more performant than the Python version.";
+  m.doc() = "A module for a C++ based f142 serialiser that is significantly "
+            "more performant than the Python version.";
   py::class_<f142_serialiser>(m, "f142_serialiser")
       .def(py::init<>())
       .def("serialise_message",
