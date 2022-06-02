@@ -4,6 +4,14 @@ Spallation Source ERIC for data transport.
 
 https://github.com/ess-dmsc/streaming-data-types
 
+To install, run:
+
+```pip install ess_streaming_data_types```
+
+To install with the f142 C++ serialiser, run the following command:
+
+```pip install ess_streaming_data_types[cpp_f142]```
+
 ## FlatBuffer Schemas
 
 |name|description|
