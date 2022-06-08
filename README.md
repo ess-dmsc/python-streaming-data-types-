@@ -68,3 +68,20 @@ hist = {
 ```
 The arrays passed in for `data`, `errors` and `bin_boundaries` can be NumPy arrays
 or regular lists, but on deserialisation they will be NumPy arrays.
+
+### *f142* C++ serialiser
+
+A C++ implementation of a f142 serialiser with Python bindings implemented using pybind11. C++ code will only be compiled if the pybind11 Python package is available. Note that the C++ code requires ```std::span``` and hence C++20 in its current form.
+
+#### Usage
+
+```Python
+from fast_f142_serialiser import f142_serialiser
+from datetime import datetime
+serialiser = f142_serialiser()
+msg = serialiser.serialise_message("source_name", 3.14, datetime.now())
+print(f"Message is of type \"{type(msg)}\" with a length of {len(msg)} bytes.")
+# Message is of type "<class 'bytes'>" with a length of 96 bytes.
+```
+
+To maximise performance of the C++ f142 serialiser, an object is used in order to preserve resurces and re-use memory allocated to the serialiser. Note that the C++ f142 serialiser does not implement serialisation of alarm and alarm severity information. Also, instead of providing the timestamp in nanoseconds since Unix epoch, it must be provided in the form of a ```datetime``` object.
