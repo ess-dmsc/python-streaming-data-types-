@@ -84,4 +84,4 @@ print(f"Message is of type \"{type(msg)}\" with a length of {len(msg)} bytes.")
 # Message is of type "<class 'bytes'>" with a length of 96 bytes.
 ```
 
-To maximise performance of the C++ f142 serialiser, an object is used in order to preserve resurces and re-use memory allocated to the serialiser. Note that the C++ f142 serialiser does not implement serialisation of alarm and alarm severity information. Also, instead of providing the timestamp in nanoseconds since Unix epoch, it must be provided in the form of a ```datetime``` object.
+To maximise performance of the C++ f142 serialiser, an object is used in order to preserve resources and re-use memory allocated to the serialiser. Note that the C++ f142 serialiser does not implement serialisation of alarm and alarm severity information. Also, instead of providing the timestamp in nanoseconds since Unix epoch, it must be provided in the form of a ```datetime``` object.
