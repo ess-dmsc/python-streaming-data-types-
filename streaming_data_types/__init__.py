@@ -25,6 +25,9 @@ from streaming_data_types.sample_environment_senv import (
 )
 from streaming_data_types.status_x5f2 import deserialise_x5f2, serialise_x5f2
 from streaming_data_types.timestamps_tdct import deserialise_tdct, serialise_tdct
+from streaming_data_types.epics_pv_conn_status_pvCn import deserialise_pvCn, serialise_pvCn
+from streaming_data_types.epics_pv_alarm_status_pvAl import deserialise_pvAl, serialise_pvAl
+from streaming_data_types.epics_pv_scalar_data_scal import deserialise_scal, serialise_scal
 
 __version__ = version
 
@@ -46,6 +49,9 @@ SERIALISERS = {
     "NDAr": serialise_ndar,
     "senv": serialise_senv,
     "ADAr": serialise_ADAr,
+    "pvCn": serialise_pvCn,
+    "pvAl": serialise_pvAl,
+    "scal": serialise_scal,
 }
 
 
@@ -67,4 +73,7 @@ DESERIALISERS = {
     "NDAr": deserialise_ndar,
     "senv": deserialise_senv,
     "ADAr": deserialise_ADAr,
+    "pvCn": deserialise_pvCn,
+    "pvAl": deserialise_pvAl,
+    "scal": deserialise_scal,
 }
