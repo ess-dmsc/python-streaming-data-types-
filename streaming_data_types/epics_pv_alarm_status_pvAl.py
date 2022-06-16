@@ -1,4 +1,4 @@
-from typing import Optional, Union, NamedTuple
+from typing import Union, NamedTuple
 from datetime import datetime, timezone
 
 import flatbuffers
@@ -7,7 +7,7 @@ from streaming_data_types.fbschemas.pv_alarm_state_pvAl import (
     AlarmState,
     AlarmSeverity,
     CAAlarmState,
-    PV_AlarmState
+    PV_AlarmState,
 )
 from streaming_data_types.utils import check_schema_identifier
 
@@ -49,7 +49,7 @@ PV_AlarmStateInfo = NamedTuple(
         ("state", AlarmState.AlarmState),
         ("ca_state", CAAlarmState.CAAlarmState),
         ("severity", AlarmSeverity.AlarmSeverity),
-        ("message", str)
+        ("message", str),
     ),
 )
 
@@ -57,9 +57,7 @@ PV_AlarmStateInfo = NamedTuple(
 def deserialise_pvAl(buffer: Union[bytearray, bytes]) -> PV_AlarmStateInfo:
     check_schema_identifier(buffer, FILE_IDENTIFIER)
 
-    epics_alarm_state = (
-        PV_AlarmState.PV_AlarmState.GetRootAs(buffer, 0)
-    )
+    epics_alarm_state = PV_AlarmState.PV_AlarmState.GetRootAs(buffer, 0)
 
     source_name = (
         epics_alarm_state.SourceName() if epics_alarm_state.SourceName() else b""
@@ -68,7 +66,9 @@ def deserialise_pvAl(buffer: Union[bytearray, bytes]) -> PV_AlarmStateInfo:
 
     return PV_AlarmStateInfo(
         source_name=source_name.decode("utf-8"),
-        timestamp=datetime.fromtimestamp(epics_alarm_state.Timestamp() / 1e6, tz=timezone.utc),
+        timestamp=datetime.fromtimestamp(
+            epics_alarm_state.Timestamp() / 1e6, tz=timezone.utc
+        ),
         state=epics_alarm_state.State(),
         ca_state=epics_alarm_state.CaState(),
         severity=epics_alarm_state.Severity(),

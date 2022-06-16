@@ -77,13 +77,13 @@ from streaming_data_types.fbschemas.epics_scalar_data_scal.Float64 import (
     Float64,
     Float64Start,
     Float64AddValue,
-    Float64End
+    Float64End,
 )
 from streaming_data_types.fbschemas.epics_scalar_data_scal.Int64 import (
     Int64,
     Int64Start,
     Int64AddValue,
-    Int64End
+    Int64End,
 )
 
 from streaming_data_types.fbschemas.epics_scalar_data_scal.Value import Value
@@ -91,30 +91,58 @@ from streaming_data_types.utils import check_schema_identifier
 
 FILE_IDENTIFIER = b"scal"
 
-SerialiserFunctions = namedtuple("SerialiserFunctionMap", ("StartFunction", "AddValueFunction", "EndFunction", "value_type_enum"))
+SerialiserFunctions = namedtuple(
+    "SerialiserFunctionMap",
+    ("StartFunction", "AddValueFunction", "EndFunction", "value_type_enum"),
+)
 
 
-def _serialise_value(builder: flatbuffers.Builder, value: Any, function_map: SerialiserFunctions):
+def _serialise_value(
+    builder: flatbuffers.Builder, value: Any, function_map: SerialiserFunctions
+):
     function_map.StartFunction(builder)
     function_map.AddValueFunction(builder, value)
     return function_map.EndFunction(builder)
 
 
 _map_array_type_to_serialiser = {
-    np.dtype("int8"): SerialiserFunctions(ArrayInt8Start, ArrayInt8AddValue, ArrayInt8End, Value.ArrayInt8),
-    np.dtype("int16"): SerialiserFunctions(ArrayInt16Start, ArrayInt16AddValue, ArrayInt16End, Value.ArrayInt16),
-    np.dtype("int32"): SerialiserFunctions(ArrayInt32Start, ArrayInt32AddValue, ArrayInt32End, Value.ArrayInt32),
-    np.dtype("int64"): SerialiserFunctions(ArrayInt64Start, ArrayInt64AddValue, ArrayInt64End, Value.ArrayInt64),
-    np.dtype("uint8"): SerialiserFunctions(ArrayUInt8Start, ArrayUInt8AddValue, ArrayUInt8End, Value.ArrayUInt8),
-    np.dtype("uint16"): SerialiserFunctions(ArrayUInt16Start, ArrayUInt16AddValue, ArrayUInt16End, Value.ArrayUInt16),
-    np.dtype("uint32"): SerialiserFunctions(ArrayUInt32Start, ArrayUInt32AddValue, ArrayUInt32End, Value.ArrayUInt32),
-    np.dtype("uint64"): SerialiserFunctions(ArrayUInt64Start, ArrayUInt64AddValue, ArrayUInt64End, Value.ArrayUInt64),
-    np.dtype("float32"): SerialiserFunctions(ArrayFloat32Start, ArrayFloat32AddValue, ArrayFloat32End, Value.ArrayFloat32),
-    np.dtype("float64"): SerialiserFunctions(ArrayFloat64Start, ArrayFloat64AddValue, ArrayFloat64End, Value.ArrayFloat64),
+    np.dtype("int8"): SerialiserFunctions(
+        ArrayInt8Start, ArrayInt8AddValue, ArrayInt8End, Value.ArrayInt8
+    ),
+    np.dtype("int16"): SerialiserFunctions(
+        ArrayInt16Start, ArrayInt16AddValue, ArrayInt16End, Value.ArrayInt16
+    ),
+    np.dtype("int32"): SerialiserFunctions(
+        ArrayInt32Start, ArrayInt32AddValue, ArrayInt32End, Value.ArrayInt32
+    ),
+    np.dtype("int64"): SerialiserFunctions(
+        ArrayInt64Start, ArrayInt64AddValue, ArrayInt64End, Value.ArrayInt64
+    ),
+    np.dtype("uint8"): SerialiserFunctions(
+        ArrayUInt8Start, ArrayUInt8AddValue, ArrayUInt8End, Value.ArrayUInt8
+    ),
+    np.dtype("uint16"): SerialiserFunctions(
+        ArrayUInt16Start, ArrayUInt16AddValue, ArrayUInt16End, Value.ArrayUInt16
+    ),
+    np.dtype("uint32"): SerialiserFunctions(
+        ArrayUInt32Start, ArrayUInt32AddValue, ArrayUInt32End, Value.ArrayUInt32
+    ),
+    np.dtype("uint64"): SerialiserFunctions(
+        ArrayUInt64Start, ArrayUInt64AddValue, ArrayUInt64End, Value.ArrayUInt64
+    ),
+    np.dtype("float32"): SerialiserFunctions(
+        ArrayFloat32Start, ArrayFloat32AddValue, ArrayFloat32End, Value.ArrayFloat32
+    ),
+    np.dtype("float64"): SerialiserFunctions(
+        ArrayFloat64Start, ArrayFloat64AddValue, ArrayFloat64End, Value.ArrayFloat64
+    ),
 }
 
-DoubleFuncMap = SerialiserFunctions(Float64Start, Float64AddValue, Float64End, Value.Float64)
+DoubleFuncMap = SerialiserFunctions(
+    Float64Start, Float64AddValue, Float64End, Value.Float64
+)
 IntFuncMap = SerialiserFunctions(Int64Start, Int64AddValue, Int64End, Value.Int64)
+
 
 def serialise_scal(
     source_name: str,
@@ -131,10 +159,14 @@ def serialise_scal(
         value_type = Value.Float64
     elif isinstance(value, np.ndarray):
         c_func_map = _map_array_type_to_serialiser[value.dtype]
-        value_offset = _serialise_value(builder, builder.CreateNumpyVector(value), c_func_map)
+        value_offset = _serialise_value(
+            builder, builder.CreateNumpyVector(value), c_func_map
+        )
         value_type = c_func_map.value_type_enum
     else:
-        raise NotImplementedError(f"scal flatbuffer does not support values of type \"{type(value)}\".")
+        raise NotImplementedError(
+            f'scal flatbuffer does not support values of type "{type(value)}".'
+        )
     ScalarData.ScalarDataStart(builder)
     ScalarData.ScalarDataAddSourceName(builder, source_name_offset)
     ScalarData.ScalarDataAddValue(builder, value_offset)
@@ -144,7 +176,6 @@ def serialise_scal(
     end = ScalarData.ScalarDataEnd(builder)
     builder.Finish(end, file_identifier=FILE_IDENTIFIER)
     return bytes(builder.Output())
-
 
     # if value.ndim == 0:
     #     _serialise_value(
@@ -174,21 +205,21 @@ def serialise_scal(
 #     serialisers_map: Dict,
 # ):
 #     return None
-    # We can use a dictionary to map most numpy types to one of the types defined in the flatbuffer schema
-    # but we have to handle strings separately as there are many subtypes
-    # if np.issubdtype(value.dtype, np.unicode_) or np.issubdtype(
-    #     value.dtype, np.string_
-    # ):
-    #     string_serialiser(builder, value, source)
-    # else:
-    #     try:
-    #         serialisers_map[value.dtype](builder, value, source)
-    #     except KeyError:
-    #         # There are a few numpy types we don't try to handle, for example complex numbers
-    #         raise NotImplementedError(
-    #             f"Cannot serialise data of type {value.dtype}, must use one of "
-    #             f"{list(_map_scalar_type_to_serialiser.keys()).append(np.unicode_)}"
-    #         )
+# We can use a dictionary to map most numpy types to one of the types defined in the flatbuffer schema
+# but we have to handle strings separately as there are many subtypes
+# if np.issubdtype(value.dtype, np.unicode_) or np.issubdtype(
+#     value.dtype, np.string_
+# ):
+#     string_serialiser(builder, value, source)
+# else:
+#     try:
+#         serialisers_map[value.dtype](builder, value, source)
+#     except KeyError:
+#         # There are a few numpy types we don't try to handle, for example complex numbers
+#         raise NotImplementedError(
+#             f"Cannot serialise data of type {value.dtype}, must use one of "
+#             f"{list(_map_scalar_type_to_serialiser.keys()).append(np.unicode_)}"
+#         )
 
 
 _map_fb_enum_to_type = {
@@ -221,7 +252,7 @@ ExtractedScalarData = NamedTuple(
         ("source_name", str),
         ("value", Any),
         ("timestamp", datetime),
-    )
+    ),
 )
 
 
@@ -240,5 +271,7 @@ def deserialise_scal(buffer: Union[bytearray, bytes]) -> ExtractedScalarData:
     return ExtractedScalarData(
         source_name=source_name.decode(),
         value=value,
-        timestamp=datetime.fromtimestamp(scalar_data.Timestamp() / 1e6, tz=timezone.utc)
+        timestamp=datetime.fromtimestamp(
+            scalar_data.Timestamp() / 1e6, tz=timezone.utc
+        ),
     )
