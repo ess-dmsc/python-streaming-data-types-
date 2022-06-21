@@ -177,50 +177,6 @@ def serialise_scal(
     builder.Finish(end, file_identifier=FILE_IDENTIFIER)
     return bytes(builder.Output())
 
-    # if value.ndim == 0:
-    #     _serialise_value(
-    #         builder, source, value, _serialise_string, _map_scalar_type_to_serialiser
-    #     )
-    # elif value.ndim == 1:
-    #     _serialise_value(
-    #         builder,
-    #         source,
-    #         value,
-    #         _serialise_stringarray,
-    #         _map_array_type_to_serialiser,
-    #     )
-    # else:
-    #     raise NotImplementedError("f142 only supports scalars or 1D array values")
-    #
-    # return bytes(
-    #     _complete_buffer(builder, datetime)
-    # )
-
-
-# def _serialise_value(
-#     builder: flatbuffers.Builder,
-#     source: int,
-#     value: Any,
-#     string_serialiser: Callable,
-#     serialisers_map: Dict,
-# ):
-#     return None
-# We can use a dictionary to map most numpy types to one of the types defined in the flatbuffer schema
-# but we have to handle strings separately as there are many subtypes
-# if np.issubdtype(value.dtype, np.unicode_) or np.issubdtype(
-#     value.dtype, np.string_
-# ):
-#     string_serialiser(builder, value, source)
-# else:
-#     try:
-#         serialisers_map[value.dtype](builder, value, source)
-#     except KeyError:
-#         # There are a few numpy types we don't try to handle, for example complex numbers
-#         raise NotImplementedError(
-#             f"Cannot serialise data of type {value.dtype}, must use one of "
-#             f"{list(_map_scalar_type_to_serialiser.keys()).append(np.unicode_)}"
-#         )
-
 
 _map_fb_enum_to_type = {
     Value.Int8: Int8,
