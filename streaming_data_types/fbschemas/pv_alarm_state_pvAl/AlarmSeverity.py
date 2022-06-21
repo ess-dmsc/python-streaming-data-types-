@@ -8,3 +8,4 @@ class AlarmSeverity(object):
     MINOR = 1
     MAJOR = 2
     INVALID = 3
+    UNDEFINED = 4
