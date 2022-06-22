@@ -41,7 +41,7 @@ def deserialise_ev44(buffer):
     )
 
 
-def serialize_ev44(source_name,
+def serialise_ev44(source_name,
                    reference_time,
                    reference_time_index,
                    time_of_flight,
@@ -62,9 +62,9 @@ def serialize_ev44(source_name,
     source = builder.CreateString(source_name)
     ref_time_data = builder.CreateNumpyVector(np.asarray(reference_time).astype(np.longlong))
     ref_time_index_data = builder.CreateNumpyVector(np.asarray(reference_time_index).astype(np.int32))
-    tof_data = builder.CreateNumpyVector(np.asarray(time_of_flight).astype(np.int64))
+    tof_data = builder.CreateNumpyVector(np.asarray(time_of_flight).astype(np.int32))
     pixel_id_data = builder.CreateNumpyVector(np.asarray(pixel_id).astype(np.int32))
-    
+
     Event44Message.Event44MessageStart(builder)
     Event44Message.Event44MessageAddReferenceTime(builder, ref_time_data)
     Event44Message.Event44MessageAddReferenceTimeIndex(builder, ref_time_index_data)
