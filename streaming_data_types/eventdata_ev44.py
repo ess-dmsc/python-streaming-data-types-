@@ -60,7 +60,7 @@ def serialise_ev44(source_name,
     builder.ForceDefaults(True)
 
     source = builder.CreateString(source_name)
-    ref_time_data = builder.CreateNumpyVector(np.asarray(reference_time).astype(np.longlong))
+    ref_time_data = builder.CreateNumpyVector(np.asarray(reference_time).astype(np.int64))
     ref_time_index_data = builder.CreateNumpyVector(np.asarray(reference_time_index).astype(np.int32))
     tof_data = builder.CreateNumpyVector(np.asarray(time_of_flight).astype(np.int32))
     pixel_id_data = builder.CreateNumpyVector(np.asarray(pixel_id).astype(np.int32))
