@@ -3,10 +3,10 @@ from datetime import datetime, timezone
 
 import flatbuffers
 
-from streaming_data_types.fbschemas.epics_conn_status_pvCn import (
+from streaming_data_types.fbschemas.epics_conn_status_pvCn.ConnectionInfo import (
     ConnectionInfo,
-    EpicsPVConnectionInfo,
 )
+from streaming_data_types.fbschemas.epics_conn_status_pvCn import EpicsPVConnectionInfo
 from streaming_data_types.utils import check_schema_identifier
 
 FILE_IDENTIFIER = b"pvCn"
@@ -47,7 +47,7 @@ EpicsPVConnection = NamedTuple(
     "EpicsPVConnection",
     (
         ("timestamp", datetime),
-        ("status", ConnectionInfo.ConnectionInfo),
+        ("status", ConnectionInfo),
         ("source_name", str),
         ("service_id", Optional[str]),
     ),

@@ -1,21 +1,33 @@
 import pytest
 from datetime import datetime, timezone
 from streaming_data_types import DESERIALISERS, SERIALISERS
-from streaming_data_types.epics_pv_alarm_status_pvAl import (
+from streaming_data_types import (
     deserialise_pvAl,
     serialise_pvAl,
 )
 from streaming_data_types.exceptions import WrongSchemaException
-from streaming_data_types.fbschemas.pv_alarm_state_pvAl import AlarmState, CAAlarmState, AlarmSeverity
+from streaming_data_types.epics_pv_alarm_status_pvAl import (
+    AlarmState,
+    CAAlarmState,
+    AlarmSeverity,
+)
 
 
 class TestSerialisation_pvAl:
     original_entry = {
         "source_name": "test_source",
-        "timestamp": datetime(year=2021, month=3, day=26, hour = 12, minute=32, second=11, tzinfo=timezone.utc),
-        "state": AlarmState.AlarmState.CLIENT,
-        "ca_state": CAAlarmState.CAAlarmState.BAD_SUB,
-        "severity": AlarmSeverity.AlarmSeverity.MAJOR,
+        "timestamp": datetime(
+            year=2021,
+            month=3,
+            day=26,
+            hour=12,
+            minute=32,
+            second=11,
+            tzinfo=timezone.utc,
+        ),
+        "state": AlarmState.CLIENT,
+        "ca_state": CAAlarmState.BAD_SUB,
+        "severity": AlarmSeverity.MAJOR,
         "message": "some_msg",
     }
 
@@ -29,7 +41,6 @@ class TestSerialisation_pvAl:
         assert deserialised_tuple.ca_state == self.original_entry["ca_state"]
         assert deserialised_tuple.severity == self.original_entry["severity"]
         assert deserialised_tuple.message == self.original_entry["message"]
-
 
     def test_if_buffer_has_wrong_id_then_throws(self):
         buf = serialise_pvAl(**self.original_entry)

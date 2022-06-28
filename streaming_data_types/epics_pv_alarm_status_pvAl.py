@@ -3,12 +3,12 @@ from datetime import datetime, timezone
 
 import flatbuffers
 
-from streaming_data_types.fbschemas.pv_alarm_state_pvAl import (
-    AlarmState,
+from streaming_data_types.fbschemas.pv_alarm_state_pvAl.AlarmState import AlarmState
+from streaming_data_types.fbschemas.pv_alarm_state_pvAl.AlarmSeverity import (
     AlarmSeverity,
-    CAAlarmState,
-    PV_AlarmState,
 )
+from streaming_data_types.fbschemas.pv_alarm_state_pvAl.CAAlarmState import CAAlarmState
+from streaming_data_types.fbschemas.pv_alarm_state_pvAl import PV_AlarmState
 from streaming_data_types.utils import check_schema_identifier
 
 FILE_IDENTIFIER = b"pvAl"
@@ -17,9 +17,9 @@ FILE_IDENTIFIER = b"pvAl"
 def serialise_pvAl(
     source_name: str,
     timestamp: datetime,
-    state: AlarmState.AlarmState,
-    ca_state: CAAlarmState.CAAlarmState,
-    severity: AlarmSeverity.AlarmSeverity,
+    state: AlarmState,
+    severity: AlarmSeverity,
+    ca_state: CAAlarmState = CAAlarmState.NO_ALARM,
     message: str = "",
 ) -> bytes:
     builder = flatbuffers.Builder(136)
@@ -46,9 +46,9 @@ PV_AlarmStateInfo = NamedTuple(
     (
         ("source_name", str),
         ("timestamp", datetime),
-        ("state", AlarmState.AlarmState),
-        ("ca_state", CAAlarmState.CAAlarmState),
-        ("severity", AlarmSeverity.AlarmSeverity),
+        ("state", AlarmState),
+        ("ca_state", CAAlarmState),
+        ("severity", AlarmSeverity),
         ("message", str),
     ),
 )

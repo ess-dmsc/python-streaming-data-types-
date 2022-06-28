@@ -171,7 +171,7 @@ def serialise_scal(
     ScalarData.ScalarDataAddSourceName(builder, source_name_offset)
     ScalarData.ScalarDataAddValue(builder, value_offset)
     ScalarData.ScalarDataAddValueType(builder, value_type)
-    ScalarData.ScalarDataAddTimestamp(builder, int(timestamp.timestamp() * 1e6))
+    ScalarData.ScalarDataAddTimestamp(builder, int(timestamp.timestamp() * 1e9))
 
     end = ScalarData.ScalarDataEnd(builder)
     builder.Finish(end, file_identifier=FILE_IDENTIFIER)
@@ -228,6 +228,6 @@ def deserialise_scal(buffer: Union[bytearray, bytes]) -> ExtractedScalarData:
         source_name=source_name.decode(),
         value=value,
         timestamp=datetime.fromtimestamp(
-            scalar_data.Timestamp() / 1e6, tz=timezone.utc
+            scalar_data.Timestamp() / 1e9, tz=timezone.utc
         ),
     )
