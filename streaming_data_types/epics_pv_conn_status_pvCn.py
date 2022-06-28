@@ -35,7 +35,7 @@ def serialise_pvCn(
     )
     EpicsPVConnectionInfo.EpicsPVConnectionInfoAddStatus(builder, status)
     EpicsPVConnectionInfo.EpicsPVConnectionInfoAddTimestamp(
-        builder, int(timestamp.timestamp() * 1e6)
+        builder, int(timestamp.timestamp() * 1e9)
     )
 
     end = EpicsPVConnectionInfo.EpicsPVConnectionInfoEnd(builder)
@@ -68,7 +68,7 @@ def deserialise_pvCn(buffer: Union[bytearray, bytes]) -> EpicsPVConnection:
 
     return EpicsPVConnection(
         timestamp=datetime.fromtimestamp(
-            epics_connection.Timestamp() / 1e6, tz=timezone.utc
+            epics_connection.Timestamp() / 1e9, tz=timezone.utc
         ),
         status=epics_connection.Status(),
         source_name=source_name.decode(),

@@ -34,7 +34,7 @@ def serialise_pvAl(
     PV_AlarmState.PV_AlarmStateAddState(builder, state)
     PV_AlarmState.PV_AlarmStateAddCaState(builder, ca_state)
     PV_AlarmState.PV_AlarmStateAddSeverity(builder, severity)
-    PV_AlarmState.PV_AlarmStateAddTimestamp(builder, int(timestamp.timestamp() * 1e6))
+    PV_AlarmState.PV_AlarmStateAddTimestamp(builder, int(timestamp.timestamp() * 1e9))
 
     end = PV_AlarmState.PV_AlarmStateEnd(builder)
     builder.Finish(end, file_identifier=FILE_IDENTIFIER)
@@ -67,7 +67,7 @@ def deserialise_pvAl(buffer: Union[bytearray, bytes]) -> PV_AlarmStateInfo:
     return PV_AlarmStateInfo(
         source_name=source_name.decode("utf-8"),
         timestamp=datetime.fromtimestamp(
-            epics_alarm_state.Timestamp() / 1e6, tz=timezone.utc
+            epics_alarm_state.Timestamp() / 1e9, tz=timezone.utc
         ),
         state=epics_alarm_state.State(),
         ca_state=epics_alarm_state.CaState(),
