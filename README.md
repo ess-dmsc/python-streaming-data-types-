@@ -14,7 +14,7 @@ https://github.com/ess-dmsc/streaming-data-types
 |pl72|Run start|
 |6s4t|Run stop|
 |f142|Log data|
-|ev42|Event data|
+|ev42|Event data (deprecated in favour of ev44)|
 |ev43|Event data from multiple pulses|
 |ev44|Event data with signed data types|
 |x5f2|Status messages|
