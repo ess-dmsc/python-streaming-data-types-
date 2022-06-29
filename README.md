@@ -16,6 +16,7 @@ https://github.com/ess-dmsc/streaming-data-types
 |f142|Log data|
 |ev42|Event data|
 |ev43|Event data from multiple pulses|
+|ev44|Event data with signed data types|
 |x5f2|Status messages|
 |tdct|Timestamps|
 |ep00|EPICS connection info|

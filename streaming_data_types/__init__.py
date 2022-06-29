@@ -8,6 +8,7 @@ from streaming_data_types.epics_connection_info_ep00 import (
 )
 from streaming_data_types.eventdata_ev42 import deserialise_ev42, serialise_ev42
 from streaming_data_types.eventdata_ev43 import deserialise_ev43, serialise_ev43
+from streaming_data_types.eventdata_ev44 import deserialise_ev44, serialise_ev44
 from streaming_data_types.finished_writing_wrdn import deserialise_wrdn, serialise_wrdn
 from streaming_data_types.forwarder_config_update_rf5k import (
     deserialise_rf5k,
@@ -31,6 +32,7 @@ __version__ = version
 SERIALISERS = {
     "ev42": serialise_ev42,
     "ev43": serialise_ev43,
+    "ev44": serialise_ev44,
     "hs00": serialise_hs00,
     "hs01": serialise_hs01,
     "f142": serialise_f142,
@@ -52,6 +54,7 @@ SERIALISERS = {
 DESERIALISERS = {
     "ev42": deserialise_ev42,
     "ev43": deserialise_ev43,
+    "ev44": deserialise_ev44,
     "hs00": deserialise_hs00,
     "hs01": deserialise_hs01,
     "f142": deserialise_f142,
