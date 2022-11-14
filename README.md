@@ -25,6 +25,8 @@ https://github.com/ess-dmsc/streaming-data-types
 |wrdn|File-writer finished writing|
 |NDAr|**Deprecated**|
 |ADAr|For storing EPICS areaDetector data|
+| senv |**Deprecated**|
+| se00 |Used for storing arrays with optional timestamps, for example waveform data. Replaces _senv_. |
 
 ### hs00 and hs01
 Schema for histogram data. It is one of the more complicated to use schemas.
