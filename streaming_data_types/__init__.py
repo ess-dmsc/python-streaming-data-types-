@@ -2,6 +2,7 @@ from streaming_data_types._version import version
 from streaming_data_types.action_response_answ import deserialise_answ, serialise_answ
 from streaming_data_types.area_detector_ADAr import deserialise_ADAr, serialise_ADAr
 from streaming_data_types.area_detector_NDAr import deserialise_ndar, serialise_ndar
+from streaming_data_types.array_1d_se00 import deserialise_se00, serialise_se00
 from streaming_data_types.epics_connection_info_ep00 import (
     deserialise_ep00,
     serialise_ep00,
@@ -47,6 +48,7 @@ SERIALISERS = {
     "wrdn": serialise_wrdn,
     "NDAr": serialise_ndar,
     "senv": serialise_senv,
+    "se00": serialise_se00,
     "ADAr": serialise_ADAr,
 }
 
@@ -69,5 +71,6 @@ DESERIALISERS = {
     "wrdn": deserialise_wrdn,
     "NDAr": deserialise_ndar,
     "senv": deserialise_senv,
+    "se00": deserialise_se00,
     "ADAr": deserialise_ADAr,
 }
