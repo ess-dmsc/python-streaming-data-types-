@@ -26,6 +26,8 @@ https://github.com/ess-dmsc/streaming-data-types
 |NDAr|**Deprecated**|
 |ADAr|EPICS areaDetector data|
 |al00|Alarm/status messages used by the Forwarder and NICOS|
+|senv|**Deprecated**|
+|se00|Arrays with optional timestamps, for example waveform data. Replaces _senv_. |
 
 ### hs00 and hs01
 Schema for histogram data. It is one of the more complicated to use schemas.
