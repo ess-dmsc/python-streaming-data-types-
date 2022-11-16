@@ -24,7 +24,8 @@ https://github.com/ess-dmsc/streaming-data-types
 |answ|File-writer command response|
 |wrdn|File-writer finished writing|
 |NDAr|**Deprecated**|
-|ADAr|For storing EPICS areaDetector data|
+|ADAr|EPICS areaDetector data|
+|al00|Alarm/status messages used by the Forwarder and NICOS|
 
 ### hs00 and hs01
 Schema for histogram data. It is one of the more complicated to use schemas.

@@ -1,6 +1,8 @@
 from collections import namedtuple
 from enum import Enum
+
 import flatbuffers
+
 import streaming_data_types.fbschemas.alarm_al00.Alarm as Alarm
 import streaming_data_types.fbschemas.alarm_al00.Severity as FBSeverity
 from streaming_data_types.utils import check_schema_identifier
