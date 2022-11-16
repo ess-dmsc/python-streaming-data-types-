@@ -55,21 +55,20 @@ entry_4 = {
 class TestSerialisationSenv:
     @pytest.mark.parametrize("input_entry", [entry_1, entry_2, entry_3, entry_4])
     def test_serialises_and_deserialises_se00(self, input_entry):
-        original_entry = input_entry
-        buf = serialise_se00(**original_entry)
+        buf = serialise_se00(**input_entry)
         deserialised_tuple = deserialise_se00(buf)
 
-        assert original_entry["name"] == deserialised_tuple.name
-        assert original_entry["timestamp"] == deserialised_tuple.timestamp
-        assert original_entry["channel"] == deserialised_tuple.channel
-        assert original_entry["message_counter"] == deserialised_tuple.message_counter
-        assert original_entry["sample_ts_delta"] == deserialised_tuple.sample_ts_delta
-        assert np.array_equal(original_entry["values"], deserialised_tuple.values)
+        assert input_entry["name"] == deserialised_tuple.name
+        assert input_entry["timestamp"] == deserialised_tuple.timestamp
+        assert input_entry["channel"] == deserialised_tuple.channel
+        assert input_entry["message_counter"] == deserialised_tuple.message_counter
+        assert input_entry["sample_ts_delta"] == deserialised_tuple.sample_ts_delta
+        assert np.array_equal(input_entry["values"], deserialised_tuple.values)
         assert np.array_equal(
-            original_entry["value_timestamps"], deserialised_tuple.value_ts
+            input_entry["value_timestamps"], deserialised_tuple.value_ts
         )
-        assert original_entry["values"].dtype == deserialised_tuple.values.dtype
-        assert original_entry["ts_location"] == deserialised_tuple.ts_location
+        assert input_entry["values"].dtype == deserialised_tuple.values.dtype
+        assert input_entry["ts_location"] == deserialised_tuple.ts_location
 
     def test_schema_type_is_in_global_serialisers_list(self):
         assert "se00" in SERIALISERS
