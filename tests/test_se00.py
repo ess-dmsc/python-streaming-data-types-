@@ -1,5 +1,4 @@
 import time
-from datetime import datetime, timezone
 
 import numpy as np
 import pytest
