@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import List, NamedTuple, Optional, Union
 
 import flatbuffers
@@ -129,13 +128,6 @@ def deserialise_se00(buffer: Union[bytearray, bytes]) -> Response:
 
     SE_data = SampleEnvironmentData.GetRootAsSampleEnvironmentData(buffer, 0)
 
-    max_time = datetime(
-        year=9000, month=1, day=1, hour=0, minute=0, second=0
-    ).timestamp() * 1e9
-    used_timestamp = SE_data.PacketTimestamp()
-    if used_timestamp > max_time:
-        used_timestamp = max_time
-
     value_timestamps = None
     if not SE_data.TimestampsIsNone():
         value_timestamps = SE_data.TimestampsAsNumpy()
@@ -148,7 +140,7 @@ def deserialise_se00(buffer: Union[bytearray, bytes]) -> Response:
     return Response(
         name=SE_data.Name().decode(),
         channel=SE_data.Channel(),
-        timestamp_unix_ns=used_timestamp,
+        timestamp_unix_ns=SE_data.PacketTimestamp(),
         sample_ts_delta=SE_data.TimeDelta(),
         ts_location=SE_data.TimestampLocation(),
         message_counter=SE_data.MessageCounter(),
