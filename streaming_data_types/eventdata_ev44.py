@@ -13,6 +13,7 @@ EventData = namedtuple(
     "EventData",
     (
         "source_name",
+        "message_id",
         "reference_time",
         "reference_time_index",
         "time_of_flight",
@@ -34,6 +35,7 @@ def deserialise_ev44(buffer):
 
     return EventData(
         event.SourceName().decode("utf-8"),
+        event.MessageId(),
         event.ReferenceTimeAsNumpy(),
         event.ReferenceTimeIndexAsNumpy(),
         event.TimeOfFlightAsNumpy(),
@@ -42,6 +44,7 @@ def deserialise_ev44(buffer):
 
 
 def serialise_ev44(source_name,
+                   message_id,
                    reference_time,
                    reference_time_index,
                    time_of_flight,
@@ -50,6 +53,7 @@ def serialise_ev44(source_name,
     Serialise event data as an ev44 FlatBuffers message.
 
     :param source_name:
+    :param message_id:
     :param reference_time:
     :param reference_time_index:
     :param time_of_flight:
@@ -70,6 +74,7 @@ def serialise_ev44(source_name,
     Event44Message.Event44MessageAddReferenceTimeIndex(builder, ref_time_index_data)
     Event44Message.Event44MessageAddTimeOfFlight(builder, tof_data)
     Event44Message.Event44MessageAddPixelId(builder, pixel_id_data)
+    Event44Message.Event44MessageAddMessageId(builder, message_id)
     Event44Message.Event44MessageAddSourceName(builder, source)
 
     data = Event44Message.Event44MessageEnd(builder)
