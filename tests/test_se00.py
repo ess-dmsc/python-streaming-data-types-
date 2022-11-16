@@ -1,5 +1,3 @@
-import time
-
 import numpy as np
 import pytest
 
@@ -9,7 +7,7 @@ from streaming_data_types.fbschemas.array_1d_se00.Location import Location
 
 entry_1 = {
     "name": "some_name",
-    "timestamp_unix_ns": time.time_ns(),
+    "timestamp_unix_ns": 1668593863397138093,
     "channel": 42,
     "message_counter": 123456,
     "sample_ts_delta": 0.005,
@@ -20,7 +18,7 @@ entry_1 = {
 
 entry_2 = {
     "name": "some_name_other_name",
-    "timestamp_unix_ns": time.time_ns(),
+    "timestamp_unix_ns": 1668593863397138094,
     "channel": 11,
     "message_counter": 654321,
     "sample_ts_delta": 1.666,
@@ -31,7 +29,7 @@ entry_2 = {
 
 entry_3 = {
     "name": "some_float_name",
-    "timestamp_unix_ns": time.time_ns(),
+    "timestamp_unix_ns": 1668593863397138095,
     "channel": 11,
     "message_counter": 231465,
     "sample_ts_delta": 1.666,
@@ -42,7 +40,7 @@ entry_3 = {
 
 entry_4 = {
     "name": "some_double_name",
-    "timestamp_unix_ns": time.time_ns(),
+    "timestamp_unix_ns": 1668593863397138096,
     "channel": 11,
     "message_counter": 324156,
     "sample_ts_delta": 1.666,
