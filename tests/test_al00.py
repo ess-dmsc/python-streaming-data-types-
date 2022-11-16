@@ -15,7 +15,7 @@ class TestSerialisationAl00:
         entry = deserialise_al00(buf)
 
         assert entry.source == "some_source"
-        assert entry.timestamp == 1234567890
+        assert entry.timestamp_ns == 1234567890
         assert entry.severity == Severity.MAJOR
         assert entry.message == "Some message"
 

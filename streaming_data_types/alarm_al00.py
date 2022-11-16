@@ -9,7 +9,7 @@ from streaming_data_types.utils import check_schema_identifier
 
 FILE_IDENTIFIER = b"al00"
 
-AlarmInfo = namedtuple("AlarmInfo", ("source", "timestamp", "severity", "message"))
+AlarmInfo = namedtuple("AlarmInfo", ("source", "timestamp_ns", "severity", "message"))
 
 
 class Severity(Enum):
@@ -46,7 +46,7 @@ def deserialise_al00(buffer):
     )
 
 
-def serialise_al00(source: str, timestamp: int, severity: Severity, message: str):
+def serialise_al00(source: str, timestamp_ns: int, severity: Severity, message: str):
     builder = flatbuffers.Builder(128)
 
     message_offset = builder.CreateString(message)
@@ -54,7 +54,7 @@ def serialise_al00(source: str, timestamp: int, severity: Severity, message: str
 
     Alarm.AlarmStart(builder)
     Alarm.AlarmAddSourceName(builder, source_offset)
-    Alarm.AlarmAddTimestamp(builder, timestamp)
+    Alarm.AlarmAddTimestamp(builder, timestamp_ns)
     Alarm.AlarmAddSeverity(builder, _enum_to_severity[severity])
     Alarm.AlarmAddMessage(builder, message_offset)
     alarm = Alarm.AlarmEnd(builder)
