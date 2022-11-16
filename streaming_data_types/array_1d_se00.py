@@ -28,7 +28,7 @@ FILE_IDENTIFIER = b"se00"
 def serialise_se00(
     name: str,
     channel: int,
-    timestamp: datetime,
+    timestamp_unix_ns: int,
     sample_ts_delta: int,
     message_counter: int,
     values: Union[np.ndarray, List],
@@ -73,7 +73,7 @@ def serialise_se00(
     SampleEnvironmentDataAddTimestampLocation(builder, ts_location)
     SampleEnvironmentDataAddMessageCounter(builder, message_counter)
     SampleEnvironmentDataAddChannel(builder, channel)
-    SampleEnvironmentDataAddPacketTimestamp(builder, int(timestamp.timestamp() * 1e9))
+    SampleEnvironmentDataAddPacketTimestamp(builder, timestamp_unix_ns)
     SampleEnvironmentDataAddValues(builder, value_offset)
     SampleEnvironmentDataAddValuesType(builder, numpy_type_map[temp_values.dtype])
     if value_timestamps is not None:
@@ -90,7 +90,7 @@ Response = NamedTuple(
     (
         ("name", str),
         ("channel", int),
-        ("timestamp", datetime),
+        ("timestamp_unix_ns", int),
         ("sample_ts_delta", int),
         ("ts_location", Location),
         ("message_counter", int),
@@ -107,8 +107,8 @@ def deserialise_se00(buffer: Union[bytearray, bytes]) -> Response:
 
     max_time = datetime(
         year=9000, month=1, day=1, hour=0, minute=0, second=0
-    ).timestamp()
-    used_timestamp = SE_data.PacketTimestamp() / 1e9
+    ).timestamp() * 1e9
+    used_timestamp = SE_data.PacketTimestamp()
     if used_timestamp > max_time:
         used_timestamp = max_time
 
@@ -150,7 +150,7 @@ def deserialise_se00(buffer: Union[bytearray, bytes]) -> Response:
     return Response(
         name=SE_data.Name().decode(),
         channel=SE_data.Channel(),
-        timestamp=datetime.fromtimestamp(used_timestamp, tz=timezone.utc),
+        timestamp_unix_ns=used_timestamp,
         sample_ts_delta=SE_data.TimeDelta(),
         ts_location=SE_data.TimestampLocation(),
         message_counter=SE_data.MessageCounter(),

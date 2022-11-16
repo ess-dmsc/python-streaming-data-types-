@@ -1,3 +1,4 @@
+import time
 from datetime import datetime, timezone
 
 import numpy as np
@@ -9,7 +10,7 @@ from streaming_data_types.fbschemas.array_1d_se00.Location import Location
 
 entry_1 = {
     "name": "some_name",
-    "timestamp": datetime.now(tz=timezone.utc),
+    "timestamp_unix_ns": time.time_ns(),
     "channel": 42,
     "message_counter": 123456,
     "sample_ts_delta": 0.005,
@@ -20,7 +21,7 @@ entry_1 = {
 
 entry_2 = {
     "name": "some_name_other_name",
-    "timestamp": datetime.now(tz=timezone.utc),
+    "timestamp_unix_ns": time.time_ns(),
     "channel": 11,
     "message_counter": 654321,
     "sample_ts_delta": 1.666,
@@ -31,7 +32,7 @@ entry_2 = {
 
 entry_3 = {
     "name": "some_float_name",
-    "timestamp": datetime.now(tz=timezone.utc),
+    "timestamp_unix_ns": time.time_ns(),
     "channel": 11,
     "message_counter": 231465,
     "sample_ts_delta": 1.666,
@@ -42,7 +43,7 @@ entry_3 = {
 
 entry_4 = {
     "name": "some_double_name",
-    "timestamp": datetime.now(tz=timezone.utc),
+    "timestamp_unix_ns": time.time_ns(),
     "channel": 11,
     "message_counter": 324156,
     "sample_ts_delta": 1.666,
@@ -59,7 +60,7 @@ class TestSerialisationSenv:
         deserialised_tuple = deserialise_se00(buf)
 
         assert input_entry["name"] == deserialised_tuple.name
-        assert input_entry["timestamp"] == deserialised_tuple.timestamp
+        assert input_entry["timestamp_unix_ns"] == deserialised_tuple.timestamp_unix_ns
         assert input_entry["channel"] == deserialised_tuple.channel
         assert input_entry["message_counter"] == deserialised_tuple.message_counter
         assert input_entry["sample_ts_delta"] == deserialised_tuple.sample_ts_delta
