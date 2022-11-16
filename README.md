@@ -24,7 +24,8 @@ https://github.com/ess-dmsc/streaming-data-types
 |answ|File-writer command response|
 |wrdn|File-writer finished writing|
 |NDAr|**Deprecated**|
-|ADAr|For storing EPICS areaDetector data|
+|ADAr|EPICS areaDetector data|
+|al00|Alarm/status messages used by the Forwarder and NICOS|
 |senv|**Deprecated**|
 |se00|Arrays with optional timestamps, for example waveform data. Replaces _senv_. |
 
