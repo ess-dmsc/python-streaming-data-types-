@@ -2,17 +2,17 @@ import pytest
 
 from streaming_data_types import DESERIALISERS, SERIALISERS
 from streaming_data_types.epics_connection_ep01 import (
+    ConnectionInfo,
     deserialise_ep01,
     serialise_ep01,
 )
 from streaming_data_types.exceptions import WrongSchemaException
-from streaming_data_types.fbschemas.epics_connection_ep01 import ConnectionInfo
 
 
 class TestSerialisationEp01:
     original_entry = {
         "timestamp_ns": 1593620746000000000,
-        "status": ConnectionInfo.ConnectionInfo.DISCONNECTED,
+        "status": ConnectionInfo.DISCONNECTED,
         "source_name": "test_source",
         "service_id": "test_service",
     }
