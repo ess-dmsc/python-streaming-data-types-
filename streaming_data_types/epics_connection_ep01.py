@@ -14,7 +14,7 @@ FILE_IDENTIFIER = b"ep01"
 
 def serialise_ep01(
     timestamp_ns: int,
-    connection_info: ConnectionInfo,
+    status: ConnectionInfo,
     source_name: str,
     service_id: Optional[str] = None,
 ) -> bytes:
@@ -29,7 +29,7 @@ def serialise_ep01(
     if service_id is not None:
         EpicsPVConnectionInfo.EpicsPVConnectionInfoAddServiceId(builder, service_id_offset)
     EpicsPVConnectionInfo.EpicsPVConnectionInfoAddSourceName(builder, source_name_offset)
-    EpicsPVConnectionInfo.EpicsPVConnectionInfoAddStatus(builder, connection_info)
+    EpicsPVConnectionInfo.EpicsPVConnectionInfoAddStatus(builder, status)
     EpicsPVConnectionInfo.EpicsPVConnectionInfoAddTimestamp(builder, timestamp_ns)
 
     end = EpicsPVConnectionInfo.EpicsPVConnectionInfoEnd(builder)
@@ -38,7 +38,7 @@ def serialise_ep01(
 
 
 EpicsPVConnection = namedtuple(
-    "EpicsPVConnection", ("timestamp", "connection_info", "source_name", "service_id")
+    "EpicsPVConnection", ("timestamp", "status", "source_name", "service_id")
 )
 
 
@@ -52,11 +52,11 @@ def deserialise_ep01(buffer: Union[bytearray, bytes]) -> EpicsPVConnection:
     source_name = (
         epics_connection.SourceName() if epics_connection.SourceName() else b""
     )
-    service_id = epics_connection.ServiceId() if epics_connection.ServiceId() else b""
+    service_id = epics_connection.ServiceId() if epics_connection.ServiceId() else None
 
     return EpicsPVConnection(
-        epics_connection.Timestamp(),
-        epics_connection.Status(),
-        source_name.decode(),
-        service_id.decode(),
+        timestamp=epics_connection.Timestamp(),
+        status=epics_connection.Status(),
+        source_name=source_name.decode(),
+        service_id=service_id.decode(),
     )

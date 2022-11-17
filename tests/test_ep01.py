@@ -12,7 +12,7 @@ from streaming_data_types.fbschemas.epics_connection_ep01 import ConnectionInfo
 class TestSerialisationEp01:
     original_entry = {
         "timestamp_ns": 1593620746000000000,
-        "connection_info": ConnectionInfo.ConnectionInfo.DISCONNECTED,
+        "status": ConnectionInfo.ConnectionInfo.DISCONNECTED,
         "source_name": "test_source",
         "service_id": "test_service",
     }
@@ -22,7 +22,7 @@ class TestSerialisationEp01:
         deserialised_tuple = deserialise_ep01(buf)
 
         assert deserialised_tuple.timestamp == self.original_entry["timestamp_ns"]
-        assert deserialised_tuple.connection_info == self.original_entry["connection_info"]
+        assert deserialised_tuple.status == self.original_entry["status"]
         assert deserialised_tuple.source_name == self.original_entry["source_name"]
         assert deserialised_tuple.service_id == self.original_entry["service_id"]
 
@@ -37,5 +37,5 @@ class TestSerialisationEp01:
             deserialise_ep01(buf)
 
     def test_schema_type_is_in_global_serialisers_list(self):
-        assert "ep00" in SERIALISERS
-        assert "ep00" in DESERIALISERS
+        assert "ep01" in SERIALISERS
+        assert "ep01" in DESERIALISERS
