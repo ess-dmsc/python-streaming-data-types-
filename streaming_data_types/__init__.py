@@ -10,6 +10,8 @@ from streaming_data_types.array_1d_se00 import (deserialise_se00,
                                                 serialise_se00)
 from streaming_data_types.epics_connection_info_ep00 import (deserialise_ep00,
                                                              serialise_ep00)
+from streaming_data_types.epics_connection_ep01 import (deserialise_ep01,
+                                                        serialise_ep01)
 from streaming_data_types.eventdata_ev42 import (deserialise_ev42,
                                                  serialise_ev42)
 from streaming_data_types.eventdata_ev43 import (deserialise_ev43,
@@ -50,6 +52,7 @@ SERIALISERS = {
     "6s4t": serialise_6s4t,
     "x5f2": serialise_x5f2,
     "ep00": serialise_ep00,
+    "ep01": serialise_ep01,
     "tdct": serialise_tdct,
     "rf5k": serialise_rf5k,
     "answ": serialise_answ,
@@ -74,6 +77,7 @@ DESERIALISERS = {
     "6s4t": deserialise_6s4t,
     "x5f2": deserialise_x5f2,
     "ep00": deserialise_ep00,
+    "ep01": deserialise_ep01,
     "tdct": deserialise_tdct,
     "rf5k": deserialise_rf5k,
     "answ": deserialise_answ,
