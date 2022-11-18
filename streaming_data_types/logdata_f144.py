@@ -1,5 +1,5 @@
 from collections import namedtuple
-from datetime import datetime, timezone
+from datetime import datetime
 from typing import Any, Union, NamedTuple
 
 import flatbuffers
@@ -145,8 +145,41 @@ def _serialise_value(
     return function_map.EndFunction(builder)
 
 
+_map_scalar_type_to_serialiser = {
+    np.dtype("byte"): SerialiserFunctions(
+        ByteStart, ByteAddValue, ByteEnd, Value.Byte
+    ),
+    np.dtype("ubyte"): SerialiserFunctions(
+        UByteStart, UByteAddValue, UByteEnd, Value.UByte
+    ),
+    np.dtype("int16"): SerialiserFunctions(
+        ShortStart, ShortAddValue, ShortEnd, Value.Short
+    ),
+    np.dtype("uint16"): SerialiserFunctions(
+        UShortStart, UShortAddValue, UShortEnd, Value.UShort
+    ),
+    np.dtype("int32"): SerialiserFunctions(
+        IntStart, IntAddValue, IntEnd, Value.Int
+    ),
+    np.dtype("uint32"): SerialiserFunctions(
+        UIntStart, UIntAddValue, UIntEnd, Value.UInt
+    ),
+    np.dtype("int64"): SerialiserFunctions(
+        LongStart, LongAddValue, LongEnd, Value.Long
+    ),
+    np.dtype("uint64"): SerialiserFunctions(
+        ULongStart, ULongAddValue, ULongEnd, Value.ULong
+    ),
+    np.dtype("float32"): SerialiserFunctions(
+        FloatStart, FloatAddValue, FloatEnd, Value.Float
+    ),
+    np.dtype("float64"): SerialiserFunctions(
+        DoubleStart, DoubleAddValue, DoubleEnd, Value.Double
+    ),
+}
+
 _map_array_type_to_serialiser = {
-    np.dtype("int8"): SerialiserFunctions(
+    np.dtype("byte"): SerialiserFunctions(
         ArrayByteStart, ArrayByteAddValue, ArrayByteEnd, Value.ArrayByte
     ),
     np.dtype("int16"): SerialiserFunctions(
@@ -158,7 +191,7 @@ _map_array_type_to_serialiser = {
     np.dtype("int64"): SerialiserFunctions(
         ArrayLongStart, ArrayLongAddValue, ArrayLongEnd, Value.ArrayLong
     ),
-    np.dtype("uint8"): SerialiserFunctions(
+    np.dtype("ubyte"): SerialiserFunctions(
         ArrayUByteStart, ArrayUByteAddValue, ArrayUByteEnd, Value.ArrayUByte
     ),
     np.dtype("uint16"): SerialiserFunctions(
@@ -191,28 +224,31 @@ def serialise_f144(
 ) -> bytes:
     builder = flatbuffers.Builder(1024)
     source_name_offset = builder.CreateString(source_name)
-    if isinstance(value, int):
-        value_offset = _serialise_value(builder, value, IntFuncMap)
-        value_type = Value.Long
-    elif isinstance(value, float):
-        value_offset = _serialise_value(builder, value, DoubleFuncMap)
-        value_type = Value.Double
-    elif isinstance(value, np.ndarray):
-        c_func_map = _map_array_type_to_serialiser[value.dtype]
-        value_offset = _serialise_value(
-            builder, builder.CreateNumpyVector(value), c_func_map
-        )
-        value_type = c_func_map.value_type_enum
+    if isinstance(value, np.ndarray):
+        try:
+            c_func_map = _map_array_type_to_serialiser[value.dtype]
+            value_offset = _serialise_value(
+                builder, builder.CreateNumpyVector(value), c_func_map
+            )
+            value_type = c_func_map.value_type_enum
+        except KeyError:
+            raise NotImplementedError(
+                f'f144 flatbuffer does not support values of type {value.dtype}.'
+            )
     else:
-        raise NotImplementedError(
-            f'f144 flatbuffer does not support values of type "{type(value)}".'
-        )
+        try:
+            c_func_map = _map_scalar_type_to_serialiser[value.dtype]
+            value_offset = _serialise_value(builder, value, DoubleFuncMap)
+            value_type = c_func_map.value_type_enum
+        except KeyError:
+            raise NotImplementedError(
+                f'f144 flatbuffer does not support values of type {value.dtype}.'
+            )
     LogData.LogDataStart(builder)
     LogData.LogDataAddSourceName(builder, source_name_offset)
     LogData.LogDataAddValue(builder, value_offset)
     LogData.LogDataAddValueType(builder, value_type)
     LogData.LogDataAddTimestamp(builder, int(timestamp.timestamp() * 1e9))
-
     end = LogData.LogDataEnd(builder)
     builder.Finish(end, file_identifier=FILE_IDENTIFIER)
     return bytes(builder.Output())
