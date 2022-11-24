@@ -1,6 +1,6 @@
 from collections import namedtuple
 from datetime import datetime
-from typing import Any, Union, NamedTuple
+from typing import Any, NamedTuple, Union
 
 import flatbuffers
 import numpy as np
@@ -146,9 +146,7 @@ def _serialise_value(
 
 
 _map_scalar_type_to_serialiser = {
-    np.dtype("byte"): SerialiserFunctions(
-        ByteStart, ByteAddValue, ByteEnd, Value.Byte
-    ),
+    np.dtype("byte"): SerialiserFunctions(ByteStart, ByteAddValue, ByteEnd, Value.Byte),
     np.dtype("ubyte"): SerialiserFunctions(
         UByteStart, UByteAddValue, UByteEnd, Value.UByte
     ),
@@ -158,9 +156,7 @@ _map_scalar_type_to_serialiser = {
     np.dtype("uint16"): SerialiserFunctions(
         UShortStart, UShortAddValue, UShortEnd, Value.UShort
     ),
-    np.dtype("int32"): SerialiserFunctions(
-        IntStart, IntAddValue, IntEnd, Value.Int
-    ),
+    np.dtype("int32"): SerialiserFunctions(IntStart, IntAddValue, IntEnd, Value.Int),
     np.dtype("uint32"): SerialiserFunctions(
         UIntStart, UIntAddValue, UIntEnd, Value.UInt
     ),
@@ -229,7 +225,7 @@ def serialise_f144(
             value_type = c_func_map.value_type_enum
         except KeyError:
             raise NotImplementedError(
-                f'f144 flatbuffer does not support values of type {value.dtype}.'
+                f"f144 flatbuffer does not support values of type {value.dtype}."
             )
     elif value.ndim == 0:
         try:
@@ -238,12 +234,10 @@ def serialise_f144(
             value_type = c_func_map.value_type_enum
         except KeyError:
             raise NotImplementedError(
-                f'f144 flatbuffer does not support values of type {value.dtype}.'
+                f"f144 flatbuffer does not support values of type {value.dtype}."
             )
     else:
-        raise NotImplementedError(
-            "f144 only supports scalars or 1D array values"
-        )
+        raise NotImplementedError("f144 only supports scalars or 1D array values")
     LogData.LogDataStart(builder)
     LogData.LogDataAddSourceName(builder, source_name_offset)
     LogData.LogDataAddValue(builder, value_offset)
@@ -303,5 +297,5 @@ def deserialise_f144(buffer: Union[bytearray, bytes]) -> ExtractedLogData:
     return ExtractedLogData(
         source_name=source_name.decode(),
         value=value,
-        timestamp_unix_ns=log_data.Timestamp()
+        timestamp_unix_ns=log_data.Timestamp(),
     )

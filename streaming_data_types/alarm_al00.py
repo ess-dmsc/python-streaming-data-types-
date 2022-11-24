@@ -13,9 +13,9 @@ AlarmInfo = namedtuple("AlarmInfo", ("source", "timestamp_ns", "severity", "mess
 
 
 class Severity(Enum):
-    OK = 0,
-    MINOR = 1,
-    MAJOR = 2,
+    OK = (0,)
+    MINOR = (1,)
+    MAJOR = (2,)
     INVALID = 3
 
 
@@ -42,7 +42,7 @@ def deserialise_al00(buffer):
         alarm.SourceName().decode("utf-8") if alarm.SourceName() else "",
         alarm.Timestamp(),
         _severity_to_enum[alarm.Severity()],
-        alarm.Message().decode("utf-8") if alarm.Message() else ""
+        alarm.Message().decode("utf-8") if alarm.Message() else "",
     )
 
 
