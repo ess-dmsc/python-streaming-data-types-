@@ -25,14 +25,14 @@ def serialise_ndar(
     # FlatBuffers builds arrays backwards
     for s in reversed(dims):
         builder.PrependUint64(s)
-    dims_offset = builder.EndVector(len(dims))
+    dims_offset = builder.EndVector()
 
     # Build data
     NDArray.NDArrayStartPDataVector(builder, len(data))
     # FlatBuffers builds arrays backwards
     for s in reversed(data):
         builder.PrependUint8(s)
-    data_offset = builder.EndVector(len(data))
+    data_offset = builder.EndVector()
 
     # Build the actual buffer
     NDArray.NDArrayStart(builder)

@@ -399,7 +399,7 @@ def _serialise_stringarray(builder: flatbuffers.Builder, data: np.ndarray, sourc
     ArrayStringStartValueVector(builder, len(data))
     for string_offset in string_offsets:
         builder.PrependSOffsetTRelative(string_offset)
-    string_array_offset = builder.EndVector(len(data))
+    string_array_offset = builder.EndVector()
     ArrayStringStart(builder)
     ArrayStringAddValue(builder, string_array_offset)
     value_position = ArrayStringEnd(builder)

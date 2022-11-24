@@ -136,7 +136,7 @@ class TestSerialisationF144:
     ):
         complex_log = {
             "source_name": "some_source",
-            "value": np.complex(3, 4),
+            "value": complex(3, 4),
             "timestamp_unix_ns": 1585332414000000000,
         }
         with pytest.raises(NotImplementedError):
