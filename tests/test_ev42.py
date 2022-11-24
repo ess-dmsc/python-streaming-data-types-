@@ -1,3 +1,4 @@
+import pathlib
 import numpy as np
 import pytest
 
@@ -98,3 +99,20 @@ class TestSerialisationEv42:
     def test_schema_type_is_in_global_serialisers_list(self):
         assert "ev42" in SERIALISERS
         assert "ev42" in DESERIALISERS
+
+    def test_converts_real_buffer(self):
+        file_path = pathlib.Path(__file__).parent / "example_buffers" / "ev42.bin"
+        with open(file_path, "rb") as file:
+            buffer = file.read()
+
+        result = deserialise_ev42(buffer)
+
+        assert result.source_name == "grace"
+        assert result.message_id == 1669290683232688000
+        assert result.pulse_time == 1669290683232688000
+        assert len(result.time_of_flight) == 1629
+        assert result.time_of_flight[0] == 160436
+        assert result.time_of_flight[~0] == 147296
+        assert len(result.detector_id) == 1629
+        assert result.detector_id[0] == 160436
+        assert result.detector_id[~0] == 147296
