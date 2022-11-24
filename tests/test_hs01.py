@@ -1,3 +1,4 @@
+import pathlib
 import numpy as np
 import pytest
 
@@ -363,3 +364,21 @@ class TestSerialisationHs01:
     def test_schema_type_is_in_global_serialisers_list(self):
         assert "hs01" in SERIALISERS
         assert "hs01" in DESERIALISERS
+
+    def test_converts_real_buffer(self):
+        file_path = pathlib.Path(__file__).parent / "example_buffers" / "hs01.bin"
+        with open(file_path, "rb") as file:
+            buffer = file.read()
+
+        result = deserialise_hs01(buffer)
+
+        assert result['current_shape'] == [64, 200]
+        assert result['source'] == 'just-bin-it'
+        assert result['timestamp'] == 1668605515930621000
+        assert len(result['data']) == 64
+        assert result['data'][0][0] == 0
+        assert result['data'][~0][~0] == 0
+        assert len(result['dim_metadata'][0]['bin_boundaries']) == 65
+        assert result['dim_metadata'][0]['bin_boundaries'][0] == 0
+        assert result['dim_metadata'][0]['bin_boundaries'][64] == 64
+        assert result['info'] == '{"id": "nicos-det_image1-1668605510", "start": 1668605510775, "stop": 1668605515775, "state": "FINISHED"}'
