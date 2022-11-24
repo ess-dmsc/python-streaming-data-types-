@@ -13,9 +13,9 @@ AlarmInfo = namedtuple("AlarmInfo", ("source", "timestamp_ns", "severity", "mess
 
 
 class Severity(Enum):
-    OK = (0,)
-    MINOR = (1,)
-    MAJOR = (2,)
+    OK = 0
+    MINOR = 1
+    MAJOR = 2
     INVALID = 3
 
 
