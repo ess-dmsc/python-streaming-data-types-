@@ -10,6 +10,8 @@ from streaming_data_types.array_1d_se00 import (deserialise_se00,
                                                 serialise_se00)
 from streaming_data_types.epics_connection_info_ep00 import (deserialise_ep00,
                                                              serialise_ep00)
+from streaming_data_types.epics_connection_ep01 import (deserialise_ep01,
+                                                        serialise_ep01)
 from streaming_data_types.eventdata_ev42 import (deserialise_ev42,
                                                  serialise_ev42)
 from streaming_data_types.eventdata_ev43 import (deserialise_ev43,
@@ -25,6 +27,7 @@ from streaming_data_types.histogram_hs00 import (deserialise_hs00,
 from streaming_data_types.histogram_hs01 import (deserialise_hs01,
                                                  serialise_hs01)
 from streaming_data_types.logdata_f142 import deserialise_f142, serialise_f142
+from streaming_data_types.logdata_f144 import serialise_f144, deserialise_f144
 from streaming_data_types.nicos_cache_ns10 import (deserialise_ns10,
                                                    serialise_ns10)
 from streaming_data_types.run_start_pl72 import (deserialise_pl72,
@@ -45,11 +48,13 @@ SERIALISERS = {
     "hs00": serialise_hs00,
     "hs01": serialise_hs01,
     "f142": serialise_f142,
+    "f144": serialise_f144,
     "ns10": serialise_ns10,
     "pl72": serialise_pl72,
     "6s4t": serialise_6s4t,
     "x5f2": serialise_x5f2,
     "ep00": serialise_ep00,
+    "ep01": serialise_ep01,
     "tdct": serialise_tdct,
     "rf5k": serialise_rf5k,
     "answ": serialise_answ,
@@ -69,11 +74,13 @@ DESERIALISERS = {
     "hs00": deserialise_hs00,
     "hs01": deserialise_hs01,
     "f142": deserialise_f142,
+    "f144": deserialise_f144,
     "ns10": deserialise_ns10,
     "pl72": deserialise_pl72,
     "6s4t": deserialise_6s4t,
     "x5f2": deserialise_x5f2,
     "ep00": deserialise_ep00,
+    "ep01": deserialise_ep01,
     "tdct": deserialise_tdct,
     "rf5k": deserialise_rf5k,
     "answ": deserialise_answ,

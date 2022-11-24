@@ -501,7 +501,7 @@ def _serialise_value(
             # There are a few numpy types we don't try to handle, for example complex numbers
             raise NotImplementedError(
                 f"Cannot serialise data of type {value.dtype}, must use one of "
-                f"{list(_map_scalar_type_to_serialiser.keys()).append(np.unicode_)}"
+                f"{list(_map_scalar_type_to_serialiser.keys()) + [np.unicode_]}"
             )
 
 
