@@ -4,10 +4,10 @@ from typing import Optional, Union
 
 import flatbuffers
 
-from streaming_data_types.fbschemas.epics_connection_ep01.ConnectionInfo import \
-    ConnectionInfo as FBConnectionInfo
-from streaming_data_types.fbschemas.epics_connection_ep01 import \
-    EpicsPVConnectionInfo
+from streaming_data_types.fbschemas.epics_connection_ep01 import EpicsPVConnectionInfo
+from streaming_data_types.fbschemas.epics_connection_ep01.ConnectionInfo import (
+    ConnectionInfo as FBConnectionInfo,
+)
 from streaming_data_types.utils import check_schema_identifier
 
 FILE_IDENTIFIER = b"ep01"
@@ -62,9 +62,15 @@ def serialise_ep01(
 
     EpicsPVConnectionInfo.EpicsPVConnectionInfoStart(builder)
     if service_id is not None:
-        EpicsPVConnectionInfo.EpicsPVConnectionInfoAddServiceId(builder, service_id_offset)
-    EpicsPVConnectionInfo.EpicsPVConnectionInfoAddSourceName(builder, source_name_offset)
-    EpicsPVConnectionInfo.EpicsPVConnectionInfoAddStatus(builder, _enum_to_status[status])
+        EpicsPVConnectionInfo.EpicsPVConnectionInfoAddServiceId(
+            builder, service_id_offset
+        )
+    EpicsPVConnectionInfo.EpicsPVConnectionInfoAddSourceName(
+        builder, source_name_offset
+    )
+    EpicsPVConnectionInfo.EpicsPVConnectionInfoAddStatus(
+        builder, _enum_to_status[status]
+    )
     EpicsPVConnectionInfo.EpicsPVConnectionInfoAddTimestamp(builder, timestamp_ns)
 
     end = EpicsPVConnectionInfo.EpicsPVConnectionInfoEnd(builder)
@@ -81,7 +87,9 @@ def deserialise_ep01(buffer: Union[bytearray, bytes]) -> EpicsPVConnection:
     check_schema_identifier(buffer, FILE_IDENTIFIER)
 
     epics_connection = (
-        EpicsPVConnectionInfo.EpicsPVConnectionInfo.GetRootAsEpicsPVConnectionInfo(buffer, 0)
+        EpicsPVConnectionInfo.EpicsPVConnectionInfo.GetRootAsEpicsPVConnectionInfo(
+            buffer, 0
+        )
     )
 
     source_name = (

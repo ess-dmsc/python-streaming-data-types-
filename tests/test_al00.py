@@ -1,8 +1,7 @@
 import pytest
 
 from streaming_data_types import DESERIALISERS, SERIALISERS
-from streaming_data_types.alarm_al00 import (Severity, deserialise_al00,
-                                             serialise_al00)
+from streaming_data_types.alarm_al00 import Severity, deserialise_al00, serialise_al00
 from streaming_data_types.exceptions import WrongSchemaException
 
 
