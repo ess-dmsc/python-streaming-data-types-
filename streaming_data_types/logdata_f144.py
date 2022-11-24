@@ -211,20 +211,16 @@ _map_array_type_to_serialiser = {
     ),
 }
 
-DoubleFuncMap = SerialiserFunctions(
-    DoubleStart, DoubleAddValue, DoubleEnd, Value.Double
-)
-IntFuncMap = SerialiserFunctions(LongStart, LongAddValue, LongEnd, Value.Long)
-
 
 def serialise_f144(
     source_name: str,
     value: Any,
-    timestamp: datetime,
+    timestamp_unix_ns: int = 0,
 ) -> bytes:
     builder = flatbuffers.Builder(1024)
     source_name_offset = builder.CreateString(source_name)
-    if isinstance(value, np.ndarray):
+    value = np.array(value)
+    if value.ndim == 1:
         try:
             c_func_map = _map_array_type_to_serialiser[value.dtype]
             value_offset = _serialise_value(
@@ -235,20 +231,24 @@ def serialise_f144(
             raise NotImplementedError(
                 f'f144 flatbuffer does not support values of type {value.dtype}.'
             )
-    else:
+    elif value.ndim == 0:
         try:
             c_func_map = _map_scalar_type_to_serialiser[value.dtype]
-            value_offset = _serialise_value(builder, value, DoubleFuncMap)
+            value_offset = _serialise_value(builder, value, c_func_map)
             value_type = c_func_map.value_type_enum
         except KeyError:
             raise NotImplementedError(
                 f'f144 flatbuffer does not support values of type {value.dtype}.'
             )
+    else:
+        raise NotImplementedError(
+            "f144 only supports scalars or 1D array values"
+        )
     LogData.LogDataStart(builder)
     LogData.LogDataAddSourceName(builder, source_name_offset)
     LogData.LogDataAddValue(builder, value_offset)
     LogData.LogDataAddValueType(builder, value_type)
-    LogData.LogDataAddTimestamp(builder, int(timestamp.timestamp() * 1e9))
+    LogData.LogDataAddTimestamp(builder, timestamp_unix_ns)
     end = LogData.LogDataEnd(builder)
     builder.Finish(end, file_identifier=FILE_IDENTIFIER)
     return bytes(builder.Output())
@@ -283,7 +283,7 @@ ExtractedLogData = NamedTuple(
     (
         ("source_name", str),
         ("value", Any),
-        ("timestamp", datetime),
+        ("timestamp_unix_ns", datetime),
     ),
 )
 
@@ -303,5 +303,5 @@ def deserialise_f144(buffer: Union[bytearray, bytes]) -> ExtractedLogData:
     return ExtractedLogData(
         source_name=source_name.decode(),
         value=value,
-        timestamp=log_data.Timestamp()
+        timestamp_unix_ns=log_data.Timestamp()
         )
