@@ -304,4 +304,4 @@ def deserialise_f144(buffer: Union[bytearray, bytes]) -> ExtractedLogData:
         source_name=source_name.decode(),
         value=value,
         timestamp_unix_ns=log_data.Timestamp()
-        )
+    )
