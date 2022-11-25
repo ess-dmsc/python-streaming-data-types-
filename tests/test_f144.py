@@ -1,4 +1,5 @@
 import numpy as np
+import pathlib
 import pytest
 
 from streaming_data_types import DESERIALISERS, SERIALISERS
@@ -155,3 +156,14 @@ class TestSerialisationF144:
     def test_schema_type_is_in_global_serialisers_list(self):
         assert "f144" in SERIALISERS
         assert "f144" in DESERIALISERS
+
+    def test_converts_real_buffer(self):
+        file_path = pathlib.Path(__file__).parent / "example_buffers" / "f144.bin"
+        with open(file_path, "rb") as file:
+            buffer = file.read()
+
+        result = deserialise_f144(buffer)
+
+        assert result.source_name == "t_julabo"
+        assert result.timestamp_unix_ns == 1666004422815024128
+        assert result.value == 19
