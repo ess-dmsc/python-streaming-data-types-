@@ -1,3 +1,4 @@
+import pathlib
 import pytest
 
 from streaming_data_types import DESERIALISERS, SERIALISERS
@@ -31,3 +32,15 @@ class TestSerialisationAl00:
     def test_schema_type_is_in_global_serialisers_list(self):
         assert "al00" in SERIALISERS
         assert "al00" in DESERIALISERS
+
+    def test_converts_real_buffer(self):
+        file_path = pathlib.Path(__file__).parent / "example_buffers" / "al00.bin"
+        with open(file_path, "rb") as file:
+            buffer = file.read()
+
+        result = deserialise_al00(buffer)
+
+        assert result.source == "det_image2"
+        assert result.severity == Severity.OK
+        assert result.message == ""
+        assert result.timestamp_ns == 1668605811532484096
