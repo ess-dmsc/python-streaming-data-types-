@@ -95,7 +95,7 @@ def deserialise_ep01(buffer: Union[bytearray, bytes]) -> EpicsPVConnection:
     source_name = (
         epics_connection.SourceName() if epics_connection.SourceName() else b""
     )
-    service_id = epics_connection.ServiceId() if epics_connection.ServiceId() else None
+    service_id = epics_connection.ServiceId() if epics_connection.ServiceId() else b""
 
     return EpicsPVConnection(
         timestamp=epics_connection.Timestamp(),
