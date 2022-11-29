@@ -66,3 +66,8 @@ hist = {
 ```
 The arrays passed in for `data`, `errors` and `bin_boundaries` can be NumPy arrays
 or regular lists, but on deserialisation they will be NumPy arrays.
+
+
+## Developer documentation
+
+See [README_DEV.md](README_DEV.md)
