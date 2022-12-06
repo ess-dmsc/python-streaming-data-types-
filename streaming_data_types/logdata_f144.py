@@ -5,7 +5,7 @@ from typing import Any, NamedTuple, Union
 import flatbuffers
 import numpy as np
 
-from streaming_data_types.fbschemas.logdata_f144 import LogData
+from streaming_data_types.fbschemas.logdata_f144 import f144_LogData
 from streaming_data_types.fbschemas.logdata_f144.ArrayByte import (
     ArrayByte,
     ArrayByteAddValue,
@@ -238,12 +238,12 @@ def serialise_f144(
             )
     else:
         raise NotImplementedError("f144 only supports scalars or 1D array values")
-    LogData.LogDataStart(builder)
-    LogData.LogDataAddSourceName(builder, source_name_offset)
-    LogData.LogDataAddValue(builder, value_offset)
-    LogData.LogDataAddValueType(builder, value_type)
-    LogData.LogDataAddTimestamp(builder, timestamp_unix_ns)
-    end = LogData.LogDataEnd(builder)
+    f144_LogData.f144_LogDataStart(builder)
+    f144_LogData.f144_LogDataAddSourceName(builder, source_name_offset)
+    f144_LogData.f144_LogDataAddValue(builder, value_offset)
+    f144_LogData.f144_LogDataAddValueType(builder, value_type)
+    f144_LogData.f144_LogDataAddTimestamp(builder, timestamp_unix_ns)
+    end = f144_LogData.f144_LogDataEnd(builder)
     builder.Finish(end, file_identifier=FILE_IDENTIFIER)
     return bytes(builder.Output())
 
@@ -284,7 +284,7 @@ ExtractedLogData = NamedTuple(
 
 def deserialise_f144(buffer: Union[bytearray, bytes]) -> ExtractedLogData:
     check_schema_identifier(buffer, FILE_IDENTIFIER)
-    log_data = LogData.LogData.GetRootAs(buffer, 0)
+    log_data = f144_LogData.f144_LogData.GetRootAsf144_LogData(buffer, 0)
     source_name = log_data.SourceName() if log_data.SourceName() else b""
 
     value_offset = log_data.Value()
