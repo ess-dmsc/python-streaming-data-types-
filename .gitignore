@@ -50,10 +50,12 @@ coverage.xml
 *.py,cover
 .hypothesis/
 .pytest_cache/
-
 # Translations
 *.mo
 *.pot
+
+# macOS artifacts
+*.DS_Store
 
 # Django stuff:
 *.log

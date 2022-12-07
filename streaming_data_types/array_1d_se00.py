@@ -16,19 +16,19 @@ from flatbuffers.number_types import (
 )
 
 from streaming_data_types.fbschemas.array_1d_se00.Location import Location
-from streaming_data_types.fbschemas.array_1d_se00.SampleEnvironmentData import (
-    SampleEnvironmentData,
-    SampleEnvironmentDataAddChannel,
-    SampleEnvironmentDataAddMessageCounter,
-    SampleEnvironmentDataAddName,
-    SampleEnvironmentDataAddPacketTimestamp,
-    SampleEnvironmentDataAddTimeDelta,
-    SampleEnvironmentDataAddTimestampLocation,
-    SampleEnvironmentDataAddTimestamps,
-    SampleEnvironmentDataAddValues,
-    SampleEnvironmentDataAddValuesType,
-    SampleEnvironmentDataEnd,
-    SampleEnvironmentDataStart,
+from streaming_data_types.fbschemas.array_1d_se00.se00_SampleEnvironmentData import (
+    se00_SampleEnvironmentData,
+    se00_SampleEnvironmentDataAddChannel,
+    se00_SampleEnvironmentDataAddMessageCounter,
+    se00_SampleEnvironmentDataAddName,
+    se00_SampleEnvironmentDataAddPacketTimestamp,
+    se00_SampleEnvironmentDataAddTimeDelta,
+    se00_SampleEnvironmentDataAddTimestampLocation,
+    se00_SampleEnvironmentDataAddTimestamps,
+    se00_SampleEnvironmentDataAddValues,
+    se00_SampleEnvironmentDataAddValuesType,
+    se00_SampleEnvironmentDataEnd,
+    se00_SampleEnvironmentDataStart,
 )
 from streaming_data_types.fbschemas.array_1d_se00.ValueUnion import ValueUnion
 from streaming_data_types.utils import check_schema_identifier
@@ -105,19 +105,19 @@ def serialise_se00(
 
     name_offset = builder.CreateString(name)
 
-    SampleEnvironmentDataStart(builder)
-    SampleEnvironmentDataAddName(builder, name_offset)
-    SampleEnvironmentDataAddTimeDelta(builder, sample_ts_delta)
-    SampleEnvironmentDataAddTimestampLocation(builder, ts_location)
-    SampleEnvironmentDataAddMessageCounter(builder, message_counter)
-    SampleEnvironmentDataAddChannel(builder, channel)
-    SampleEnvironmentDataAddPacketTimestamp(builder, timestamp_unix_ns)
-    SampleEnvironmentDataAddValues(builder, value_offset)
-    SampleEnvironmentDataAddValuesType(builder, numpy_type_map[temp_values.dtype])
+    se00_SampleEnvironmentDataStart(builder)
+    se00_SampleEnvironmentDataAddName(builder, name_offset)
+    se00_SampleEnvironmentDataAddTimeDelta(builder, sample_ts_delta)
+    se00_SampleEnvironmentDataAddTimestampLocation(builder, ts_location)
+    se00_SampleEnvironmentDataAddMessageCounter(builder, message_counter)
+    se00_SampleEnvironmentDataAddChannel(builder, channel)
+    se00_SampleEnvironmentDataAddPacketTimestamp(builder, timestamp_unix_ns)
+    se00_SampleEnvironmentDataAddValues(builder, value_offset)
+    se00_SampleEnvironmentDataAddValuesType(builder, numpy_type_map[temp_values.dtype])
     if value_timestamps is not None:
-        SampleEnvironmentDataAddTimestamps(builder, timestamps_offset)
+        se00_SampleEnvironmentDataAddTimestamps(builder, timestamps_offset)
 
-    SE_Message = SampleEnvironmentDataEnd(builder)
+    SE_Message = se00_SampleEnvironmentDataEnd(builder)
 
     builder.Finish(SE_Message, file_identifier=FILE_IDENTIFIER)
     return bytes(builder.Output())
@@ -126,7 +126,7 @@ def serialise_se00(
 def deserialise_se00(buffer: Union[bytearray, bytes]) -> Response:
     check_schema_identifier(buffer, FILE_IDENTIFIER)
 
-    SE_data = SampleEnvironmentData.GetRootAsSampleEnvironmentData(buffer, 0)
+    SE_data = se00_SampleEnvironmentData.GetRootAsse00_SampleEnvironmentData(buffer, 0)
 
     value_timestamps = None
     if not SE_data.TimestampsIsNone():
