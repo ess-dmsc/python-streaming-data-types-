@@ -2,10 +2,8 @@
 import ecdcpipeline.ContainerBuildNode
 import ecdcpipeline.PipelineBuilder
 
-project = "python-streaming-data-types"
-
 container_build_nodes = [
-  'centos7-release': ContainerBuildNode.getDefaultContainerBuildNode('centos7-gcc8'),
+  'centos7': new ContainerBuildNode('dockerregistry.esss.dk/ecdc_group/build-node-images/centos7-build-node:10.0.2-dev', '/usr/bin/scl enable devtoolset-11 rh-python38 -- /bin/bash -e -x')
 ]
 
 // Define number of old builds to keep.
@@ -36,29 +34,26 @@ builders = pipeline_builder.createBuilders { container ->
 
   pipeline_builder.stage("${container.key}: Dependencies") {
     container.sh """
-      /opt/miniconda/bin/conda init bash
-      export PATH=/opt/miniconda/bin:$PATH
-      python --version
       which python
-      python -m pip install --user -r ${project}/requirements.txt
-      python -m pip install --user -r ${project}/requirements-dev.txt
+      python -m pip install --user -r ${pipeline_builder.project}/requirements-dev.txt
     """
   } // stage
 
   pipeline_builder.stage("${container.key}: Test") {
     def test_output = "TestResults.xml"
     container.sh """
-      export PATH=/opt/miniconda/bin:$PATH
-      cd ${project}
+      cd ${pipeline_builder.project}
+      pyenv local 3.7 3.8 3.9
+      pyenv versions
       python -m tox -- --junitxml=${test_output}
     """
-    container.copyFrom("${project}/${test_output}", ".")
+    container.copyFrom("${pipeline_builder.project}/${test_output}", ".")
     xunit thresholds: [failed(unstableThreshold: '0')], tools: [JUnit(deleteOutputFiles: true, pattern: '*.xml', skipNoTestFiles: false, stopProcessingIfError: true)]
   } // stage
 }  // createBuilders
 
 node {
-  dir("${project}") {
+  dir("${pipeline_builder.project}") {
     scm_vars = checkout scm
   }
 

@@ -5,6 +5,7 @@ isort==5.10.1    # Pinned to match pre-commit configblack
 flake8
 pre-commit
 pytest
-tox
+tox==3.27.1  # tox 4 seems to be broken at the moment
+tox-pyenv
 twine
 wheel
