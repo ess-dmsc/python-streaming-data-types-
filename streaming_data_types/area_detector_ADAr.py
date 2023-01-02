@@ -107,7 +107,7 @@ def serialise_ADAr(
     ADArray.ADArrayStartAttributesVector(builder, len(attributes))
     for item in reversed(temp_attributes):
         builder.PrependUOffsetTRelative(item)
-    attributes_offset = builder.EndVector(len(attributes))
+    attributes_offset = builder.EndVector()
 
     # Build the actual buffer
     ADArray.ADArrayStart(builder)

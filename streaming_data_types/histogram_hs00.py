@@ -142,7 +142,7 @@ def serialise_hs00(histogram):
     # FlatBuffers builds arrays backwards
     for m in reversed(metadata):
         builder.PrependUOffsetTRelative(m)
-    metadata_vector = builder.EndVector(rank)
+    metadata_vector = builder.EndVector()
 
     # Build the data
     data_offset, data_type = _serialise_array(builder, histogram["data"])

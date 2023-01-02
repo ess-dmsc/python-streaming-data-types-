@@ -99,7 +99,7 @@ def serialise_rf5k(config_change: UpdateType, streams: List[StreamInfo]) -> byte
         ConfigUpdate.ConfigUpdateStartStreamsVector(builder, len(streams))
         for stream_offset in stream_offsets:
             builder.PrependUOffsetTRelative(stream_offset)
-        streams_offset = builder.EndVector(len(streams))
+        streams_offset = builder.EndVector()
 
     # Build the actual buffer
     ConfigUpdate.ConfigUpdateStart(builder)
