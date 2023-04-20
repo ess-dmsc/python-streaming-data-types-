@@ -166,7 +166,7 @@ def deserialise_ADAr(buffer: Union[bytearray, bytes]) -> ADArray:
     ad_array = ADArray.ADArray.GetRootAsADArray(buffer, 0)
     unique_id = ad_array.Id()
     max_time = datetime(
-        year=9000, month=1, day=1, hour=0, minute=0, second=0
+        year=3001, month=1, day=1, hour=0, minute=0, second=0
     ).timestamp()
     used_timestamp = ad_array.Timestamp() / 1e9
     if used_timestamp > max_time:
