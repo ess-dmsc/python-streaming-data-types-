@@ -104,7 +104,7 @@ def deserialise_senv(buffer: Union[bytearray, bytes]) -> Response:
     SE_data = SampleEnvironmentData.GetRootAsSampleEnvironmentData(buffer, 0)
 
     max_time = datetime(
-        year=9000, month=1, day=1, hour=0, minute=0, second=0
+        year=3001, month=1, day=1, hour=0, minute=0, second=0
     ).timestamp()
     used_timestamp = SE_data.PacketTimestamp() / 1e9
     if used_timestamp > max_time:

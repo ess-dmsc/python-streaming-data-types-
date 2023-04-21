@@ -64,7 +64,7 @@ def deserialise_answ(buffer: Union[bytearray, bytes]):
     check_schema_identifier(buffer, FILE_IDENTIFIER)
     answ_message = ActionResponse.ActionResponse.GetRootAsActionResponse(buffer, 0)
     max_time = datetime(
-        year=9000, month=1, day=1, hour=0, minute=0, second=0
+        year=3001, month=1, day=1, hour=0, minute=0, second=0
     ).timestamp()
     used_timestamp = answ_message.StopTime() / 1000
     if used_timestamp > max_time:
