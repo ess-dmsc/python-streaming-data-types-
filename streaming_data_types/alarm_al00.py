@@ -34,7 +34,7 @@ _severity_to_enum = {
 }
 
 
-def deserialise_al00(buffer):
+def deserialise_al00(buffer) -> AlarmInfo:
     check_schema_identifier(buffer, FILE_IDENTIFIER)
     alarm = Alarm.Alarm.GetRootAsAlarm(buffer, 0)
 
@@ -46,7 +46,9 @@ def deserialise_al00(buffer):
     )
 
 
-def serialise_al00(source: str, timestamp_ns: int, severity: Severity, message: str):
+def serialise_al00(
+    source: str, timestamp_ns: int, severity: Severity, message: str
+) -> bytes:
     builder = flatbuffers.Builder(128)
 
     message_offset = builder.CreateString(message)
