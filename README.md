@@ -6,30 +6,31 @@ https://github.com/ess-dmsc/streaming-data-types
 
 ## FlatBuffer Schemas
 
-|name|description|
-|----|-----------|
-|hs00|Histogram schema (deprecated in favour of hs01)|
-|hs01|Histogram schema|
-|ns10|NICOS cache entry schema|
-|pl72|Run start|
-|6s4t|Run stop|
-|f142|Log data (deprecated in favour of f144)|
-|f144|Log data|
-|ev42|Event data (deprecated in favour of ev44)|
-|ev43|Event data from multiple pulses|
-|ev44|Event data with signed data types|
-|x5f2|Status messages|
-|tdct|Timestamps|
-|ep00|EPICS connection info (deprecated in favour of ep01)|
-|ep01|EPICS connection info|
-|rf5k|Forwarder configuration update|
-|answ|File-writer command response|
-|wrdn|File-writer finished writing|
-|NDAr|**Deprecated**|
-|ADAr|EPICS areaDetector data|
-|al00|Alarm/status messages used by the Forwarder and NICOS|
-|senv|**Deprecated**|
-|se00|Arrays with optional timestamps, for example waveform data. Replaces _senv_. |
+| name | description                                                                  |
+|------|------------------------------------------------------------------------------|
+| hs00 | Histogram schema (deprecated in favour of hs01)                              |
+| hs01 | Histogram schema                                                             |
+| ns10 | NICOS cache entry schema                                                     |
+| pl72 | Run start                                                                    |
+| 6s4t | Run stop                                                                     |
+| f142 | Log data (deprecated in favour of f144)                                      |
+| f144 | Log data                                                                     |
+| ev42 | Event data (deprecated in favour of ev44)                                    |
+| ev43 | Event data from multiple pulses                                              |
+| ev44 | Event data with signed data types                                            |
+| x5f2 | Status messages                                                              |
+| tdct | Timestamps                                                                   |
+| ep00 | EPICS connection info (deprecated in favour of ep01)                         |
+| ep01 | EPICS connection info                                                        |
+| rf5k | Forwarder configuration update                                               |
+| answ | File-writer command response                                                 |
+| wrdn | File-writer finished writing                                                 |
+| NDAr | **Deprecated**                                                               |
+| ADAr | EPICS areaDetector data                                                      |
+| al00 | Alarm/status messages used by the Forwarder and NICOS                        |
+| senv | **Deprecated**                                                               |
+| json | Generic JSON data                                                            |
+| se00 | Arrays with optional timestamps, for example waveform data. Replaces _senv_. |
 
 ### hs00 and hs01
 Schema for histogram data. It is one of the more complicated to use schemas.

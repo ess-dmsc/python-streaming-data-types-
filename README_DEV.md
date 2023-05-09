@@ -25,7 +25,6 @@ This command can also be used to run the hooks manually.
 * Check whether the serialised data produced by the new code can be verified in C++
   * There is a helper program in the [FlatBufferVerification](https://github.com/ess-dmsc/FlatBufferVerification) repository
   * Don't worry if it fails verification - it seems to be an inherent FlatBuffers issue
-* Add the schema and verifiability result to the table of schemas in `README.md`
 
 ### Tox
 Tox allows the unit tests to be run against multiple versions of Python.
