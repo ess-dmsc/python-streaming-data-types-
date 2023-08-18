@@ -5,7 +5,7 @@ import flatbuffers
 import numpy as np
 from streaming_data_types.fbschemas.arrays_wav_00.WaveFormArray import WaveFormArray
 from streaming_data_types.fbschemas.arrays_wav_00.DType import DType
-from streaming_data_types.fbschemas.arrays_wav_00 import (
+from streaming_data_types.fbschemas.arrays_wav_00.WaveFormArray import (
     WaveFormArrayStart,
     WaveFormArrayAddXData,
     WaveFormArrayAddYData,
@@ -52,13 +52,13 @@ def serialise_wa00(
         datatype_y_array = type_map[values_y_array.dtype]
 
     # Build data
-    x_data_offset = builder.CreateByteVector(values_x_array.view(np.uint8))
-    y_data_offset = builder.CreateByteVector(values_y_array.view(np.uint8))
+    x_data_offset = builder.CreateNumpyVector(values_x_array.view(np.uint8))
+    y_data_offset = builder.CreateNumpyVector(values_y_array.view(np.uint8))
 
     # Build the buffer
     WaveFormArrayStart(builder)
-    WaveFormArrayAddXData(builder, values_x_array)
-    WaveFormArrayAddYData(builder, values_y_array)
+    WaveFormArrayAddXData(builder, x_data_offset)
+    WaveFormArrayAddYData(builder, y_data_offset)
     WaveFormArrayAddXDataType(builder, datatype_x_array)
     WaveFormArrayAddYDataType(builder, datatype_y_array)
     if timestamp is not None:
@@ -110,12 +110,12 @@ def deserialise_wav00(buffer: Union[bytearray, bytes]) -> wa00_t:
     if waveform_array.XDataType() == DType.c_string:
         x_array = waveform_array.XDataAsNumpy().to_bytes().decode()
     else:
-        x_array = get_data(waveform_array.XDataAsNumpy(), waveform_array.XDataType)
+        x_array = get_data(waveform_array.XDataAsNumpy(), waveform_array.XDataType())
 
     if waveform_array.YDataType() == DType.c_string:
         y_array = waveform_array.XDataAsNumpy().to_bytes().decode()
     else:
-        y_array = get_data(waveform_array.YDataAsNumpy(), waveform_array.YDataType)
+        y_array = get_data(waveform_array.YDataAsNumpy(), waveform_array.YDataType())
     return wa00_t(
         values_x_array=x_array,
         values_y_array=y_array,

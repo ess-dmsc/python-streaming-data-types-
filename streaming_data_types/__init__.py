@@ -31,6 +31,7 @@ from streaming_data_types.sample_environment_senv import (
 )
 from streaming_data_types.status_x5f2 import deserialise_x5f2, serialise_x5f2
 from streaming_data_types.timestamps_tdct import deserialise_tdct, serialise_tdct
+from streaming_data_types.arrays_wa00 import deserialise_wav00, serialise_wa00
 
 __version__ = version
 
@@ -58,6 +59,7 @@ SERIALISERS = {
     "ADAr": serialise_ADAr,
     "al00": serialise_al00,
     "json": serialise_json,
+    "wa00": serialise_wa00,
 }
 
 
@@ -85,4 +87,5 @@ DESERIALISERS = {
     "ADAr": deserialise_ADAr,
     "al00": deserialise_al00,
     "json": deserialise_json,
+    "wa00": deserialise_wav00,
 }
