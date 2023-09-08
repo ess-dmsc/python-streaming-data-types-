@@ -36,6 +36,8 @@ class TestSerialisationNDAr:
         assert entry.unique_id == original_entry["unique_id"]
         assert entry.source_name == original_entry["source_name"]
         assert entry.timestamp == original_entry["timestamp"]
+        assert np.array_equal(entry.dimensions, original_entry["data"].shape)
+        assert np.array_equal(entry.data.shape, entry.dimensions)  # Sanity check
         assert np.array_equal(entry.data, original_entry["data"])
         assert entry.data.dtype == original_entry["data"].dtype
         assert len(entry.attributes) == len(original_entry["attributes"])
