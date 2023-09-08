@@ -201,7 +201,7 @@ def deserialise_ADAr(buffer: Union[bytearray, bytes]) -> ADArray:
         source_name=ad_array.SourceName().decode(),
         unique_id=unique_id,
         timestamp=datetime.fromtimestamp(used_timestamp, tz=timezone.utc),
-        dimensions=ad_array.DimensionsAsNumpy(),
+        dimensions=tuple(ad_array.DimensionsAsNumpy()),
         data=data,
         attributes=attributes_list,
     )
