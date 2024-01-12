@@ -19,6 +19,7 @@ from streaming_data_types.forwarder_config_update_rf5k import (
 )
 from streaming_data_types.histogram_hs00 import deserialise_hs00, serialise_hs00
 from streaming_data_types.histogram_hs01 import deserialise_hs01, serialise_hs01
+from streaming_data_types.histogram_hs02 import deserialise_hs02, serialise_hs02
 from streaming_data_types.json_json import deserialise_json, serialise_json
 from streaming_data_types.logdata_f142 import deserialise_f142, serialise_f142
 from streaming_data_types.logdata_f144 import deserialise_f144, serialise_f144
@@ -40,6 +41,7 @@ SERIALISERS = {
     "ev44": serialise_ev44,
     "hs00": serialise_hs00,
     "hs01": serialise_hs01,
+    "hs02": serialise_hs02,
     "f142": serialise_f142,
     "f144": serialise_f144,
     "ns10": serialise_ns10,
@@ -67,6 +69,7 @@ DESERIALISERS = {
     "ev44": deserialise_ev44,
     "hs00": deserialise_hs00,
     "hs01": deserialise_hs01,
+    "hs02": deserialise_hs02,
     "f142": deserialise_f142,
     "f144": deserialise_f144,
     "ns10": deserialise_ns10,
