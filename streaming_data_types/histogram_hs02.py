@@ -188,6 +188,10 @@ def _serialise_array(builder, data):
     flattened_data = numpy.asarray(data).flatten()
 
     # Carefully preserve explicitly supported types
+    if numpy.issubdtype(flattened_data.dtype, numpy.int8):
+        return _serialise_int8(builder, flattened_data)
+    if numpy.issubdtype(flattened_data.dtype, numpy.int16):
+        return _serialise_int16(builder, flattened_data)
     if numpy.issubdtype(flattened_data.dtype, numpy.int32):
         return _serialise_int32(builder, flattened_data)
     if numpy.issubdtype(flattened_data.dtype, numpy.int64):
@@ -197,10 +201,7 @@ def _serialise_array(builder, data):
     if numpy.issubdtype(flattened_data.dtype, numpy.float64):
         return _serialise_double(builder, flattened_data)
 
-    # Otherwise if it looks like an int then use int64, or use double as last resort
-    if numpy.issubdtype(flattened_data.dtype, numpy.int64):
-        return _serialise_int64(builder, flattened_data)
-
+    # Otherwise use double as last resort
     return _serialise_double(builder, flattened_data)
 
 
