@@ -19,8 +19,12 @@ This command can also be used to run the hooks manually.
 
 ### Adding new schemas checklist (important)
 * Generate Python bindings for the schema using FlatBuffers' `flatc` executable
+    `flatc --python /path/to/flatbufferschema.fbs`
 * Add the generated bindings to the project
 * Add unit-tests (see existing tests for an example)
+  * This may need new binaries created as examples.  You can do this from JSON:
+  * `flatc -b /path/to/flatbufferschema.fbs /path/to/json.json`
+  * You can convert existing .bin files into JSON via `flatc --json /path/to/flatbufferschemeThatBuiltTheBinary.fbs -- /path/to/binary.bin`
 * Update `fbschemas.__init__.py` to include the new serialiser and deserialiser
 * Check whether the serialised data produced by the new code can be verified in C++
   * There is a helper program in the [FlatBufferVerification](https://github.com/ess-dmsc/FlatBufferVerification) repository
@@ -80,7 +84,7 @@ twine check dist/*
 
 Push to test.pypi.org for testing:
 ```
-twine upload --repository-url https://test.pypi.org/legacy/ dist/*  
+twine upload --repository-url https://test.pypi.org/legacy/ dist/*
 ```
 
 The new module can then be installed from test.pypi.org like so:
