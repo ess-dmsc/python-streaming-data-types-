@@ -33,7 +33,7 @@ https://github.com/ess-dmsc/streaming-data-types
 | json | Generic JSON data                                                            |
 | se00 | Arrays with optional timestamps, for example waveform data. Replaces _senv_. |
 
-### hs\#\#
+### hs00, hs01, hs02
 Schema for histogram data. It is one of the more complicated to use schemas.
 It takes a Python dictionary as its input; this dictionary needs to have correctly
 named fields.
