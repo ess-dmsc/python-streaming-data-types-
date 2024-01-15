@@ -214,21 +214,9 @@ class TestSerialisationhs02:
             hist["last_metadata_timestamp"] == original_hist["last_metadata_timestamp"]
         )
 
-    def test_serialise_and_deserialise_hs02_message_returns_int32_type(self):
-        original_hist = create_test_data_with_type(np.int32)
-
-        buf = serialise_hs02(original_hist)
-        hist = deserialise_hs02(buf)
-
-        assert np.issubdtype(
-            hist["dim_metadata"][0]["bin_boundaries"].dtype,
-            original_hist["dim_metadata"][0]["bin_boundaries"].dtype,
-        )
-        assert np.issubdtype(hist["data"].dtype, original_hist["data"].dtype)
-        assert np.issubdtype(hist["errors"].dtype, original_hist["errors"].dtype)
-
-    def test_serialise_and_deserialise_hs02_message_returns_int64_type(self):
-        original_hist = create_test_data_with_type(np.int64)
+    @pytest.mark.parametrize("datatype", [np.int8, np.int16, np.int32, np.int64])
+    def test_serialise_and_deserialise_hs02_message_returns_int_type(self, datatype):
+        original_hist = create_test_data_with_type(datatype)
 
         buf = serialise_hs02(original_hist)
         hist = deserialise_hs02(buf)
