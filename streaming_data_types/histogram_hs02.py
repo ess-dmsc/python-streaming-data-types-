@@ -8,7 +8,7 @@ import streaming_data_types.fbschemas.histogram_hs02.ArrayInt16 as ArrayInt16
 import streaming_data_types.fbschemas.histogram_hs02.ArrayInt32 as ArrayInt32
 import streaming_data_types.fbschemas.histogram_hs02.ArrayInt64 as ArrayInt64
 import streaming_data_types.fbschemas.histogram_hs02.DimensionMetaData as DimensionMetaData
-import streaming_data_types.fbschemas.histogram_hs02.hs02_EventHistogram as EventHistogram
+import streaming_data_types.fbschemas.histogram_hs02.hs02_EventHistogram as hs02_EventHistogram
 from streaming_data_types.fbschemas.histogram_hs02.Array import Array
 from streaming_data_types.utils import check_schema_identifier
 
@@ -37,7 +37,7 @@ def deserialise_hs02(buffer):
     :return: dict of histogram information
     """
     check_schema_identifier(buffer, FILE_IDENTIFIER)
-    event_hist = EventHistogram.hs02_EventHistogram.GetRootAshs02_EventHistogram(
+    event_hist = hs02_EventHistogram.hs02_EventHistogram.GetRootAshs02_EventHistogram(
         buffer, 0
     )
 
@@ -120,13 +120,13 @@ def serialise_hs02(histogram):
 
     :param histogram: A dictionary containing the histogram to serialise.
     """
-    source_offset = None
+    source_name_offset = None
     info_offset = None
 
     builder = flatbuffers.Builder(1024)
     builder.ForceDefaults(True)
     if "source_name" in histogram:
-        source_offset = builder.CreateString(histogram["source_name"])
+        source_name_offset = builder.CreateString(histogram["source_name"])
     if "info" in histogram:
         info_offset = builder.CreateString(histogram["info"])
 
@@ -147,7 +147,7 @@ def serialise_hs02(histogram):
         )
 
     rank = len(histogram["current_shape"])
-    EventHistogram.hs02_EventHistogramStartDimMetadataVector(builder, rank)
+    hs02_EventHistogram.hs02_EventHistogramStartDimMetadataVector(builder, rank)
     # FlatBuffers builds arrays backwards
     for m in reversed(metadata):
         builder.PrependUOffsetTRelative(m)
@@ -161,24 +161,26 @@ def serialise_hs02(histogram):
         errors_offset, error_type = _serialise_array(builder, histogram["errors"])
 
     # Build the actual buffer
-    EventHistogram.hs02_EventHistogramStart(builder)
+    hs02_EventHistogram.hs02_EventHistogramStart(builder)
     if info_offset:
-        EventHistogram.hs02_EventHistogramAddInfo(builder, info_offset)
-    EventHistogram.hs02_EventHistogramAddData(builder, data_offset)
-    EventHistogram.hs02_EventHistogramAddCurrentShape(builder, shape_offset)
-    EventHistogram.hs02_EventHistogramAddDimMetadata(builder, metadata_vector)
-    EventHistogram.hs02_EventHistogramAddTimestamp(builder, histogram["timestamp"])
-    if source_offset:
-        EventHistogram.hs02_EventHistogramAddSourceName(builder, source_offset)
-    EventHistogram.hs02_EventHistogramAddDataType(builder, data_type)
+        hs02_EventHistogram.hs02_EventHistogramAddInfo(builder, info_offset)
+    hs02_EventHistogram.hs02_EventHistogramAddData(builder, data_offset)
+    hs02_EventHistogram.hs02_EventHistogramAddCurrentShape(builder, shape_offset)
+    hs02_EventHistogram.hs02_EventHistogramAddDimMetadata(builder, metadata_vector)
+    hs02_EventHistogram.hs02_EventHistogramAddTimestamp(builder, histogram["timestamp"])
+    if source_name_offset:
+        hs02_EventHistogram.hs02_EventHistogramAddSourceName(
+            builder, source_name_offset
+        )
+    hs02_EventHistogram.hs02_EventHistogramAddDataType(builder, data_type)
     if errors_offset:
-        EventHistogram.hs02_EventHistogramAddErrors(builder, errors_offset)
-        EventHistogram.hs02_EventHistogramAddErrorsType(builder, error_type)
+        hs02_EventHistogram.hs02_EventHistogramAddErrors(builder, errors_offset)
+        hs02_EventHistogram.hs02_EventHistogramAddErrorsType(builder, error_type)
     if "last_metadata_timestamp" in histogram:
-        EventHistogram.hs02_EventHistogramAddLastMetadataTimestamp(
+        hs02_EventHistogram.hs02_EventHistogramAddLastMetadataTimestamp(
             builder, histogram["last_metadata_timestamp"]
         )
-    hist_message = EventHistogram.hs02_EventHistogramEnd(builder)
+    hist_message = hs02_EventHistogram.hs02_EventHistogramEnd(builder)
 
     builder.Finish(hist_message, file_identifier=FILE_IDENTIFIER)
     return bytes(builder.Output())
