@@ -14,7 +14,7 @@ requirements:
   run:
     - python-flatbuffers ==1.12
     - numpy
-    - python >=3.6
+    - python >=3.8
 
 test:
   imports:
