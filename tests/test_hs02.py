@@ -7,6 +7,8 @@ from streaming_data_types import DESERIALISERS, SERIALISERS
 from streaming_data_types.exceptions import WrongSchemaException
 from streaming_data_types.histogram_hs02 import deserialise_hs02, serialise_hs02
 
+SCHEMA_ID = "hs02"
+
 
 def create_test_data_with_type(numpy_type):
     return {
@@ -30,7 +32,11 @@ def create_test_data_with_type(numpy_type):
 
 class TestSerialisationhs02:
     def _check_metadata_for_one_dimension(self, data, original_data):
-        assert np.array_equal(data["bin_boundaries"], original_data["bin_boundaries"])
+        if "bin_boundaries" in original_data:
+            assert np.array_equal(
+                data["bin_boundaries"], original_data["bin_boundaries"]
+            )
+            assert False
         assert data["length"] == original_data["length"]
         assert data["unit"] == original_data["unit"]
         assert data["label"] == original_data["label"]
@@ -73,6 +79,43 @@ class TestSerialisationhs02:
             hist["last_metadata_timestamp"] == original_hist["last_metadata_timestamp"]
         )
 
+    def test_serialises_and_deserialises_hs02_message_correctly_for_area_detector_like_data(
+        self,
+    ):
+        """We want to send area detector data that does not include bin_boundaries nor error fields"""
+        original_hist = {
+            "source_name": "some_source",
+            "timestamp": 123456,
+            "current_shape": [2, 5],
+            "dim_metadata": [
+                {
+                    "length": 2,
+                    "label": "y",
+                },
+                {
+                    "length": 5,
+                    "label": "x",
+                },
+            ],
+            "data": np.array([[1.0, 2.0, 3.0, 4.0, 5.0], [6.0, 7.0, 8.0, 9.0, 10.0]]),
+        }
+        buf = serialise_hs02(original_hist)
+
+        hist = deserialise_hs02(buf)
+        assert hist["source_name"] == original_hist["source_name"]
+        assert hist["timestamp"] == original_hist["timestamp"]
+        assert hist["current_shape"] == original_hist["current_shape"]
+        self._check_metadata_for_one_dimension(
+            hist["dim_metadata"][0], original_hist["dim_metadata"][0]
+        )
+        self._check_metadata_for_one_dimension(
+            hist["dim_metadata"][1], original_hist["dim_metadata"][1]
+        )
+        assert np.array_equal(hist["data"], original_hist["data"])
+        assert (
+            hist["last_metadata_timestamp"] == original_hist["last_metadata_timestamp"]
+        )
+
     def test_serialises_and_deserialises_hs02_message_correctly_for_minimal_1d_data(
         self,
     ):
@@ -80,6 +123,7 @@ class TestSerialisationhs02:
         Round-trip to check what we serialise is what we get back.
         """
         original_hist = {
+            "source_name": "some_source",
             "timestamp": 123456,
             "current_shape": [5],
             "dim_metadata": [
@@ -95,7 +139,7 @@ class TestSerialisationhs02:
         buf = serialise_hs02(original_hist)
 
         hist = deserialise_hs02(buf)
-        assert hist["source_name"] == ""
+        assert hist["source_name"] == original_hist["source_name"]
         assert hist["timestamp"] == original_hist["timestamp"]
         assert hist["current_shape"] == original_hist["current_shape"]
         self._check_metadata_for_one_dimension(
@@ -214,35 +258,11 @@ class TestSerialisationhs02:
             hist["last_metadata_timestamp"] == original_hist["last_metadata_timestamp"]
         )
 
-    @pytest.mark.parametrize("datatype", [np.int8, np.int16, np.int32, np.int64])
-    def test_serialise_and_deserialise_hs02_message_returns_int_type(self, datatype):
+    @pytest.mark.parametrize(
+        "datatype", [np.int8, np.int16, np.int32, np.int64, np.float32, np.float64]
+    )
+    def test_serialise_and_deserialise_hs02_message_returns_right_type(self, datatype):
         original_hist = create_test_data_with_type(datatype)
-
-        buf = serialise_hs02(original_hist)
-        hist = deserialise_hs02(buf)
-
-        assert np.issubdtype(
-            hist["dim_metadata"][0]["bin_boundaries"].dtype,
-            original_hist["dim_metadata"][0]["bin_boundaries"].dtype,
-        )
-        assert np.issubdtype(hist["data"].dtype, original_hist["data"].dtype)
-        assert np.issubdtype(hist["errors"].dtype, original_hist["errors"].dtype)
-
-    def test_serialise_and_deserialise_hs02_message_returns_float32_type(self):
-        original_hist = create_test_data_with_type(np.float32)
-
-        buf = serialise_hs02(original_hist)
-        hist = deserialise_hs02(buf)
-
-        assert np.issubdtype(
-            hist["dim_metadata"][0]["bin_boundaries"].dtype,
-            original_hist["dim_metadata"][0]["bin_boundaries"].dtype,
-        )
-        assert np.issubdtype(hist["data"].dtype, original_hist["data"].dtype)
-        assert np.issubdtype(hist["errors"].dtype, original_hist["errors"].dtype)
-
-    def test_serialise_and_deserialise_hs02_message_returns_float64_type(self):
-        original_hist = create_test_data_with_type(np.float64)
 
         buf = serialise_hs02(original_hist)
         hist = deserialise_hs02(buf)
@@ -351,11 +371,13 @@ class TestSerialisationhs02:
         )
 
     def test_schema_type_is_in_global_serialisers_list(self):
-        assert "hs02" in SERIALISERS
-        assert "hs02" in DESERIALISERS
+        assert SCHEMA_ID in SERIALISERS
+        assert SCHEMA_ID in DESERIALISERS
 
     def test_converts_real_buffer(self):
-        file_path = pathlib.Path(__file__).parent / "example_buffers" / "hs02.bin"
+        file_path = (
+            pathlib.Path(__file__).parent / "example_buffers" / f"{SCHEMA_ID}.bin"
+        )
         with open(file_path, "rb") as file:
             buffer = file.read()
 

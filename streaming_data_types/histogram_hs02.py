@@ -1,3 +1,5 @@
+from typing import List, NamedTuple, Optional, Union
+
 import flatbuffers
 import numpy
 
@@ -7,7 +9,7 @@ import streaming_data_types.fbschemas.histogram_hs02.ArrayInt8 as ArrayInt8
 import streaming_data_types.fbschemas.histogram_hs02.ArrayInt16 as ArrayInt16
 import streaming_data_types.fbschemas.histogram_hs02.ArrayInt32 as ArrayInt32
 import streaming_data_types.fbschemas.histogram_hs02.ArrayInt64 as ArrayInt64
-import streaming_data_types.fbschemas.histogram_hs02.DimensionMetaData as DimensionMetaData
+import streaming_data_types.fbschemas.histogram_hs02.DimensionMetaData as hs02_DimensionMetaData
 import streaming_data_types.fbschemas.histogram_hs02.hs02_EventHistogram as hs02_EventHistogram
 from streaming_data_types.fbschemas.histogram_hs02.Array import Array
 from streaming_data_types.utils import check_schema_identifier
@@ -25,13 +27,49 @@ _array_for_type = {
 }
 
 
+ArrayDatatypes = Union[
+    ArrayInt8.ArrayInt8,
+    ArrayInt16.ArrayInt16,
+    ArrayInt32.ArrayInt32,
+    ArrayInt64.ArrayInt64,
+    ArrayDouble.ArrayDouble,
+    ArrayFloat.ArrayFloat,
+]
+
+
+DimensionMetaData = NamedTuple(
+    "DimensionMetaData",
+    (
+        ("label", str),
+        ("length", int),
+        ("unit", Optional[str]),
+        ("bin_boundaries", Optional[ArrayDatatypes]),
+    ),
+)
+
+EventHistogram = NamedTuple(
+    "EventHistogram",
+    (
+        ("source_name", str),
+        ("current_shape", [int]),
+        ("dim_metadata", List[DimensionMetaData]),
+        ("timestamp", int),
+        ("data", Optional[numpy.ndarray]),
+        ("errors", Optional[numpy.ndarray]),
+        ("offset", Optional[numpy.ndarray]),
+        ("last_metadata_timestamp", int),
+        ("info", Optional[str]),
+    ),
+)
+
+
 def _create_array_object_for_type(array_type):
     return _array_for_type.get(array_type, ArrayDouble.ArrayDouble())
 
 
 def deserialise_hs02(buffer):
     """
-    Deserialise flatbuffer hs10 into a histogram.
+    Deserialise flatbuffer into a histogram.
 
     :param buffer:
     :return: dict of histogram information
@@ -50,50 +88,52 @@ def deserialise_hs02(buffer):
         # Get bins
         bins_offset = event_hist.DimMetadata(i).BinBoundaries()
         bins_fb.Init(bins_offset.Bytes, bins_offset.Pos)
-        bin_boundaries = bins_fb.ValueAsNumpy()
+        bin_boundaries = None if bins_fb.ValueIsNone() else bins_fb.ValueAsNumpy()
 
         hist_info = {
+            "label": event_hist.DimMetadata(i).Label().decode("utf-8"),
             "length": event_hist.DimMetadata(i).Length(),
-            "bin_boundaries": bin_boundaries,
             "unit": event_hist.DimMetadata(i).Unit().decode("utf-8")
             if event_hist.DimMetadata(i).Unit()
-            else "",
-            "label": event_hist.DimMetadata(i).Label().decode("utf-8")
-            if event_hist.DimMetadata(i).Label()
-            else "",
+            else None,
+            "bin_boundaries": bin_boundaries,
         }
         dims.append(hist_info)
 
-    metadata_timestamp = event_hist.LastMetadataTimestamp()
-
-    data_fb = _create_array_object_for_type(event_hist.DataType())
-    data_offset = event_hist.Data()
-    data_fb.Init(data_offset.Bytes, data_offset.Pos)
     shape = event_hist.CurrentShapeAsNumpy().tolist()
-    data = data_fb.ValueAsNumpy().reshape(shape)
 
-    # Get the errors
+    # Data
+    data = None
+    data_offset = event_hist.Data()
+    if data_offset:
+        data_fb = _create_array_object_for_type(event_hist.DataType())
+        data_fb.Init(data_offset.Bytes, data_offset.Pos)
+        data = None if data_fb.ValueIsNone() else data_fb.ValueAsNumpy().reshape(shape)
+
+    # Errors
+    errors = None
     errors_offset = event_hist.Errors()
     if errors_offset:
         errors_fb = _create_array_object_for_type(event_hist.ErrorsType())
         errors_fb.Init(errors_offset.Bytes, errors_offset.Pos)
-        errors = errors_fb.ValueAsNumpy().reshape(shape)
-    else:
-        errors = []
+        errors = (
+            None if errors_fb.ValueIsNone() else errors_fb.ValueAsNumpy().reshape(shape)
+        )
 
-    hist = {
-        "source_name": event_hist.SourceName().decode("utf-8")
-        if event_hist.SourceName()
-        else "",
-        "timestamp": event_hist.Timestamp(),
-        "current_shape": shape,
-        "dim_metadata": dims,
-        "data": data,
-        "errors": errors,
-        "last_metadata_timestamp": metadata_timestamp,
-        "info": event_hist.Info().decode("utf-8") if event_hist.Info() else "",
-    }
-    return hist
+    # Offset
+    offset = None if event_hist.OffsetIsNone() else event_hist.OffsetAsNumpy()
+
+    return EventHistogram(
+        source_name=event_hist.SourceName().decode("utf-8"),
+        current_shape=shape,
+        dim_metadata=dims,
+        timestamp=event_hist.Timestamp(),
+        data=data,
+        errors=errors,
+        offset=offset,
+        last_metadata_timestamp=event_hist.LastMetadataTimestamp(),
+        info=event_hist.Info().decode("utf-8") if event_hist.Info() else None,
+    )
 
 
 def _serialise_metadata(builder, length, edges, unit, label):
@@ -102,13 +142,13 @@ def _serialise_metadata(builder, length, edges, unit, label):
 
     bins_offset, bin_type = _serialise_array(builder, edges)
 
-    DimensionMetaData.DimensionMetaDataStart(builder)
-    DimensionMetaData.DimensionMetaDataAddLength(builder, length)
-    DimensionMetaData.DimensionMetaDataAddBinBoundaries(builder, bins_offset)
-    DimensionMetaData.DimensionMetaDataAddBinBoundariesType(builder, bin_type)
-    DimensionMetaData.DimensionMetaDataAddLabel(builder, label_offset)
-    DimensionMetaData.DimensionMetaDataAddUnit(builder, unit_offset)
-    return DimensionMetaData.DimensionMetaDataEnd(builder)
+    hs02_DimensionMetaData.DimensionMetaDataStart(builder)
+    hs02_DimensionMetaData.DimensionMetaDataAddLength(builder, length)
+    hs02_DimensionMetaData.DimensionMetaDataAddBinBoundaries(builder, bins_offset)
+    hs02_DimensionMetaData.DimensionMetaDataAddBinBoundariesType(builder, bin_type)
+    hs02_DimensionMetaData.DimensionMetaDataAddLabel(builder, label_offset)
+    hs02_DimensionMetaData.DimensionMetaDataAddUnit(builder, unit_offset)
+    return hs02_DimensionMetaData.DimensionMetaDataEnd(builder)
 
 
 def serialise_hs02(histogram):
