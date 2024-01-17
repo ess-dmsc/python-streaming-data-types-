@@ -5,16 +5,16 @@ import pytest
 
 from streaming_data_types import DESERIALISERS, SERIALISERS
 from streaming_data_types.exceptions import WrongSchemaException
-from streaming_data_types.histogram_hm01 import (
+from streaming_data_types.histogram_hm00 import (
     Attribute,
     BinBoundaryData,
     HistogramData,
-    deserialise_hm01,
-    serialise_hm01,
+    deserialise_hm00,
+    serialise_hm00,
 )
 
 
-def test_serialises_and_deserialises_hm01_int_array():
+def test_serialises_and_deserialises_hm00_int_array():
     """
     Round-trip to check what we serialise is what we get back.
     """
@@ -44,8 +44,8 @@ def test_serialises_and_deserialises_hm01_int_array():
         ],
     }
 
-    buf = serialise_hm01(**original_entry)
-    entry = deserialise_hm01(buf)
+    buf = serialise_hm00(**original_entry)
+    entry = deserialise_hm00(buf)
 
     assert entry.source_name == original_entry["source_name"]
     assert entry.unique_id == original_entry["unique_id"]
@@ -60,7 +60,7 @@ def test_serialises_and_deserialises_hm01_int_array():
         assert a == b
 
 
-def test_serialises_and_deserialises_hm01_float_array():
+def test_serialises_and_deserialises_hm00_float_array():
     """
     Round-trip to check what we serialise is what we get back.
     """
@@ -94,8 +94,8 @@ def test_serialises_and_deserialises_hm01_float_array():
         ],
     }
 
-    buf = serialise_hm01(**original_entry)
-    entry = deserialise_hm01(buf)
+    buf = serialise_hm00(**original_entry)
+    entry = deserialise_hm00(buf)
 
     assert entry.source_name == original_entry["source_name"]
     assert entry.unique_id == original_entry["unique_id"]
@@ -109,7 +109,7 @@ def test_serialises_and_deserialises_hm01_float_array():
     assert len(entry.attributes) == 0
 
 
-def test_serialises_and_deserialises_hm01_string():
+def test_serialises_and_deserialises_hm00_string():
     """
     Round-trip to check what we serialise is what we get back.
     """
@@ -120,8 +120,8 @@ def test_serialises_and_deserialises_hm01_string():
         "timestamp": datetime.now(tz=timezone.utc),
     }
 
-    buf = serialise_hm01(**original_entry)
-    entry = deserialise_hm01(buf)
+    buf = serialise_hm00(**original_entry)
+    entry = deserialise_hm00(buf)
 
     assert entry.unique_id == original_entry["unique_id"]
     assert entry.source_name == original_entry["source_name"]
@@ -137,16 +137,16 @@ def test_if_buffer_has_wrong_id_then_throws():
         "timestamp": datetime.now(),
     }
 
-    buf = serialise_hm01(**original_entry)
+    buf = serialise_hm00(**original_entry)
 
     # Manually hack the id
     buf = bytearray(buf)
     buf[4:8] = b"1234"
 
     with pytest.raises(WrongSchemaException):
-        deserialise_hm01(buf)
+        deserialise_hm00(buf)
 
 
-def test_hm01_schema_type_is_in_global_serialisers_list():
-    assert "hm01" in SERIALISERS
-    assert "hm01" in DESERIALISERS
+def test_hm00_schema_type_is_in_global_serialisers_list():
+    assert "hm00" in SERIALISERS
+    assert "hm00" in DESERIALISERS

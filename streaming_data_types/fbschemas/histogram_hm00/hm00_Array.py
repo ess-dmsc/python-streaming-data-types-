@@ -8,46 +8,46 @@ from flatbuffers.compat import import_numpy
 np = import_numpy()
 
 
-class hm01_Array(object):
+class hm00_Array(object):
     __slots__ = ["_tab"]
 
     @classmethod
     def GetRootAs(cls, buf, offset=0):
         n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, offset)
-        x = hm01_Array()
+        x = hm00_Array()
         x.Init(buf, n + offset)
         return x
 
     @classmethod
-    def GetRootAshm01_Array(cls, buf, offset=0):
+    def GetRootAshm00_Array(cls, buf, offset=0):
         """This method is deprecated. Please switch to GetRootAs."""
         return cls.GetRootAs(buf, offset)
 
     @classmethod
-    def hm01_ArrayBufferHasIdentifier(cls, buf, offset, size_prefixed=False):
+    def hm00_ArrayBufferHasIdentifier(cls, buf, offset, size_prefixed=False):
         return flatbuffers.util.BufferHasIdentifier(
             buf, offset, b"\x68\x6D\x30\x31", size_prefixed=size_prefixed
         )
 
-    # hm01_Array
+    # hm00_Array
     def Init(self, buf, pos):
         self._tab = flatbuffers.table.Table(buf, pos)
 
-    # hm01_Array
+    # hm00_Array
     def SourceName(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(4))
         if o != 0:
             return self._tab.String(o + self._tab.Pos)
         return None
 
-    # hm01_Array
+    # hm00_Array
     def Id(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(6))
         if o != 0:
             return self._tab.Get(flatbuffers.number_types.Int32Flags, o + self._tab.Pos)
         return 0
 
-    # hm01_Array
+    # hm00_Array
     def Timestamp(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(8))
         if o != 0:
@@ -56,7 +56,7 @@ class hm01_Array(object):
             )
         return 0
 
-    # hm01_Array
+    # hm00_Array
     def Dimensions(self, j):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(10))
         if o != 0:
@@ -70,19 +70,19 @@ class hm01_Array(object):
             return obj
         return None
 
-    # hm01_Array
+    # hm00_Array
     def DimensionsLength(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(10))
         if o != 0:
             return self._tab.VectorLen(o)
         return 0
 
-    # hm01_Array
+    # hm00_Array
     def DimensionsIsNone(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(10))
         return o == 0
 
-    # hm01_Array
+    # hm00_Array
     def Data(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(12))
         if o != 0:
@@ -94,7 +94,7 @@ class hm01_Array(object):
             return obj
         return None
 
-    # hm01_Array
+    # hm00_Array
     def Errors(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(14))
         if o != 0:
@@ -106,7 +106,7 @@ class hm01_Array(object):
             return obj
         return None
 
-    # hm01_Array
+    # hm00_Array
     def Attributes(self, j):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(16))
         if o != 0:
@@ -120,112 +120,112 @@ class hm01_Array(object):
             return obj
         return None
 
-    # hm01_Array
+    # hm00_Array
     def AttributesLength(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(16))
         if o != 0:
             return self._tab.VectorLen(o)
         return 0
 
-    # hm01_Array
+    # hm00_Array
     def AttributesIsNone(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(16))
         return o == 0
 
 
-def hm01_ArrayStart(builder):
+def hm00_ArrayStart(builder):
     builder.StartObject(7)
 
 
 def Start(builder):
-    return hm01_ArrayStart(builder)
+    return hm00_ArrayStart(builder)
 
 
-def hm01_ArrayAddSourceName(builder, sourceName):
+def hm00_ArrayAddSourceName(builder, sourceName):
     builder.PrependUOffsetTRelativeSlot(
         0, flatbuffers.number_types.UOffsetTFlags.py_type(sourceName), 0
     )
 
 
 def AddSourceName(builder, sourceName):
-    return hm01_ArrayAddSourceName(builder, sourceName)
+    return hm00_ArrayAddSourceName(builder, sourceName)
 
 
-def hm01_ArrayAddId(builder, id):
+def hm00_ArrayAddId(builder, id):
     builder.PrependInt32Slot(1, id, 0)
 
 
 def AddId(builder, id):
-    return hm01_ArrayAddId(builder, id)
+    return hm00_ArrayAddId(builder, id)
 
 
-def hm01_ArrayAddTimestamp(builder, timestamp):
+def hm00_ArrayAddTimestamp(builder, timestamp):
     builder.PrependUint64Slot(2, timestamp, 0)
 
 
 def AddTimestamp(builder, timestamp):
-    return hm01_ArrayAddTimestamp(builder, timestamp)
+    return hm00_ArrayAddTimestamp(builder, timestamp)
 
 
-def hm01_ArrayAddDimensions(builder, dimensions):
+def hm00_ArrayAddDimensions(builder, dimensions):
     builder.PrependUOffsetTRelativeSlot(
         3, flatbuffers.number_types.UOffsetTFlags.py_type(dimensions), 0
     )
 
 
 def AddDimensions(builder, dimensions):
-    return hm01_ArrayAddDimensions(builder, dimensions)
+    return hm00_ArrayAddDimensions(builder, dimensions)
 
 
-def hm01_ArrayStartDimensionsVector(builder, numElems):
+def hm00_ArrayStartDimensionsVector(builder, numElems):
     return builder.StartVector(4, numElems, 4)
 
 
 def StartDimensionsVector(builder, numElems):
-    return hm01_ArrayStartDimensionsVector(builder, numElems)
+    return hm00_ArrayStartDimensionsVector(builder, numElems)
 
 
-def hm01_ArrayAddData(builder, data):
+def hm00_ArrayAddData(builder, data):
     builder.PrependUOffsetTRelativeSlot(
         4, flatbuffers.number_types.UOffsetTFlags.py_type(data), 0
     )
 
 
 def AddData(builder, data):
-    return hm01_ArrayAddData(builder, data)
+    return hm00_ArrayAddData(builder, data)
 
 
-def hm01_ArrayAddErrors(builder, errors):
+def hm00_ArrayAddErrors(builder, errors):
     builder.PrependUOffsetTRelativeSlot(
         5, flatbuffers.number_types.UOffsetTFlags.py_type(errors), 0
     )
 
 
 def AddErrors(builder, errors):
-    return hm01_ArrayAddErrors(builder, errors)
+    return hm00_ArrayAddErrors(builder, errors)
 
 
-def hm01_ArrayAddAttributes(builder, attributes):
+def hm00_ArrayAddAttributes(builder, attributes):
     builder.PrependUOffsetTRelativeSlot(
         6, flatbuffers.number_types.UOffsetTFlags.py_type(attributes), 0
     )
 
 
 def AddAttributes(builder, attributes):
-    return hm01_ArrayAddAttributes(builder, attributes)
+    return hm00_ArrayAddAttributes(builder, attributes)
 
 
-def hm01_ArrayStartAttributesVector(builder, numElems):
+def hm00_ArrayStartAttributesVector(builder, numElems):
     return builder.StartVector(4, numElems, 4)
 
 
 def StartAttributesVector(builder, numElems):
-    return hm01_ArrayStartAttributesVector(builder, numElems)
+    return hm00_ArrayStartAttributesVector(builder, numElems)
 
 
-def hm01_ArrayEnd(builder):
+def hm00_ArrayEnd(builder):
     return builder.EndObject()
 
 
 def End(builder):
-    return hm01_ArrayEnd(builder)
+    return hm00_ArrayEnd(builder)

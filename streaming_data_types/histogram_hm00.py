@@ -5,11 +5,11 @@ from typing import NamedTuple
 import flatbuffers
 import numpy
 
-import streaming_data_types.fbschemas.histogram_hm01.Attribute as AttributeBuffer
-import streaming_data_types.fbschemas.histogram_hm01.BinBoundaryData as BinBoundaryDataBuffer
-import streaming_data_types.fbschemas.histogram_hm01.HistogramData as HistogramDataBuffer
-from streaming_data_types.fbschemas.histogram_hm01 import hm01_Array
-from streaming_data_types.fbschemas.histogram_hm01.DType import DType as DT
+import streaming_data_types.fbschemas.histogram_hm00.Attribute as AttributeBuffer
+import streaming_data_types.fbschemas.histogram_hm00.BinBoundaryData as BinBoundaryDataBuffer
+import streaming_data_types.fbschemas.histogram_hm00.HistogramData as HistogramDataBuffer
+from streaming_data_types.fbschemas.histogram_hm00 import hm00_Array
+from streaming_data_types.fbschemas.histogram_hm00.DType import DType as DT
 from streaming_data_types.utils import check_schema_identifier
 
 FILE_IDENTIFIER = b"hm00"
@@ -106,7 +106,7 @@ class Attribute:
     def pack(self, builder):
         from numpy import uint8
 
-        import streaming_data_types.fbschemas.histogram_hm01.Attribute as Buffer
+        import streaming_data_types.fbschemas.histogram_hm00.Attribute as Buffer
 
         name_offset = builder.CreateString(self.name)
         description_offset = (
@@ -166,7 +166,7 @@ class BinBoundaryData:
     def pack(self, builder):
         from numpy import uint8
 
-        import streaming_data_types.fbschemas.histogram_hm01.BinBoundaryData as Buffer
+        import streaming_data_types.fbschemas.histogram_hm00.BinBoundaryData as Buffer
 
         name_offset = builder.CreateString(self.name)
         unit_offset = None if self.unit is None else builder.CreateString(self.unit)
@@ -214,7 +214,7 @@ class HistogramData:
     def pack(self, builder):
         from numpy import asarray, uint8
 
-        import streaming_data_types.fbschemas.histogram_hm01.HistogramData as Buffer
+        import streaming_data_types.fbschemas.histogram_hm00.HistogramData as Buffer
 
         unit_offset = builder.CreateString(self.unit) if self.unit is not None else None
         buf = to_buffer(self.data)
@@ -239,7 +239,7 @@ class HistogramData:
         return cls(unit=unit, data=data)
 
 
-def serialise_hm01(
+def serialise_hm00(
     source_name: str,
     unique_id: int,
     timestamp: datetime,
@@ -248,7 +248,7 @@ def serialise_hm01(
     dimensions: list[BinBoundaryData] | None = None,
     attributes: list[Attribute] | None = None,
 ) -> bytes:
-    import streaming_data_types.fbschemas.histogram_hm01.hm01_Array as Buffer
+    import streaming_data_types.fbschemas.histogram_hm00.hm00_Array as Buffer
 
     builder = flatbuffers.Builder(1024)
     builder.ForceDefaults(True)
@@ -258,7 +258,7 @@ def serialise_hm01(
         None if dimensions is None else [item.pack(builder) for item in dimensions]
     )
     if temp_dimensions is not None:
-        Buffer.hm01_ArrayStartDimensionsVector(builder, len(dimensions))
+        Buffer.hm00_ArrayStartDimensionsVector(builder, len(dimensions))
         for item in reversed(temp_dimensions):
             builder.PrependUOffsetTRelative(item)
     dimensions_offset = None if temp_dimensions is None else builder.EndVector()
@@ -273,7 +273,7 @@ def serialise_hm01(
         None if attributes is None else [item.pack(builder) for item in attributes]
     )
     if temp_attributes is not None:
-        Buffer.hm01_ArrayStartAttributesVector(builder, len(attributes))
+        Buffer.hm00_ArrayStartAttributesVector(builder, len(attributes))
         for item in reversed(temp_attributes):
             builder.PrependUOffsetTRelative(item)
     attributes_offset = None if temp_attributes is None else builder.EndVector()
@@ -281,25 +281,25 @@ def serialise_hm01(
     source_name_offset = builder.CreateString(source_name)
 
     # Build the actual buffer
-    Buffer.hm01_ArrayStart(builder)
-    Buffer.hm01_ArrayAddSourceName(builder, source_name_offset)
-    Buffer.hm01_ArrayAddId(builder, unique_id)
-    Buffer.hm01_ArrayAddTimestamp(builder, int(timestamp.timestamp() * 1e9))
+    Buffer.hm00_ArrayStart(builder)
+    Buffer.hm00_ArrayAddSourceName(builder, source_name_offset)
+    Buffer.hm00_ArrayAddId(builder, unique_id)
+    Buffer.hm00_ArrayAddTimestamp(builder, int(timestamp.timestamp() * 1e9))
     if dimensions_offset is not None:
-        Buffer.hm01_ArrayAddDimensions(builder, dimensions_offset)
-    Buffer.hm01_ArrayAddData(builder, data_offset)
+        Buffer.hm00_ArrayAddDimensions(builder, dimensions_offset)
+    Buffer.hm00_ArrayAddData(builder, data_offset)
     if errors_offset is not None:
-        Buffer.hm01_ArrayAddErrors(builder, errors_offset)
+        Buffer.hm00_ArrayAddErrors(builder, errors_offset)
     if attributes_offset is not None:
-        Buffer.hm01_ArrayAddAttributes(builder, attributes_offset)
-    array_message = Buffer.hm01_ArrayEnd(builder)
+        Buffer.hm00_ArrayAddAttributes(builder, attributes_offset)
+    array_message = Buffer.hm00_ArrayEnd(builder)
 
     builder.Finish(array_message, file_identifier=FILE_IDENTIFIER)
     return bytes(builder.Output())
 
 
-hm01_Array_t = NamedTuple(
-    "hm01_Array",
+hm00_Array_t = NamedTuple(
+    "hm00_Array",
     (
         ("source_name", str),
         ("unique_id", int),
@@ -312,34 +312,34 @@ hm01_Array_t = NamedTuple(
 )
 
 
-def deserialise_hm01(buffer: bytearray | bytes) -> hm01_Array:
+def deserialise_hm00(buffer: bytearray | bytes) -> hm00_Array:
     check_schema_identifier(buffer, FILE_IDENTIFIER)
 
-    hm01_array = hm01_Array.hm01_Array.GetRootAs(buffer, offset=0)
-    unique_id = hm01_array.Id()
+    hm00_array = hm00_Array.hm00_Array.GetRootAs(buffer, offset=0)
+    unique_id = hm00_array.Id()
     max_time = datetime(
         year=3001, month=1, day=1, hour=0, minute=0, second=0
     ).timestamp()
-    used_timestamp = hm01_array.Timestamp() / 1e9
+    used_timestamp = hm00_array.Timestamp() / 1e9
     if used_timestamp > max_time:
         used_timestamp = max_time
     dimensions = [
-        BinBoundaryData.from_buffer(hm01_array.Dimensions(i))
-        for i in range(hm01_array.DimensionsLength())
+        BinBoundaryData.from_buffer(hm00_array.Dimensions(i))
+        for i in range(hm00_array.DimensionsLength())
     ]
-    data = HistogramData.from_buffer(hm01_array.Data())
+    data = HistogramData.from_buffer(hm00_array.Data())
     errors = (
         None
-        if hm01_array.Errors() is None
-        else HistogramData.from_buffer(hm01_array.Errors())
+        if hm00_array.Errors() is None
+        else HistogramData.from_buffer(hm00_array.Errors())
     )
     attributes = [
-        Attribute.from_buffer(hm01_array.Attributes(i))
-        for i in range(hm01_array.AttributesLength())
+        Attribute.from_buffer(hm00_array.Attributes(i))
+        for i in range(hm00_array.AttributesLength())
     ]
 
-    return hm01_Array_t(
-        source_name=hm01_array.SourceName().decode(),
+    return hm00_Array_t(
+        source_name=hm00_array.SourceName().decode(),
         unique_id=unique_id,
         timestamp=datetime.fromtimestamp(used_timestamp, tz=timezone.utc),
         dimensions=dimensions,

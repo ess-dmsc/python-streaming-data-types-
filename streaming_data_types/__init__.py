@@ -18,7 +18,7 @@ from streaming_data_types.forwarder_config_update_rf5k import (
     deserialise_rf5k,
     serialise_rf5k,
 )
-from streaming_data_types.histogram_hm01 import deserialise_hm01, serialise_hm01
+from streaming_data_types.histogram_hm00 import deserialise_hm00, serialise_hm00
 from streaming_data_types.histogram_hs00 import deserialise_hs00, serialise_hs00
 from streaming_data_types.histogram_hs01 import deserialise_hs01, serialise_hs01
 from streaming_data_types.json_json import deserialise_json, serialise_json
@@ -61,7 +61,7 @@ SERIALISERS = {
     "al00": serialise_al00,
     "json": serialise_json,
     "ad00": serialise_ad00,
-    "hm01": serialise_hm01,
+    "hm00": serialise_hm00,
 }
 
 
@@ -90,5 +90,5 @@ DESERIALISERS = {
     "al00": deserialise_al00,
     "json": deserialise_json,
     "ad00": deserialise_ad00,
-    "hm01": deserialise_hm01,
+    "hm00": deserialise_hm00,
 }
