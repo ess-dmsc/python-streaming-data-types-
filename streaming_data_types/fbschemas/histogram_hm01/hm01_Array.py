@@ -63,7 +63,7 @@ class hm01_Array(object):
             x = self._tab.Vector(o)
             x += flatbuffers.number_types.UOffsetTFlags.py_type(j) * 4
             x = self._tab.Indirect(x)
-            from BinBoundaryData import BinBoundaryData
+            from .BinBoundaryData import BinBoundaryData
 
             obj = BinBoundaryData()
             obj.Init(self._tab.Bytes, x)
@@ -87,7 +87,7 @@ class hm01_Array(object):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(12))
         if o != 0:
             x = self._tab.Indirect(o + self._tab.Pos)
-            from HistogramData import HistogramData
+            from .HistogramData import HistogramData
 
             obj = HistogramData()
             obj.Init(self._tab.Bytes, x)
@@ -99,7 +99,7 @@ class hm01_Array(object):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(14))
         if o != 0:
             x = self._tab.Indirect(o + self._tab.Pos)
-            from HistogramData import HistogramData
+            from .HistogramData import HistogramData
 
             obj = HistogramData()
             obj.Init(self._tab.Bytes, x)
@@ -113,7 +113,7 @@ class hm01_Array(object):
             x = self._tab.Vector(o)
             x += flatbuffers.number_types.UOffsetTFlags.py_type(j) * 4
             x = self._tab.Indirect(x)
-            from Attribute import Attribute
+            from .Attribute import Attribute
 
             obj = Attribute()
             obj.Init(self._tab.Bytes, x)

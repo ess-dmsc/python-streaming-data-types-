@@ -84,11 +84,13 @@ def from_buffer(fb_array) -> numpy.ndarray:
 @dataclass
 class Attribute:
     name: str
-    description: str
-    source: str
     data: numpy.ndarray | str | int | float
+    description: str | None = None
+    source: str | None = None
 
     def __eq__(self, other):
+        if not isinstance(other, Attribute):
+            return False
         data_is_equal = type(self.data) == type(other.data)  # noqa: E721
         if type(self.data) is numpy.ndarray:
             data_is_equal = data_is_equal and numpy.array_equal(self.data, other.data)
@@ -107,15 +109,21 @@ class Attribute:
         import streaming_data_types.fbschemas.histogram_hm01.Attribute as Buffer
 
         name_offset = builder.CreateString(self.name)
-        description_offset = builder.CreateString(self.description)
-        source_offset = builder.CreateString(self.source)
+        description_offset = (
+            None if self.description is None else builder.CreateString(self.description)
+        )
+        source_offset = (
+            None if self.source is None else builder.CreateString(self.source)
+        )
         data_offset = builder.CreateNumpyVector(
             to_buffer(self.data).flatten().view(uint8)
         )
         Buffer.AttributeStart(builder)
         Buffer.AttributeAddName(builder, name_offset)
-        Buffer.AttributeAddDescription(builder, description_offset)
-        Buffer.AttributeAddSource(builder, source_offset)
+        if description_offset is not None:
+            Buffer.AttributeAddDescription(builder, description_offset)
+        if source_offset is not None:
+            Buffer.AttributeAddSource(builder, source_offset)
         Buffer.AttributeAddDataType(builder, get_dtype(self.data))
         Buffer.AttributeAddData(builder, data_offset)
         return Buffer.AttributeEnd(builder)
@@ -133,7 +141,7 @@ class Attribute:
             elif numpy.issubdtype(data.dtype, numpy.integer):
                 data = int(data[0])
         source = None if b.Source() is None else b.Source().decode()
-        description = None if b.Desctiption() is None else b.Description().decode()
+        description = None if b.Description() is None else b.Description().decode()
         name = b.Name().decode()
         return cls(name=name, description=description, source=source, data=data)
 
@@ -141,16 +149,18 @@ class Attribute:
 @dataclass
 class BinBoundaryData:
     name: str
-    unit: str | None
-    label: str | None
     data: numpy.ndarray
+    unit: str | None = None
+    label: str | None = None
 
     def __eq__(self, other):
-        same_data_type = type(self.data) == type(other.boundaries)  # noqa: E721
+        if not isinstance(other, BinBoundaryData):
+            return False
+        same_data_type = type(self.data) == type(other.data)  # noqa: E721
         if isinstance(self.data, numpy.ndarray):
-            same_data_type &= numpy.array_equal(self.data, other.boundaries)
+            same_data_type &= numpy.array_equal(self.data, other.data)
         else:
-            same_data_type &= self.data == other.boundaries
+            same_data_type &= self.data == other.data
         return same_data_type and self.unit == other.unit and self.label == other.label
 
     def pack(self, builder):
@@ -159,14 +169,16 @@ class BinBoundaryData:
         import streaming_data_types.fbschemas.histogram_hm01.BinBoundaryData as Buffer
 
         name_offset = builder.CreateString(self.name)
-        unit_offset = builder.CreateString(self.unit)
-        label_offset = builder.CreateString(self.label)
+        unit_offset = None if self.unit is None else builder.CreateString(self.unit)
+        label_offset = None if self.label is None else builder.CreateString(self.label)
         buf = to_buffer(self.data)
         data_offset = builder.CreateNumpyVector(buf.flatten().view(uint8))
         Buffer.BinBoundaryDataStart(builder)
         Buffer.BinBoundaryDataAddName(builder, name_offset)
-        Buffer.BinBoundaryDataAddUnit(builder, unit_offset)
-        Buffer.BinBoundaryDataAddLabel(builder, label_offset)
+        if unit_offset is not None:
+            Buffer.BinBoundaryDataAddUnit(builder, unit_offset)
+        if label_offset is not None:
+            Buffer.BinBoundaryDataAddLabel(builder, label_offset)
         Buffer.BinBoundaryDataAddDataType(builder, get_dtype(self.data))
         Buffer.BinBoundaryDataAddData(builder, data_offset)
         return Buffer.BinBoundaryDataEnd(builder)
@@ -186,15 +198,17 @@ class BinBoundaryData:
 
 @dataclass
 class HistogramData:
-    unit: str | None
     data: numpy.ndarray | str
+    unit: str | None = None
 
     def __eq__(self, other):
+        if not isinstance(other, HistogramData):
+            return False
         same_data_type = type(self.data) == type(other.data)  # noqa: E721
         if isinstance(self.data, numpy.ndarray):
-            same_data_type &= numpy.array_equal(self.data, other.boundaries)
+            same_data_type &= numpy.array_equal(self.data, other.data)
         else:
-            same_data_type &= self.data == other.boundaries
+            same_data_type &= self.data == other.data
         return same_data_type and self.unit == other.unit
 
     def pack(self, builder):
@@ -209,7 +223,7 @@ class HistogramData:
         Buffer.HistogramDataStart(builder)
         if unit_offset is not None:
             Buffer.HistogramDataAddUnit(builder, unit_offset)
-        Buffer.HistogramDataAddData(builder, get_dtype(self.data))
+        Buffer.HistogramDataAddDataType(builder, get_dtype(self.data))
         Buffer.HistogramDataAddShape(builder, shape_offset)
         Buffer.HistogramDataAddData(builder, data_offset)
         return Buffer.HistogramDataEnd(builder)
@@ -237,14 +251,17 @@ def serialise_hm01(
     import streaming_data_types.fbschemas.histogram_hm01.hm01_Array as Buffer
 
     builder = flatbuffers.Builder(1024)
-    builder.forceDefaults(True)
+    builder.ForceDefaults(True)
 
     # Build dimensions
-    temp_dimensions = [item.pack(builder) for item in dimensions]
-    Buffer.hm01_ArrayStartDimensionsVector(builder, len(dimensions))
-    for item in reversed(temp_dimensions):
-        builder.PrependUOffsetTRelative(item)
-    dimensions_offset = builder.EndVector()
+    temp_dimensions = (
+        None if dimensions is None else [item.pack(builder) for item in dimensions]
+    )
+    if temp_dimensions is not None:
+        Buffer.hm01_ArrayStartDimensionsVector(builder, len(dimensions))
+        for item in reversed(temp_dimensions):
+            builder.PrependUOffsetTRelative(item)
+    dimensions_offset = None if temp_dimensions is None else builder.EndVector()
 
     # Build data
     data_offset = data.pack(builder)
@@ -252,11 +269,14 @@ def serialise_hm01(
     errors_offset = None if errors is None else errors.pack(builder)
 
     # Build attributes
-    temp_attributes = [item.pack(builder) for item in attributes]
-    Buffer.hm01_ArrayStartAttributesVector(builder, len(attributes))
-    for item in reversed(temp_attributes):
-        builder.PrependUOffsetTRelative(item)
-    attributes_offset = builder.EndVector()
+    temp_attributes = (
+        None if attributes is None else [item.pack(builder) for item in attributes]
+    )
+    if temp_attributes is not None:
+        Buffer.hm01_ArrayStartAttributesVector(builder, len(attributes))
+        for item in reversed(temp_attributes):
+            builder.PrependUOffsetTRelative(item)
+    attributes_offset = None if temp_attributes is None else builder.EndVector()
 
     source_name_offset = builder.CreateString(source_name)
 
@@ -265,11 +285,13 @@ def serialise_hm01(
     Buffer.hm01_ArrayAddSourceName(builder, source_name_offset)
     Buffer.hm01_ArrayAddId(builder, unique_id)
     Buffer.hm01_ArrayAddTimestamp(builder, int(timestamp.timestamp() * 1e9))
-    Buffer.hm01_ArrayAddDimensions(builder, dimensions_offset)
+    if dimensions_offset is not None:
+        Buffer.hm01_ArrayAddDimensions(builder, dimensions_offset)
     Buffer.hm01_ArrayAddData(builder, data_offset)
     if errors_offset is not None:
         Buffer.hm01_ArrayAddErrors(builder, errors_offset)
-    Buffer.hm01_ArrayAddAttributes(builder, attributes_offset)
+    if attributes_offset is not None:
+        Buffer.hm01_ArrayAddAttributes(builder, attributes_offset)
     array_message = Buffer.hm01_ArrayEnd(builder)
 
     builder.Finish(array_message, file_identifier=FILE_IDENTIFIER)
@@ -308,13 +330,12 @@ def deserialise_hm01(buffer: bytearray | bytes) -> hm01_Array:
     data = HistogramData.from_buffer(hm01_array.Data())
     errors = (
         None
-        if hm01_array.Errors().DataIsNone()
+        if hm01_array.Errors() is None
         else HistogramData.from_buffer(hm01_array.Errors())
     )
     attributes = [
-        Attribute.from_buffer(
-            hm01_array.Attributes(i) for i in range(hm01_array.AttributesLength())
-        )
+        Attribute.from_buffer(hm01_array.Attributes(i))
+        for i in range(hm01_array.AttributesLength())
     ]
 
     return hm01_Array_t(
