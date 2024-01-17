@@ -2,8 +2,11 @@
 
 # namespace:
 
+from typing import Optional
+
 import flatbuffers
 from flatbuffers.compat import import_numpy
+from flatbuffers.table import Table
 
 np = import_numpy()
 
@@ -12,7 +15,7 @@ class DimensionMetaData(object):
     __slots__ = ["_tab"]
 
     @classmethod
-    def GetRootAs(cls, buf, offset=0):
+    def GetRootAs(cls, buf, offset: int = 0):
         n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, offset)
         x = DimensionMetaData()
         x.Init(buf, n + offset)
@@ -30,25 +33,25 @@ class DimensionMetaData(object):
         )
 
     # DimensionMetaData
-    def Init(self, buf, pos):
+    def Init(self, buf: bytes, pos: int):
         self._tab = flatbuffers.table.Table(buf, pos)
 
     # DimensionMetaData
-    def Length(self):
+    def Label(self) -> Optional[str]:
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(4))
-        if o != 0:
-            return self._tab.Get(flatbuffers.number_types.Int32Flags, o + self._tab.Pos)
-        return 0
-
-    # DimensionMetaData
-    def Unit(self):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(6))
         if o != 0:
             return self._tab.String(o + self._tab.Pos)
         return None
 
     # DimensionMetaData
-    def Label(self):
+    def Length(self):
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(6))
+        if o != 0:
+            return self._tab.Get(flatbuffers.number_types.Int32Flags, o + self._tab.Pos)
+        return 0
+
+    # DimensionMetaData
+    def Unit(self) -> Optional[str]:
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(8))
         if o != 0:
             return self._tab.String(o + self._tab.Pos)
@@ -62,74 +65,74 @@ class DimensionMetaData(object):
         return 0
 
     # DimensionMetaData
-    def BinBoundaries(self):
+    def BinBoundaries(self) -> Optional[flatbuffers.table.Table]:
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(12))
         if o != 0:
-            from flatbuffers.table import Table
-
             obj = Table(bytearray(), 0)
             self._tab.Union(obj, o)
             return obj
         return None
 
 
-def DimensionMetaDataStart(builder):
+def DimensionMetaDataStart(builder: flatbuffers.Builder):
     builder.StartObject(5)
 
 
-def Start(builder):
+def Start(builder: flatbuffers.Builder):
     DimensionMetaDataStart(builder)
 
 
-def DimensionMetaDataAddLength(builder, length):
-    builder.PrependInt32Slot(0, length, 0)
-
-
-def AddLength(builder, length):
-    DimensionMetaDataAddLength(builder, length)
-
-
-def DimensionMetaDataAddUnit(builder, unit):
+def DimensionMetaDataAddLabel(builder: flatbuffers.Builder, label: int):
     builder.PrependUOffsetTRelativeSlot(
-        1, flatbuffers.number_types.UOffsetTFlags.py_type(unit), 0
+        0, flatbuffers.number_types.UOffsetTFlags.py_type(label), 0
     )
 
 
-def AddUnit(builder, unit):
-    DimensionMetaDataAddUnit(builder, unit)
-
-
-def DimensionMetaDataAddLabel(builder, label):
-    builder.PrependUOffsetTRelativeSlot(
-        2, flatbuffers.number_types.UOffsetTFlags.py_type(label), 0
-    )
-
-
-def AddLabel(builder, label):
+def AddLabel(builder: flatbuffers.Builder, label: int):
     DimensionMetaDataAddLabel(builder, label)
 
 
-def DimensionMetaDataAddBinBoundariesType(builder, binBoundariesType):
+def DimensionMetaDataAddLength(builder: flatbuffers.Builder, length: int):
+    builder.PrependInt32Slot(1, length, 0)
+
+
+def AddLength(builder: flatbuffers.Builder, length: int):
+    DimensionMetaDataAddLength(builder, length)
+
+
+def DimensionMetaDataAddUnit(builder: flatbuffers.Builder, unit: int):
+    builder.PrependUOffsetTRelativeSlot(
+        2, flatbuffers.number_types.UOffsetTFlags.py_type(unit), 0
+    )
+
+
+def AddUnit(builder: flatbuffers.Builder, unit: int):
+    DimensionMetaDataAddUnit(builder, unit)
+
+
+def DimensionMetaDataAddBinBoundariesType(
+    builder: flatbuffers.Builder, binBoundariesType: int
+):
     builder.PrependUint8Slot(3, binBoundariesType, 0)
 
 
-def AddBinBoundariesType(builder, binBoundariesType):
+def AddBinBoundariesType(builder: flatbuffers.Builder, binBoundariesType: int):
     DimensionMetaDataAddBinBoundariesType(builder, binBoundariesType)
 
 
-def DimensionMetaDataAddBinBoundaries(builder, binBoundaries):
+def DimensionMetaDataAddBinBoundaries(builder: flatbuffers.Builder, binBoundaries: int):
     builder.PrependUOffsetTRelativeSlot(
         4, flatbuffers.number_types.UOffsetTFlags.py_type(binBoundaries), 0
     )
 
 
-def AddBinBoundaries(builder, binBoundaries):
+def AddBinBoundaries(builder: flatbuffers.Builder, binBoundaries: int):
     DimensionMetaDataAddBinBoundaries(builder, binBoundaries)
 
 
-def DimensionMetaDataEnd(builder):
+def DimensionMetaDataEnd(builder: flatbuffers.Builder) -> int:
     return builder.EndObject()
 
 
-def End(builder):
+def End(builder: flatbuffers.Builder) -> int:
     return DimensionMetaDataEnd(builder)

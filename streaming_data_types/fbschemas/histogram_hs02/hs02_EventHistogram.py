@@ -2,8 +2,12 @@
 
 # namespace:
 
+from typing import Optional
+
 import flatbuffers
+from DimensionMetaData import DimensionMetaData
 from flatbuffers.compat import import_numpy
+from flatbuffers.table import Table
 
 np = import_numpy()
 
@@ -12,7 +16,7 @@ class hs02_EventHistogram(object):
     __slots__ = ["_tab"]
 
     @classmethod
-    def GetRootAs(cls, buf, offset=0):
+    def GetRootAs(cls, buf, offset: int = 0):
         n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, offset)
         x = hs02_EventHistogram()
         x.Init(buf, n + offset)
@@ -30,59 +34,19 @@ class hs02_EventHistogram(object):
         )
 
     # hs02_EventHistogram
-    def Init(self, buf, pos):
+    def Init(self, buf: bytes, pos: int):
         self._tab = flatbuffers.table.Table(buf, pos)
 
     # hs02_EventHistogram
-    def SourceName(self):
+    def SourceName(self) -> Optional[str]:
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(4))
         if o != 0:
             return self._tab.String(o + self._tab.Pos)
         return None
 
     # hs02_EventHistogram
-    def Timestamp(self):
+    def CurrentShape(self, j: int):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(6))
-        if o != 0:
-            return self._tab.Get(flatbuffers.number_types.Int64Flags, o + self._tab.Pos)
-        return 0
-
-    # hs02_EventHistogram
-    def DimMetadata(self, j):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(8))
-        if o != 0:
-            x = self._tab.Vector(o)
-            x += flatbuffers.number_types.UOffsetTFlags.py_type(j) * 4
-            x = self._tab.Indirect(x)
-            from .DimensionMetaData import DimensionMetaData
-
-            obj = DimensionMetaData()
-            obj.Init(self._tab.Bytes, x)
-            return obj
-        return None
-
-    # hs02_EventHistogram
-    def DimMetadataLength(self):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(8))
-        if o != 0:
-            return self._tab.VectorLen(o)
-        return 0
-
-    # hs02_EventHistogram
-    def DimMetadataIsNone(self):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(8))
-        return o == 0
-
-    # hs02_EventHistogram
-    def LastMetadataTimestamp(self):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(10))
-        if o != 0:
-            return self._tab.Get(flatbuffers.number_types.Int64Flags, o + self._tab.Pos)
-        return 0
-
-    # hs02_EventHistogram
-    def CurrentShape(self, j):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(12))
         if o != 0:
             a = self._tab.Vector(o)
             return self._tab.Get(
@@ -93,26 +57,89 @@ class hs02_EventHistogram(object):
 
     # hs02_EventHistogram
     def CurrentShapeAsNumpy(self):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(12))
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(6))
         if o != 0:
             return self._tab.GetVectorAsNumpy(flatbuffers.number_types.Int32Flags, o)
         return 0
 
     # hs02_EventHistogram
-    def CurrentShapeLength(self):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(12))
+    def CurrentShapeLength(self) -> int:
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(6))
         if o != 0:
             return self._tab.VectorLen(o)
         return 0
 
     # hs02_EventHistogram
-    def CurrentShapeIsNone(self):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(12))
+    def CurrentShapeIsNone(self) -> bool:
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(6))
         return o == 0
 
     # hs02_EventHistogram
-    def Offset(self, j):
+    def DimMetadata(self, j: int) -> Optional[DimensionMetaData]:
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(8))
+        if o != 0:
+            x = self._tab.Vector(o)
+            x += flatbuffers.number_types.UOffsetTFlags.py_type(j) * 4
+            x = self._tab.Indirect(x)
+            obj = DimensionMetaData()
+            obj.Init(self._tab.Bytes, x)
+            return obj
+        return None
+
+    # hs02_EventHistogram
+    def DimMetadataLength(self) -> int:
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(8))
+        if o != 0:
+            return self._tab.VectorLen(o)
+        return 0
+
+    # hs02_EventHistogram
+    def DimMetadataIsNone(self) -> bool:
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(8))
+        return o == 0
+
+    # hs02_EventHistogram
+    def Timestamp(self):
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(10))
+        if o != 0:
+            return self._tab.Get(flatbuffers.number_types.Int64Flags, o + self._tab.Pos)
+        return 0
+
+    # hs02_EventHistogram
+    def DataType(self):
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(12))
+        if o != 0:
+            return self._tab.Get(flatbuffers.number_types.Uint8Flags, o + self._tab.Pos)
+        return 0
+
+    # hs02_EventHistogram
+    def Data(self) -> Optional[flatbuffers.table.Table]:
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(14))
+        if o != 0:
+            obj = Table(bytearray(), 0)
+            self._tab.Union(obj, o)
+            return obj
+        return None
+
+    # hs02_EventHistogram
+    def ErrorsType(self):
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(16))
+        if o != 0:
+            return self._tab.Get(flatbuffers.number_types.Uint8Flags, o + self._tab.Pos)
+        return 0
+
+    # hs02_EventHistogram
+    def Errors(self) -> Optional[flatbuffers.table.Table]:
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(18))
+        if o != 0:
+            obj = Table(bytearray(), 0)
+            self._tab.Union(obj, o)
+            return obj
+        return None
+
+    # hs02_EventHistogram
+    def Offset(self, j: int):
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(20))
         if o != 0:
             a = self._tab.Vector(o)
             return self._tab.Get(
@@ -123,130 +150,67 @@ class hs02_EventHistogram(object):
 
     # hs02_EventHistogram
     def OffsetAsNumpy(self):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(14))
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(20))
         if o != 0:
             return self._tab.GetVectorAsNumpy(flatbuffers.number_types.Int32Flags, o)
         return 0
 
     # hs02_EventHistogram
-    def OffsetLength(self):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(14))
+    def OffsetLength(self) -> int:
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(20))
         if o != 0:
             return self._tab.VectorLen(o)
         return 0
 
     # hs02_EventHistogram
-    def OffsetIsNone(self):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(14))
+    def OffsetIsNone(self) -> bool:
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(20))
         return o == 0
 
     # hs02_EventHistogram
-    def DataType(self):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(16))
-        if o != 0:
-            return self._tab.Get(flatbuffers.number_types.Uint8Flags, o + self._tab.Pos)
-        return 0
-
-    # hs02_EventHistogram
-    def Data(self):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(18))
-        if o != 0:
-            from flatbuffers.table import Table
-
-            obj = Table(bytearray(), 0)
-            self._tab.Union(obj, o)
-            return obj
-        return None
-
-    # hs02_EventHistogram
-    def ErrorsType(self):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(20))
-        if o != 0:
-            return self._tab.Get(flatbuffers.number_types.Uint8Flags, o + self._tab.Pos)
-        return 0
-
-    # hs02_EventHistogram
-    def Errors(self):
+    def LastMetadataTimestamp(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(22))
         if o != 0:
-            from flatbuffers.table import Table
-
-            obj = Table(bytearray(), 0)
-            self._tab.Union(obj, o)
-            return obj
-        return None
+            return self._tab.Get(flatbuffers.number_types.Int64Flags, o + self._tab.Pos)
+        return 0
 
     # hs02_EventHistogram
-    def Info(self):
+    def Info(self) -> Optional[str]:
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(24))
         if o != 0:
             return self._tab.String(o + self._tab.Pos)
         return None
 
 
-def hs02_EventHistogramStart(builder):
+def hs02_EventHistogramStart(builder: flatbuffers.Builder):
     builder.StartObject(11)
 
 
-def Start(builder):
+def Start(builder: flatbuffers.Builder):
     hs02_EventHistogramStart(builder)
 
 
-def hs02_EventHistogramAddSourceName(builder, sourceName):
+def hs02_EventHistogramAddSourceName(builder: flatbuffers.Builder, sourceName: int):
     builder.PrependUOffsetTRelativeSlot(
         0, flatbuffers.number_types.UOffsetTFlags.py_type(sourceName), 0
     )
 
 
-def AddSourceName(builder, sourceName):
+def AddSourceName(builder: flatbuffers.Builder, sourceName: int):
     hs02_EventHistogramAddSourceName(builder, sourceName)
 
 
-def hs02_EventHistogramAddTimestamp(builder, timestamp):
-    builder.PrependInt64Slot(1, timestamp, 0)
-
-
-def AddTimestamp(builder, timestamp):
-    hs02_EventHistogramAddTimestamp(builder, timestamp)
-
-
-def hs02_EventHistogramAddDimMetadata(builder, dimMetadata):
+def hs02_EventHistogramAddCurrentShape(builder: flatbuffers.Builder, currentShape: int):
     builder.PrependUOffsetTRelativeSlot(
-        2, flatbuffers.number_types.UOffsetTFlags.py_type(dimMetadata), 0
+        1, flatbuffers.number_types.UOffsetTFlags.py_type(currentShape), 0
     )
 
 
-def AddDimMetadata(builder, dimMetadata):
-    hs02_EventHistogramAddDimMetadata(builder, dimMetadata)
-
-
-def hs02_EventHistogramStartDimMetadataVector(builder, numElems):
-    return builder.StartVector(4, numElems, 4)
-
-
-def StartDimMetadataVector(builder, numElems: int) -> int:
-    return hs02_EventHistogramStartDimMetadataVector(builder, numElems)
-
-
-def hs02_EventHistogramAddLastMetadataTimestamp(builder, lastMetadataTimestamp):
-    builder.PrependInt64Slot(3, lastMetadataTimestamp, 0)
-
-
-def AddLastMetadataTimestamp(builder, lastMetadataTimestamp):
-    hs02_EventHistogramAddLastMetadataTimestamp(builder, lastMetadataTimestamp)
-
-
-def hs02_EventHistogramAddCurrentShape(builder, currentShape):
-    builder.PrependUOffsetTRelativeSlot(
-        4, flatbuffers.number_types.UOffsetTFlags.py_type(currentShape), 0
-    )
-
-
-def AddCurrentShape(builder, currentShape):
+def AddCurrentShape(builder: flatbuffers.Builder, currentShape: int):
     hs02_EventHistogramAddCurrentShape(builder, currentShape)
 
 
-def hs02_EventHistogramStartCurrentShapeVector(builder, numElems):
+def hs02_EventHistogramStartCurrentShapeVector(builder, numElems: int) -> int:
     return builder.StartVector(4, numElems, 4)
 
 
@@ -254,17 +218,79 @@ def StartCurrentShapeVector(builder, numElems: int) -> int:
     return hs02_EventHistogramStartCurrentShapeVector(builder, numElems)
 
 
-def hs02_EventHistogramAddOffset(builder, offset):
+def hs02_EventHistogramAddDimMetadata(builder: flatbuffers.Builder, dimMetadata: int):
     builder.PrependUOffsetTRelativeSlot(
-        5, flatbuffers.number_types.UOffsetTFlags.py_type(offset), 0
+        2, flatbuffers.number_types.UOffsetTFlags.py_type(dimMetadata), 0
     )
 
 
-def AddOffset(builder, offset):
+def AddDimMetadata(builder: flatbuffers.Builder, dimMetadata: int):
+    hs02_EventHistogramAddDimMetadata(builder, dimMetadata)
+
+
+def hs02_EventHistogramStartDimMetadataVector(builder, numElems: int) -> int:
+    return builder.StartVector(4, numElems, 4)
+
+
+def StartDimMetadataVector(builder, numElems: int) -> int:
+    return hs02_EventHistogramStartDimMetadataVector(builder, numElems)
+
+
+def hs02_EventHistogramAddTimestamp(builder: flatbuffers.Builder, timestamp: int):
+    builder.PrependInt64Slot(3, timestamp, 0)
+
+
+def AddTimestamp(builder: flatbuffers.Builder, timestamp: int):
+    hs02_EventHistogramAddTimestamp(builder, timestamp)
+
+
+def hs02_EventHistogramAddDataType(builder: flatbuffers.Builder, dataType: int):
+    builder.PrependUint8Slot(4, dataType, 0)
+
+
+def AddDataType(builder: flatbuffers.Builder, dataType: int):
+    hs02_EventHistogramAddDataType(builder, dataType)
+
+
+def hs02_EventHistogramAddData(builder: flatbuffers.Builder, data: int):
+    builder.PrependUOffsetTRelativeSlot(
+        5, flatbuffers.number_types.UOffsetTFlags.py_type(data), 0
+    )
+
+
+def AddData(builder: flatbuffers.Builder, data: int):
+    hs02_EventHistogramAddData(builder, data)
+
+
+def hs02_EventHistogramAddErrorsType(builder: flatbuffers.Builder, errorsType: int):
+    builder.PrependUint8Slot(6, errorsType, 0)
+
+
+def AddErrorsType(builder: flatbuffers.Builder, errorsType: int):
+    hs02_EventHistogramAddErrorsType(builder, errorsType)
+
+
+def hs02_EventHistogramAddErrors(builder: flatbuffers.Builder, errors: int):
+    builder.PrependUOffsetTRelativeSlot(
+        7, flatbuffers.number_types.UOffsetTFlags.py_type(errors), 0
+    )
+
+
+def AddErrors(builder: flatbuffers.Builder, errors: int):
+    hs02_EventHistogramAddErrors(builder, errors)
+
+
+def hs02_EventHistogramAddOffset(builder: flatbuffers.Builder, offset: int):
+    builder.PrependUOffsetTRelativeSlot(
+        8, flatbuffers.number_types.UOffsetTFlags.py_type(offset), 0
+    )
+
+
+def AddOffset(builder: flatbuffers.Builder, offset: int):
     hs02_EventHistogramAddOffset(builder, offset)
 
 
-def hs02_EventHistogramStartOffsetVector(builder, numElems):
+def hs02_EventHistogramStartOffsetVector(builder, numElems: int) -> int:
     return builder.StartVector(4, numElems, 4)
 
 
@@ -272,55 +298,29 @@ def StartOffsetVector(builder, numElems: int) -> int:
     return hs02_EventHistogramStartOffsetVector(builder, numElems)
 
 
-def hs02_EventHistogramAddDataType(builder, dataType):
-    builder.PrependUint8Slot(6, dataType, 0)
+def hs02_EventHistogramAddLastMetadataTimestamp(
+    builder: flatbuffers.Builder, lastMetadataTimestamp: int
+):
+    builder.PrependInt64Slot(9, lastMetadataTimestamp, 0)
 
 
-def AddDataType(builder, dataType):
-    hs02_EventHistogramAddDataType(builder, dataType)
+def AddLastMetadataTimestamp(builder: flatbuffers.Builder, lastMetadataTimestamp: int):
+    hs02_EventHistogramAddLastMetadataTimestamp(builder, lastMetadataTimestamp)
 
 
-def hs02_EventHistogramAddData(builder, data):
-    builder.PrependUOffsetTRelativeSlot(
-        7, flatbuffers.number_types.UOffsetTFlags.py_type(data), 0
-    )
-
-
-def AddData(builder, data):
-    hs02_EventHistogramAddData(builder, data)
-
-
-def hs02_EventHistogramAddErrorsType(builder, errorsType):
-    builder.PrependUint8Slot(8, errorsType, 0)
-
-
-def AddErrorsType(builder, errorsType):
-    hs02_EventHistogramAddErrorsType(builder, errorsType)
-
-
-def hs02_EventHistogramAddErrors(builder, errors):
-    builder.PrependUOffsetTRelativeSlot(
-        9, flatbuffers.number_types.UOffsetTFlags.py_type(errors), 0
-    )
-
-
-def AddErrors(builder, errors):
-    hs02_EventHistogramAddErrors(builder, errors)
-
-
-def hs02_EventHistogramAddInfo(builder, info):
+def hs02_EventHistogramAddInfo(builder: flatbuffers.Builder, info: int):
     builder.PrependUOffsetTRelativeSlot(
         10, flatbuffers.number_types.UOffsetTFlags.py_type(info), 0
     )
 
 
-def AddInfo(builder, info):
+def AddInfo(builder: flatbuffers.Builder, info: int):
     hs02_EventHistogramAddInfo(builder, info)
 
 
-def hs02_EventHistogramEnd(builder):
+def hs02_EventHistogramEnd(builder: flatbuffers.Builder) -> int:
     return builder.EndObject()
 
 
-def End(builder):
+def End(builder: flatbuffers.Builder) -> int:
     return hs02_EventHistogramEnd(builder)

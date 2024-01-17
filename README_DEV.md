@@ -19,7 +19,7 @@ This command can also be used to run the hooks manually.
 
 ### Adding new schemas checklist (important)
 * Generate Python bindings for the schema using FlatBuffers' `flatc` executable
-    `flatc --python /path/to/flatbufferschema.fbs`
+    `flatc --python --python-typing --gen-mutable --gen-name-strings --scoped-enums -o streaming_data_types/fbschemas/your_schema_directory /path/to/flatbufferschema.fbs`
 * Add the generated bindings to the project
 * Add unit-tests (see existing tests for an example)
   * This may need new binaries created as examples.  You can do this from JSON:
