@@ -5,9 +5,10 @@
 from typing import Optional
 
 import flatbuffers
-from DimensionMetaData import DimensionMetaData
 from flatbuffers.compat import import_numpy
 from flatbuffers.table import Table
+
+from .DimensionMetaData import DimensionMetaData
 
 np = import_numpy()
 
