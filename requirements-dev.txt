@@ -1,7 +1,7 @@
 -r requirements.txt
-black==22.3.0   # Pinned to match pre-commit config
-flake8==4.0.1   # Pinned to match pre-commit config
-isort==5.11.5   # Pinned to match pre-commit configblack
+black
+flake8
+isort
 pre-commit
 pytest
 tox==3.27.1  # tox 4 seems to be broken at the moment
