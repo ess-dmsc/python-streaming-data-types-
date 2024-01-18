@@ -5,6 +5,7 @@ from streaming_data_types.area_detector_ad00 import deserialise_ad00, serialise_
 from streaming_data_types.area_detector_ADAr import deserialise_ADAr, serialise_ADAr
 from streaming_data_types.area_detector_NDAr import deserialise_ndar, serialise_ndar
 from streaming_data_types.array_1d_se00 import deserialise_se00, serialise_se00
+from streaming_data_types.dataarray_da00 import deserialise_da00, serialise_da00
 from streaming_data_types.epics_connection_ep01 import deserialise_ep01, serialise_ep01
 from streaming_data_types.epics_connection_info_ep00 import (
     deserialise_ep00,
@@ -62,6 +63,7 @@ SERIALISERS = {
     "json": serialise_json,
     "ad00": serialise_ad00,
     "hm00": serialise_hm00,
+    "da00": serialise_da00,
 }
 
 
@@ -91,4 +93,5 @@ DESERIALISERS = {
     "json": deserialise_json,
     "ad00": deserialise_ad00,
     "hm00": deserialise_hm00,
+    "da00": deserialise_da00,
 }
