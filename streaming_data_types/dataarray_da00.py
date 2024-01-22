@@ -150,8 +150,15 @@ class Variable:
     name: str
     data: numpy.ndarray | str
     dims: list[str]
+    shape: tuple[int, ...] | None = None
     unit: str | None = None
     label: str | None = None
+
+    def __post_init__(self):
+        # Calculate the shape when used, e.g., interactively
+        # -- but allow to read it back from the buffered object too
+        if self.shape is None:
+            self.shape = to_buffer(self.data).shape
 
     def __eq__(self, other):
         if not isinstance(other, Variable):
@@ -170,6 +177,7 @@ class Variable:
             and self.name == other.name
             and self.unit == other.unit
             and self.label == other.label
+            and self.shape == other.shape
         )
 
     def pack(self, builder):
@@ -215,7 +223,8 @@ class Variable:
         label = None if b.Label() is None else b.Label().decode()
         name = b.Name().decode()
         dims = [b.Dims(i).decode() for i in range(b.DimsLength())]
-        return cls(name=name, unit=unit, label=label, dims=dims, data=data)
+        shape = tuple(b.ShapeAsNumpy())
+        return cls(name=name, unit=unit, label=label, dims=dims, data=data, shape=shape)
 
 
 def serialise_da00(
