@@ -5,7 +5,6 @@ import pytest
 
 from streaming_data_types import DESERIALISERS, SERIALISERS
 from streaming_data_types.dataarray_da00 import (
-    Attribute,
     Variable,
     deserialise_da00,
     serialise_da00,
@@ -19,15 +18,16 @@ def test_serialises_and_deserialises_da00_int_array():
     """
     original_entry = {
         "source_name": "some source name",
-        "unique_id": 754,
         "timestamp": datetime.now(tz=timezone.utc),
-        "data": [
+        "variables": [
             Variable(
                 name="data",
                 unit="counts",
                 dims=["time", "x", "y"],
                 data=np.array([[[1, 2, 3], [3, 4, 5]]], dtype=np.uint64),
             ),
+        ],
+        "constants": [
             Variable(
                 name="time",
                 unit="hours",
@@ -51,10 +51,19 @@ def test_serialises_and_deserialises_da00_int_array():
             ),
         ],
         "attributes": [
-            Attribute("name1", "value", "desc1", "src1"),
-            Attribute("name2", 11, "desc2", "src2"),
-            Attribute("name3", 3.14, "desc3", "src3"),
-            Attribute("name4", np.linspace(0, 10), "desc4", "src4"),
+            Variable(name="name1", data="value", label="desc1", source="src1"),
+            Variable(name="name2", data=11, label="desc2", source="src2"),
+            Variable(name="name3", data=3.14, label="desc3", source="src3"),
+            Variable(
+                name="name4", data=np.linspace(0, 10), label="desc4", source="src4"
+            ),
+            Variable(
+                name="name5",
+                data=np.array([[1, 2], [3, 4]]),
+                dims=["a", "b"],
+                label="desc5",
+                source="src5",
+            ),
         ],
     }
 
@@ -62,14 +71,11 @@ def test_serialises_and_deserialises_da00_int_array():
     entry = deserialise_da00(buf)
 
     assert entry.source_name == original_entry["source_name"]
-    assert entry.unique_id == original_entry["unique_id"]
     assert entry.timestamp == original_entry["timestamp"]
-    assert len(entry.data) == len(original_entry["data"])
-    for a, b in zip(entry.data, original_entry["data"]):
-        assert a == b
-    assert len(entry.attributes) == len(original_entry["attributes"])
-    for a, b in zip(entry.attributes, original_entry["attributes"]):
-        assert a == b
+    for group in ("variables", "constants", "attributes"):
+        assert len(getattr(entry, group)) == len(original_entry[group])
+        for a, b in zip(getattr(entry, group), original_entry[group]):
+            assert a == b
 
 
 def test_serialises_and_deserialises_da00_float_array():
@@ -78,8 +84,7 @@ def test_serialises_and_deserialises_da00_float_array():
     """
     original_entry = {
         "source_name": "some other source name",
-        "unique_id": 789679,
-        "data": [
+        "variables": [
             Variable(
                 name="data",
                 dims=["x", "time", "y"],
@@ -88,6 +93,8 @@ def test_serialises_and_deserialises_da00_float_array():
             Variable(
                 name="errors", dims=["y"], data=np.array([1, 2, 3], dtype=np.int8)
             ),
+        ],
+        "constants": [
             Variable(
                 name="y",
                 unit="m",
@@ -125,12 +132,11 @@ def test_serialises_and_deserialises_da00_float_array():
     entry = deserialise_da00(buf)
 
     assert entry.source_name == original_entry["source_name"]
-    assert entry.unique_id == original_entry["unique_id"]
     assert entry.timestamp == original_entry["timestamp"]
-    assert len(entry.data) == len(original_entry["data"])
-    for a, b in zip(entry.data, original_entry["data"]):
-        assert a == b
-    assert len(entry.attributes) == 0
+    for group in ("variables", "constants", "attributes"):
+        assert len(getattr(entry, group)) == len(original_entry[group])
+        for a, b in zip(getattr(entry, group), original_entry[group]):
+            assert a == b
 
 
 def test_serialises_and_deserialises_da00_string():
@@ -139,7 +145,6 @@ def test_serialises_and_deserialises_da00_string():
     """
     original_entry = {
         "source_name": "some source name",
-        "unique_id": 7001,
         "data": [Variable(data="hi, this is a string", dims=[""], name="the_string")],
         "timestamp": datetime.now(tz=timezone.utc),
     }
@@ -147,16 +152,17 @@ def test_serialises_and_deserialises_da00_string():
     buf = serialise_da00(**original_entry)
     entry = deserialise_da00(buf)
 
-    assert entry.unique_id == original_entry["unique_id"]
     assert entry.source_name == original_entry["source_name"]
     assert entry.timestamp == original_entry["timestamp"]
-    assert entry.data == original_entry["data"]
+    for group in ("variables", "constants", "attributes"):
+        assert len(getattr(entry, group)) == len(original_entry[group])
+        for a, b in zip(getattr(entry, group), original_entry[group]):
+            assert a == b
 
 
 def test_if_buffer_has_wrong_id_then_throws():
     original_entry = {
         "source_name": "some source name",
-        "unique_id": 754,
         "data": [
             Variable(
                 name="data",

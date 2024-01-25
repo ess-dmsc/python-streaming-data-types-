@@ -8,62 +8,69 @@ from flatbuffers.compat import import_numpy
 np = import_numpy()
 
 
-class Variable(object):
+class da00_Variable(object):
     __slots__ = ["_tab"]
 
     @classmethod
     def GetRootAs(cls, buf, offset=0):
         n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, offset)
-        x = Variable()
+        x = da00_Variable()
         x.Init(buf, n + offset)
         return x
 
     @classmethod
-    def GetRootAsVariable(cls, buf, offset=0):
+    def GetRootAsda00_Variable(cls, buf, offset=0):
         """This method is deprecated. Please switch to GetRootAs."""
         return cls.GetRootAs(buf, offset)
 
     @classmethod
-    def VariableBufferHasIdentifier(cls, buf, offset, size_prefixed=False):
+    def da00_VariableBufferHasIdentifier(cls, buf, offset, size_prefixed=False):
         return flatbuffers.util.BufferHasIdentifier(
             buf, offset, b"\x64\x61\x30\x30", size_prefixed=size_prefixed
         )
 
-    # Variable
+    # da00_Variable
     def Init(self, buf, pos):
         self._tab = flatbuffers.table.Table(buf, pos)
 
-    # Variable
+    # da00_Variable
     def Name(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(4))
         if o != 0:
             return self._tab.String(o + self._tab.Pos)
         return None
 
-    # Variable
+    # da00_Variable
     def Unit(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(6))
         if o != 0:
             return self._tab.String(o + self._tab.Pos)
         return None
 
-    # Variable
+    # da00_Variable
     def Label(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(8))
         if o != 0:
             return self._tab.String(o + self._tab.Pos)
         return None
 
-    # Variable
-    def DataType(self):
+    # da00_Variable
+    def Source(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(10))
+        if o != 0:
+            return self._tab.String(o + self._tab.Pos)
+        return None
+
+    # da00_Variable
+    def DataType(self):
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(12))
         if o != 0:
             return self._tab.Get(flatbuffers.number_types.Int8Flags, o + self._tab.Pos)
         return 0
 
-    # Variable
+    # da00_Variable
     def Dims(self, j):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(12))
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(14))
         if o != 0:
             a = self._tab.Vector(o)
             return self._tab.String(
@@ -71,21 +78,21 @@ class Variable(object):
             )
         return ""
 
-    # Variable
+    # da00_Variable
     def DimsLength(self):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(12))
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(14))
         if o != 0:
             return self._tab.VectorLen(o)
         return 0
 
-    # Variable
+    # da00_Variable
     def DimsIsNone(self):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(12))
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(14))
         return o == 0
 
-    # Variable
+    # da00_Variable
     def Shape(self, j):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(14))
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(16))
         if o != 0:
             a = self._tab.Vector(o)
             return self._tab.Get(
@@ -94,28 +101,28 @@ class Variable(object):
             )
         return 0
 
-    # Variable
+    # da00_Variable
     def ShapeAsNumpy(self):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(14))
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(16))
         if o != 0:
             return self._tab.GetVectorAsNumpy(flatbuffers.number_types.Int64Flags, o)
         return 0
 
-    # Variable
+    # da00_Variable
     def ShapeLength(self):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(14))
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(16))
         if o != 0:
             return self._tab.VectorLen(o)
         return 0
 
-    # Variable
+    # da00_Variable
     def ShapeIsNone(self):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(14))
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(16))
         return o == 0
 
-    # Variable
+    # da00_Variable
     def Data(self, j):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(16))
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(18))
         if o != 0:
             a = self._tab.Vector(o)
             return self._tab.Get(
@@ -124,129 +131,139 @@ class Variable(object):
             )
         return 0
 
-    # Variable
+    # da00_Variable
     def DataAsNumpy(self):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(16))
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(18))
         if o != 0:
             return self._tab.GetVectorAsNumpy(flatbuffers.number_types.Uint8Flags, o)
         return 0
 
-    # Variable
+    # da00_Variable
     def DataLength(self):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(16))
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(18))
         if o != 0:
             return self._tab.VectorLen(o)
         return 0
 
-    # Variable
+    # da00_Variable
     def DataIsNone(self):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(16))
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(18))
         return o == 0
 
 
-def VariableStart(builder):
-    builder.StartObject(7)
+def da00_VariableStart(builder):
+    builder.StartObject(8)
 
 
 def Start(builder):
-    return VariableStart(builder)
+    return da00_VariableStart(builder)
 
 
-def VariableAddName(builder, name):
+def da00_VariableAddName(builder, name):
     builder.PrependUOffsetTRelativeSlot(
         0, flatbuffers.number_types.UOffsetTFlags.py_type(name), 0
     )
 
 
 def AddName(builder, name):
-    return VariableAddName(builder, name)
+    return da00_VariableAddName(builder, name)
 
 
-def VariableAddUnit(builder, unit):
+def da00_VariableAddUnit(builder, unit):
     builder.PrependUOffsetTRelativeSlot(
         1, flatbuffers.number_types.UOffsetTFlags.py_type(unit), 0
     )
 
 
 def AddUnit(builder, unit):
-    return VariableAddUnit(builder, unit)
+    return da00_VariableAddUnit(builder, unit)
 
 
-def VariableAddLabel(builder, label):
+def da00_VariableAddLabel(builder, label):
     builder.PrependUOffsetTRelativeSlot(
         2, flatbuffers.number_types.UOffsetTFlags.py_type(label), 0
     )
 
 
 def AddLabel(builder, label):
-    return VariableAddLabel(builder, label)
+    return da00_VariableAddLabel(builder, label)
 
 
-def VariableAddDataType(builder, dataType):
-    builder.PrependInt8Slot(3, dataType, 0)
+def da00_VariableAddSource(builder, source):
+    builder.PrependUOffsetTRelativeSlot(
+        3, flatbuffers.number_types.UOffsetTFlags.py_type(source), 0
+    )
+
+
+def AddSource(builder, source):
+    return da00_VariableAddSource(builder, source)
+
+
+def da00_VariableAddDataType(builder, dataType):
+    builder.PrependInt8Slot(4, dataType, 0)
 
 
 def AddDataType(builder, dataType):
-    return VariableAddDataType(builder, dataType)
+    return da00_VariableAddDataType(builder, dataType)
 
 
-def VariableAddDims(builder, dims):
+def da00_VariableAddDims(builder, dims):
     builder.PrependUOffsetTRelativeSlot(
-        4, flatbuffers.number_types.UOffsetTFlags.py_type(dims), 0
+        5, flatbuffers.number_types.UOffsetTFlags.py_type(dims), 0
     )
 
 
 def AddDims(builder, dims):
-    return VariableAddDims(builder, dims)
+    return da00_VariableAddDims(builder, dims)
 
 
-def VariableStartDimsVector(builder, numElems):
+def da00_VariableStartDimsVector(builder, numElems):
     return builder.StartVector(4, numElems, 4)
 
 
 def StartDimsVector(builder, numElems):
-    return VariableStartDimsVector(builder, numElems)
+    return da00_VariableStartDimsVector(builder, numElems)
 
 
-def VariableAddShape(builder, shape):
+def da00_VariableAddShape(builder, shape):
     builder.PrependUOffsetTRelativeSlot(
-        5, flatbuffers.number_types.UOffsetTFlags.py_type(shape), 0
+        6, flatbuffers.number_types.UOffsetTFlags.py_type(shape), 0
     )
 
 
 def AddShape(builder, shape):
-    return VariableAddShape(builder, shape)
+    return da00_VariableAddShape(builder, shape)
 
 
-def VariableStartShapeVector(builder, numElems):
+def da00_VariableStartShapeVector(builder, numElems):
     return builder.StartVector(8, numElems, 8)
 
 
 def StartShapeVector(builder, numElems):
-    return VariableStartShapeVector(builder, numElems)
+    return da00_VariableStartShapeVector(builder, numElems)
 
 
-def VariableAddData(builder, data):
+def da00_VariableAddData(builder, data):
     builder.PrependUOffsetTRelativeSlot(
-        6, flatbuffers.number_types.UOffsetTFlags.py_type(data), 0
+        7, flatbuffers.number_types.UOffsetTFlags.py_type(data), 0
     )
 
 
 def AddData(builder, data):
-    return VariableAddData(builder, data)
+    return da00_VariableAddData(builder, data)
 
 
-def VariableStartDataVector(builder, numElems):
+def da00_VariableStartDataVector(builder, numElems):
     return builder.StartVector(1, numElems, 1)
 
 
 def StartDataVector(builder, numElems):
-    return VariableStartDataVector(builder, numElems)
+    return da00_VariableStartDataVector(builder, numElems)
 
 
-def VariableEnd(builder):
+def da00_VariableEnd(builder):
     return builder.EndObject()
 
 
 def End(builder):
-    return VariableEnd(builder)
+    return da00_VariableEnd(builder)
