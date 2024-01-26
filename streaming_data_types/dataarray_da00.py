@@ -90,7 +90,7 @@ def create_optional_string(builder, string: str | None):
 class Variable:
     name: str
     data: numpy.ndarray | str
-    dims: list[str] | None = None
+    axes: list[str] | None = None
     shape: tuple[int, ...] | None = None
     unit: str | None = None
     label: str | None = None
@@ -99,8 +99,8 @@ class Variable:
     def __post_init__(self):
         # Calculate the shape when used, e.g., interactively
         # -- but allow to read it back from the buffered object too
-        if self.dims is None:
-            self.dims = []
+        if self.axes is None:
+            self.axes = []
         if self.shape is None:
             self.shape = to_buffer(self.data).shape
 
@@ -112,12 +112,12 @@ class Variable:
             same_data &= numpy.array_equal(self.data, other.data)
         else:
             same_data &= self.data == other.data
-        same_dims = len(self.dims) == len(other.dims) and all(
-            a == b for a, b in zip(self.dims, other.dims)
+        same_axes = len(self.axes) == len(other.axes) and all(
+            a == b for a, b in zip(self.axes, other.axes)
         )
         return (
             same_data
-            and same_dims
+            and same_axes
             and self.name == other.name
             and self.unit == other.unit
             and self.label == other.label
@@ -139,11 +139,11 @@ class Variable:
         shape_offset = builder.CreateNumpyVector(asarray(buf.shape))
         data_offset = builder.CreateNumpyVector(buf.flatten().view(uint8))
 
-        temp_dims = [builder.CreateString(x) for x in self.dims]
-        Buffer.StartDimsVector(builder, len(temp_dims))
-        for dim in reversed(temp_dims):
+        temp_axes = [builder.CreateString(x) for x in self.axes]
+        Buffer.StartAxesVector(builder, len(temp_axes))
+        for dim in reversed(temp_axes):
             builder.PrependUOffsetTRelative(dim)
-        dims_offset = builder.EndVector()
+        axes_offset = builder.EndVector()
 
         # Build the actual Variable buffer -- does this order matter?
         Buffer.Start(builder)
@@ -155,7 +155,7 @@ class Variable:
         if source_offset is not None:
             Buffer.AddSource(builder, source_offset)
         Buffer.AddDataType(builder, get_dtype(self.data))
-        Buffer.AddDims(builder, dims_offset)
+        Buffer.AddAxes(builder, axes_offset)
         Buffer.AddShape(builder, shape_offset)
         Buffer.AddData(builder, data_offset)
         return Buffer.End(builder)
@@ -163,8 +163,8 @@ class Variable:
     @classmethod
     def unpack(cls, b: VariableBuffer):
         data = from_buffer(b)
-        dims = [b.Dims(i).decode() for i in range(b.DimsLength())]
-        if len(dims):
+        axes = [b.Axes(i).decode() for i in range(b.AxesLength())]
+        if len(axes):
             data = data.reshape(b.ShapeAsNumpy())
         elif b.DataType() != da00_dtype.c_string and numpy.prod(data.shape) == 1:
             data = data.item()
@@ -180,7 +180,7 @@ class Variable:
             unit=unit,
             label=label,
             source=source,
-            dims=dims,
+            axes=axes,
             data=data,
             shape=buffered_shape,
         )
@@ -199,9 +199,7 @@ def insert_variable_list(starter, builder, objects: list[Variable] | None):
 def serialise_da00(
     source_name: str,
     timestamp: datetime,
-    variables: list[Variable] | None = None,
-    constants: list[Variable] | None = None,
-    attributes: list[Variable] | None = None,
+    data: list[Variable],
 ) -> bytes:
     import streaming_data_types.fbschemas.dataarray_da00.da00_DataArray as Buffer
 
@@ -209,15 +207,7 @@ def serialise_da00(
     builder.ForceDefaults(True)
 
     # build variables
-    variables_offset = insert_variable_list(
-        Buffer.StartVariablesVector, builder, variables
-    )
-    constants_offset = insert_variable_list(
-        Buffer.StartConstantsVector, builder, constants
-    )
-    attributes_offset = insert_variable_list(
-        Buffer.StartAttributesVector, builder, attributes
-    )
+    data_offset = insert_variable_list(Buffer.StartDataVector, builder, data)
 
     source_name_offset = builder.CreateString(source_name)
 
@@ -227,12 +217,8 @@ def serialise_da00(
     if timestamp.tzinfo is None or timestamp.tzinfo != timezone.utc:
         timestamp = timestamp.astimezone(timezone.utc)
     Buffer.AddTimestamp(builder, int(timestamp.timestamp() * 1_000_000_000))
-    if variables_offset is not None:
-        Buffer.AddVariables(builder, variables_offset)
-    if constants_offset is not None:
-        Buffer.AddConstants(builder, constants_offset)
-    if attributes_offset is not None:
-        Buffer.AddAttributes(builder, attributes_offset)
+    if data_offset is not None:
+        Buffer.AddData(builder, data_offset)
     array_message = Buffer.End(builder)
 
     builder.Finish(array_message, file_identifier=FILE_IDENTIFIER)
@@ -244,9 +230,7 @@ da00_DataArray_t = NamedTuple(
     (
         ("source_name", str),
         ("timestamp", datetime),
-        ("variables", list[Variable]),
-        ("constants", list[Variable]),
-        ("attributes", list[Variable]),
+        ("data", list[Variable]),
     ),
 )
 
@@ -261,20 +245,10 @@ def deserialise_da00(buffer: bytearray | bytes) -> da00_DataArray:
     used_timestamp = da00.Timestamp() / 1_000_000_000
     if used_timestamp > max_time:
         used_timestamp = max_time
-    variables = [
-        Variable.unpack(da00.Variables(j)) for j in range(da00.VariablesLength())
-    ]
-    constants = [
-        Variable.unpack(da00.Constants(j)) for j in range(da00.ConstantsLength())
-    ]
-    attributes = [
-        Variable.unpack(da00.Attributes(i)) for i in range(da00.AttributesLength())
-    ]
+    data = [Variable.unpack(da00.Data(j)) for j in range(da00.DataLength())]
 
     return da00_DataArray_t(
         source_name=da00.SourceName().decode(),
         timestamp=datetime.fromtimestamp(used_timestamp, tz=timezone.utc),
-        variables=variables,
-        constants=constants,
-        attributes=attributes,
+        data=data,
     )

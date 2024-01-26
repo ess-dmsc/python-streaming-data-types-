@@ -69,7 +69,7 @@ class da00_Variable(object):
         return 0
 
     # da00_Variable
-    def Dims(self, j):
+    def Axes(self, j):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(14))
         if o != 0:
             a = self._tab.Vector(o)
@@ -79,14 +79,14 @@ class da00_Variable(object):
         return ""
 
     # da00_Variable
-    def DimsLength(self):
+    def AxesLength(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(14))
         if o != 0:
             return self._tab.VectorLen(o)
         return 0
 
     # da00_Variable
-    def DimsIsNone(self):
+    def AxesIsNone(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(14))
         return o == 0
 
@@ -207,22 +207,22 @@ def AddDataType(builder, dataType):
     return da00_VariableAddDataType(builder, dataType)
 
 
-def da00_VariableAddDims(builder, dims):
+def da00_VariableAddAxes(builder, axes):
     builder.PrependUOffsetTRelativeSlot(
-        5, flatbuffers.number_types.UOffsetTFlags.py_type(dims), 0
+        5, flatbuffers.number_types.UOffsetTFlags.py_type(axes), 0
     )
 
 
-def AddDims(builder, dims):
-    return da00_VariableAddDims(builder, dims)
+def AddAxes(builder, axes):
+    return da00_VariableAddAxes(builder, axes)
 
 
-def da00_VariableStartDimsVector(builder, numElems):
+def da00_VariableStartAxesVector(builder, numElems):
     return builder.StartVector(4, numElems, 4)
 
 
-def StartDimsVector(builder, numElems):
-    return da00_VariableStartDimsVector(builder, numElems)
+def StartAxesVector(builder, numElems):
+    return da00_VariableStartAxesVector(builder, numElems)
 
 
 def da00_VariableAddShape(builder, shape):

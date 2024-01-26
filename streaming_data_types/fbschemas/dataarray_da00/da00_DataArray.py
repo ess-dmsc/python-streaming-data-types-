@@ -50,7 +50,7 @@ class da00_DataArray(object):
         return 0
 
     # da00_DataArray
-    def Variables(self, j):
+    def Data(self, j):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(8))
         if o != 0:
             x = self._tab.Vector(o)
@@ -66,76 +66,20 @@ class da00_DataArray(object):
         return None
 
     # da00_DataArray
-    def VariablesLength(self):
+    def DataLength(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(8))
         if o != 0:
             return self._tab.VectorLen(o)
         return 0
 
     # da00_DataArray
-    def VariablesIsNone(self):
+    def DataIsNone(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(8))
-        return o == 0
-
-    # da00_DataArray
-    def Constants(self, j):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(10))
-        if o != 0:
-            x = self._tab.Vector(o)
-            x += flatbuffers.number_types.UOffsetTFlags.py_type(j) * 4
-            x = self._tab.Indirect(x)
-            from streaming_data_types.fbschemas.dataarray_da00.da00_Variable import (
-                da00_Variable,
-            )
-
-            obj = da00_Variable()
-            obj.Init(self._tab.Bytes, x)
-            return obj
-        return None
-
-    # da00_DataArray
-    def ConstantsLength(self):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(10))
-        if o != 0:
-            return self._tab.VectorLen(o)
-        return 0
-
-    # da00_DataArray
-    def ConstantsIsNone(self):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(10))
-        return o == 0
-
-    # da00_DataArray
-    def Attributes(self, j):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(12))
-        if o != 0:
-            x = self._tab.Vector(o)
-            x += flatbuffers.number_types.UOffsetTFlags.py_type(j) * 4
-            x = self._tab.Indirect(x)
-            from streaming_data_types.fbschemas.dataarray_da00.da00_Variable import (
-                da00_Variable,
-            )
-
-            obj = da00_Variable()
-            obj.Init(self._tab.Bytes, x)
-            return obj
-        return None
-
-    # da00_DataArray
-    def AttributesLength(self):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(12))
-        if o != 0:
-            return self._tab.VectorLen(o)
-        return 0
-
-    # da00_DataArray
-    def AttributesIsNone(self):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(12))
         return o == 0
 
 
 def da00_DataArrayStart(builder):
-    builder.StartObject(5)
+    builder.StartObject(3)
 
 
 def Start(builder):
@@ -160,58 +104,22 @@ def AddTimestamp(builder, timestamp):
     return da00_DataArrayAddTimestamp(builder, timestamp)
 
 
-def da00_DataArrayAddVariables(builder, variables):
+def da00_DataArrayAddData(builder, data):
     builder.PrependUOffsetTRelativeSlot(
-        2, flatbuffers.number_types.UOffsetTFlags.py_type(variables), 0
+        2, flatbuffers.number_types.UOffsetTFlags.py_type(data), 0
     )
 
 
-def AddVariables(builder, variables):
-    return da00_DataArrayAddVariables(builder, variables)
+def AddData(builder, data):
+    return da00_DataArrayAddData(builder, data)
 
 
-def da00_DataArrayStartVariablesVector(builder, numElems):
+def da00_DataArrayStartDataVector(builder, numElems):
     return builder.StartVector(4, numElems, 4)
 
 
-def StartVariablesVector(builder, numElems):
-    return da00_DataArrayStartVariablesVector(builder, numElems)
-
-
-def da00_DataArrayAddConstants(builder, constants):
-    builder.PrependUOffsetTRelativeSlot(
-        3, flatbuffers.number_types.UOffsetTFlags.py_type(constants), 0
-    )
-
-
-def AddConstants(builder, constants):
-    return da00_DataArrayAddConstants(builder, constants)
-
-
-def da00_DataArrayStartConstantsVector(builder, numElems):
-    return builder.StartVector(4, numElems, 4)
-
-
-def StartConstantsVector(builder, numElems):
-    return da00_DataArrayStartConstantsVector(builder, numElems)
-
-
-def da00_DataArrayAddAttributes(builder, attributes):
-    builder.PrependUOffsetTRelativeSlot(
-        4, flatbuffers.number_types.UOffsetTFlags.py_type(attributes), 0
-    )
-
-
-def AddAttributes(builder, attributes):
-    return da00_DataArrayAddAttributes(builder, attributes)
-
-
-def da00_DataArrayStartAttributesVector(builder, numElems):
-    return builder.StartVector(4, numElems, 4)
-
-
-def StartAttributesVector(builder, numElems):
-    return da00_DataArrayStartAttributesVector(builder, numElems)
+def StartDataVector(builder, numElems):
+    return da00_DataArrayStartDataVector(builder, numElems)
 
 
 def da00_DataArrayEnd(builder):
