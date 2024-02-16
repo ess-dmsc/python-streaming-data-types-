@@ -44,9 +44,7 @@ class da00_DataArray(object):
     def Timestamp(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(6))
         if o != 0:
-            return self._tab.Get(
-                flatbuffers.number_types.Uint64Flags, o + self._tab.Pos
-            )
+            return self._tab.Get(flatbuffers.number_types.Int64Flags, o + self._tab.Pos)
         return 0
 
     # da00_DataArray
@@ -97,7 +95,7 @@ def AddSourceName(builder, sourceName):
 
 
 def da00_DataArrayAddTimestamp(builder, timestamp):
-    builder.PrependUint64Slot(1, timestamp, 0)
+    builder.PrependInt64Slot(1, timestamp, 0)
 
 
 def AddTimestamp(builder, timestamp):
