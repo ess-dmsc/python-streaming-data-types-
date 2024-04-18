@@ -130,7 +130,6 @@ class Variable:
 
         import streaming_data_types.fbschemas.dataarray_da00.da00_Variable as Buffer
 
-        # insert pieces into the blob -- does this order matter?
         source_offset = create_optional_string(builder, self.source)
         label_offset = create_optional_string(builder, self.label)
         unit_offset = create_optional_string(builder, self.unit)
