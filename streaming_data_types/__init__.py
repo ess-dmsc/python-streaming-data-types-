@@ -1,6 +1,7 @@
 from streaming_data_types._version import version
 from streaming_data_types.action_response_answ import deserialise_answ, serialise_answ
 from streaming_data_types.alarm_al00 import deserialise_al00, serialise_al00
+from streaming_data_types.area_detector_ad00 import deserialise_ad00, serialise_ad00
 from streaming_data_types.area_detector_ADAr import deserialise_ADAr, serialise_ADAr
 from streaming_data_types.area_detector_NDAr import deserialise_ndar, serialise_ndar
 from streaming_data_types.array_1d_se00 import deserialise_se00, serialise_se00
@@ -58,6 +59,7 @@ SERIALISERS = {
     "ADAr": serialise_ADAr,
     "al00": serialise_al00,
     "json": serialise_json,
+    "ad00": serialise_ad00,
 }
 
 
@@ -85,4 +87,5 @@ DESERIALISERS = {
     "ADAr": deserialise_ADAr,
     "al00": deserialise_al00,
     "json": deserialise_json,
+    "ad00": deserialise_ad00,
 }
