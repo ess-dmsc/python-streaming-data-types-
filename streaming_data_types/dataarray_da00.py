@@ -144,7 +144,6 @@ class Variable:
             builder.PrependUOffsetTRelative(dim)
         axes_offset = builder.EndVector()
 
-        # Build the actual Variable buffer -- does this order matter?
         Buffer.Start(builder)
         Buffer.AddName(builder, name_offset)
         if unit_offset is not None:
