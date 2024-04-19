@@ -143,6 +143,17 @@ def test_serialises_and_deserialises_da00_string():
         assert a == b
 
 
+def test_no_variables_throws():
+    original_entry = {
+        "source_name": "some source name",
+        "data": [],
+        "timestamp_ns": time.time_ns(),
+    }
+
+    with pytest.raises(RuntimeError):
+        serialise_da00(**original_entry)
+
+
 def test_if_buffer_has_wrong_id_then_throws():
     original_entry = {
         "source_name": "some source name",

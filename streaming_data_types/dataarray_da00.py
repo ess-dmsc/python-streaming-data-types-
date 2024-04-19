@@ -6,7 +6,6 @@ import flatbuffers
 import numpy as np
 
 import streaming_data_types.fbschemas.dataarray_da00.da00_Variable as VariableBuffer
-import streaming_data_types.fbschemas.dataarray_da00.da00_Variable as Buffer
 from streaming_data_types.fbschemas.dataarray_da00 import da00_DataArray
 from streaming_data_types.fbschemas.dataarray_da00.da00_dtype import da00_dtype
 from streaming_data_types.utils import check_schema_identifier
@@ -130,24 +129,24 @@ class Variable:
         data_offset = builder.CreateNumpyVector(buf.flatten().view(np.uint8))
 
         temp_axes = [builder.CreateString(x) for x in self.axes]
-        Buffer.StartAxesVector(builder, len(temp_axes))
+        VariableBuffer.StartAxesVector(builder, len(temp_axes))
         for dim in reversed(temp_axes):
             builder.PrependUOffsetTRelative(dim)
         axes_offset = builder.EndVector()
 
-        Buffer.Start(builder)
-        Buffer.AddName(builder, name_offset)
+        VariableBuffer.Start(builder)
+        VariableBuffer.AddName(builder, name_offset)
         if unit_offset is not None:
-            Buffer.AddUnit(builder, unit_offset)
+            VariableBuffer.AddUnit(builder, unit_offset)
         if label_offset is not None:
-            Buffer.AddLabel(builder, label_offset)
+            VariableBuffer.AddLabel(builder, label_offset)
         if source_offset is not None:
-            Buffer.AddSource(builder, source_offset)
-        Buffer.AddDataType(builder, get_dtype(self.data))
-        Buffer.AddAxes(builder, axes_offset)
-        Buffer.AddShape(builder, shape_offset)
-        Buffer.AddData(builder, data_offset)
-        return Buffer.End(builder)
+            VariableBuffer.AddSource(builder, source_offset)
+        VariableBuffer.AddDataType(builder, get_dtype(self.data))
+        VariableBuffer.AddAxes(builder, axes_offset)
+        VariableBuffer.AddShape(builder, shape_offset)
+        VariableBuffer.AddData(builder, data_offset)
+        return VariableBuffer.End(builder)
 
     @classmethod
     def unpack(cls, b: VariableBuffer):
@@ -175,9 +174,7 @@ class Variable:
         )
 
 
-def insert_variable_list(starter, builder, objects: list[Variable] | None):
-    if not objects:
-        return None
+def insert_variable_list(starter, builder, objects: list[Variable]):
     temp = [obj.pack(builder) for obj in objects]
     starter(builder, len(temp))
     for obj in reversed(temp):
@@ -190,23 +187,20 @@ def serialise_da00(
     timestamp_ns: int,
     data: list[Variable],
 ) -> bytes:
-    import streaming_data_types.fbschemas.dataarray_da00.da00_DataArray as Buffer
-
+    if not data:
+        raise RuntimeError("data must contain at least one Variable")
     builder = flatbuffers.Builder(1024)
     builder.ForceDefaults(True)
 
-    # build variables
-    data_offset = insert_variable_list(Buffer.StartDataVector, builder, data)
-
+    data_offset = insert_variable_list(da00_DataArray.StartDataVector, builder, data)
     source_name_offset = builder.CreateString(source_name)
 
     # Build the actual buffer
-    Buffer.Start(builder)
-    Buffer.AddSourceName(builder, source_name_offset)
-    Buffer.AddTimestamp(builder, timestamp_ns)
-    if data_offset is not None:
-        Buffer.AddData(builder, data_offset)
-    array_message = Buffer.End(builder)
+    da00_DataArray.Start(builder)
+    da00_DataArray.AddSourceName(builder, source_name_offset)
+    da00_DataArray.AddTimestamp(builder, timestamp_ns)
+    da00_DataArray.AddData(builder, data_offset)
+    array_message = da00_DataArray.End(builder)
 
     builder.Finish(array_message, file_identifier=FILE_IDENTIFIER)
     return bytes(builder.Output())
