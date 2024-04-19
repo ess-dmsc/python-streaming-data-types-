@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from struct import pack
-from typing import NamedTuple
+from typing import NamedTuple, Union
 
 import flatbuffers
 import numpy as np
@@ -13,7 +13,7 @@ from streaming_data_types.utils import check_schema_identifier
 FILE_IDENTIFIER = b"da00"
 
 
-def get_dtype(data):
+def get_dtype(data: Union[np.ndarray, str, float, int]):
     if isinstance(data, np.ndarray):
         type_map = {
             np.dtype(x): d
@@ -40,7 +40,7 @@ def get_dtype(data):
     raise RuntimeError(f"Unsupported data type {type(data)} in get_dtype")
 
 
-def to_buffer(data: np.ndarray | str | float | int):
+def to_buffer(data: Union[np.ndarray, str, float, int]):
     if isinstance(data, np.ndarray):
         return data
     if isinstance(data, str):
@@ -76,19 +76,19 @@ def from_buffer(fb_array) -> np.ndarray:
     return raw_data.view(type_map[fb_array.DataType()])
 
 
-def create_optional_string(builder, string: str | None):
+def create_optional_string(builder, string: Union[str, None]):
     return None if string is None else builder.CreateString(string)
 
 
 @dataclass
 class Variable:
     name: str
-    data: np.ndarray | str
-    axes: list[str] | None = None
-    shape: tuple[int, ...] | None = None
-    unit: str | None = None
-    label: str | None = None
-    source: str | None = None
+    data: Union[np.ndarray, str]
+    axes: Union[list[str], None] = None
+    shape: Union[tuple[int, ...], None] = None
+    unit: Union[str, None] = None
+    label: Union[str, None] = None
+    source: Union[str, None] = None
 
     def __post_init__(self):
         # Calculate the shape when used, e.g., interactively
@@ -216,7 +216,7 @@ da00_DataArray_t = NamedTuple(
 )
 
 
-def deserialise_da00(buffer: bytearray | bytes) -> da00_DataArray:
+def deserialise_da00(buffer: Union[bytearray, bytes]) -> da00_DataArray:
     check_schema_identifier(buffer, FILE_IDENTIFIER)
 
     da00 = da00_DataArray.da00_DataArray.GetRootAs(buffer, offset=0)
