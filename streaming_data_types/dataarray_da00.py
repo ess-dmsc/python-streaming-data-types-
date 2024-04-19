@@ -13,7 +13,7 @@ from streaming_data_types.utils import check_schema_identifier
 FILE_IDENTIFIER = b"da00"
 
 
-def get_dtype(data: np.ndarray | str | float | int):
+def get_dtype(data):
     if isinstance(data, np.ndarray):
         type_map = {
             np.dtype(x): d

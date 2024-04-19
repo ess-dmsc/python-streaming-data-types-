@@ -177,6 +177,6 @@ def test_if_buffer_has_wrong_id_then_throws():
         deserialise_da00(buf)
 
 
-def test_hm00_schema_type_is_in_global_serialisers_list():
+def test_da00_schema_type_is_in_global_serialisers_list():
     assert "da00" in SERIALISERS
     assert "da00" in DESERIALISERS
