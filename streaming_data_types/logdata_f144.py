@@ -1,5 +1,4 @@
 from collections import namedtuple
-from datetime import datetime
 from typing import Any, NamedTuple, Union
 
 import flatbuffers
@@ -277,7 +276,7 @@ ExtractedLogData = NamedTuple(
     (
         ("source_name", str),
         ("value", Any),
-        ("timestamp_unix_ns", datetime),
+        ("timestamp_unix_ns", int),
     ),
 )
 
