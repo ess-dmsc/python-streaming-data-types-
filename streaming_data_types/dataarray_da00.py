@@ -1,11 +1,12 @@
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from struct import pack
 from typing import NamedTuple
 
 import flatbuffers
 import numpy
 
 import streaming_data_types.fbschemas.dataarray_da00.da00_Variable as VariableBuffer
+import streaming_data_types.fbschemas.dataarray_da00.da00_Variable as Buffer
 from streaming_data_types.fbschemas.dataarray_da00 import da00_DataArray
 from streaming_data_types.fbschemas.dataarray_da00.da00_dtype import da00_dtype
 from streaming_data_types.utils import check_schema_identifier
@@ -14,9 +15,7 @@ FILE_IDENTIFIER = b"da00"
 
 
 def get_dtype(data: numpy.ndarray | str | float | int):
-    from numpy import ndarray
-
-    if isinstance(data, ndarray):
+    if isinstance(data, numpy.ndarray):
         type_map = {
             numpy.dtype(x): d
             for x, d in (
@@ -43,18 +42,14 @@ def get_dtype(data: numpy.ndarray | str | float | int):
 
 
 def to_buffer(data: numpy.ndarray | str | float | int):
-    from struct import pack
-
-    from numpy import frombuffer, ndarray, uint8
-
-    if isinstance(data, ndarray):
+    if isinstance(data, numpy.ndarray):
         return data
     if isinstance(data, str):
-        return frombuffer(data.encode(), uint8)
+        return numpy.frombuffer(data.encode(), numpy.uint8)
     if isinstance(data, int):
-        return frombuffer(pack("q", data), uint8)
+        return numpy.frombuffer(pack("q", data), numpy.uint8)
     if isinstance(data, float):
-        return frombuffer(pack("d", data), uint8)
+        return numpy.frombuffer(pack("d", data), numpy.uint8)
     raise RuntimeError(f"Unsupported data type {type(data)} in to_buffer")
 
 
@@ -126,17 +121,13 @@ class Variable:
         )
 
     def pack(self, builder):
-        from numpy import asarray, uint8
-
-        import streaming_data_types.fbschemas.dataarray_da00.da00_Variable as Buffer
-
         source_offset = create_optional_string(builder, self.source)
         label_offset = create_optional_string(builder, self.label)
         unit_offset = create_optional_string(builder, self.unit)
         name_offset = builder.CreateString(self.name)
         buf = to_buffer(self.data)
-        shape_offset = builder.CreateNumpyVector(asarray(buf.shape))
-        data_offset = builder.CreateNumpyVector(buf.flatten().view(uint8))
+        shape_offset = builder.CreateNumpyVector(numpy.asarray(buf.shape))
+        data_offset = builder.CreateNumpyVector(buf.flatten().view(numpy.uint8))
 
         temp_axes = [builder.CreateString(x) for x in self.axes]
         Buffer.StartAxesVector(builder, len(temp_axes))
@@ -185,7 +176,7 @@ class Variable:
 
 
 def insert_variable_list(starter, builder, objects: list[Variable] | None):
-    if objects is None:
+    if not objects:
         return None
     temp = [obj.pack(builder) for obj in objects]
     starter(builder, len(temp))
@@ -196,7 +187,7 @@ def insert_variable_list(starter, builder, objects: list[Variable] | None):
 
 def serialise_da00(
     source_name: str,
-    timestamp: datetime,
+    timestamp_ns: int,
     data: list[Variable],
 ) -> bytes:
     import streaming_data_types.fbschemas.dataarray_da00.da00_DataArray as Buffer
@@ -212,9 +203,7 @@ def serialise_da00(
     # Build the actual buffer
     Buffer.Start(builder)
     Buffer.AddSourceName(builder, source_name_offset)
-    if timestamp.tzinfo is None or timestamp.tzinfo != timezone.utc:
-        timestamp = timestamp.astimezone(timezone.utc)
-    Buffer.AddTimestamp(builder, int(timestamp.timestamp() * 1_000_000_000))
+    Buffer.AddTimestamp(builder, timestamp_ns)
     if data_offset is not None:
         Buffer.AddData(builder, data_offset)
     array_message = Buffer.End(builder)
@@ -227,7 +216,7 @@ da00_DataArray_t = NamedTuple(
     "da00_DataArray",
     (
         ("source_name", str),
-        ("timestamp", datetime),
+        ("timestamp_ns", int),
         ("data", list[Variable]),
     ),
 )
@@ -237,16 +226,10 @@ def deserialise_da00(buffer: bytearray | bytes) -> da00_DataArray:
     check_schema_identifier(buffer, FILE_IDENTIFIER)
 
     da00 = da00_DataArray.da00_DataArray.GetRootAs(buffer, offset=0)
-    max_time = datetime(
-        year=3001, month=1, day=1, hour=0, minute=0, second=0
-    ).timestamp()
-    used_timestamp = da00.Timestamp() / 1_000_000_000
-    if used_timestamp > max_time:
-        used_timestamp = max_time
     data = [Variable.unpack(da00.Data(j)) for j in range(da00.DataLength())]
 
     return da00_DataArray_t(
         source_name=da00.SourceName().decode(),
-        timestamp=datetime.fromtimestamp(used_timestamp, tz=timezone.utc),
+        timestamp_ns=da00.Timestamp(),
         data=data,
     )

@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+import time
 
 import numpy as np
 import pytest
@@ -18,7 +18,7 @@ def test_serialises_and_deserialises_da00_int_array():
     """
     original_entry = {
         "source_name": "some source name",
-        "timestamp": datetime.now(tz=timezone.utc),
+        "timestamp_ns": time.time_ns(),
         "data": [
             Variable(
                 name="data",
@@ -67,7 +67,7 @@ def test_serialises_and_deserialises_da00_int_array():
     entry = deserialise_da00(buf)
 
     assert entry.source_name == original_entry["source_name"]
-    assert entry.timestamp == original_entry["timestamp"]
+    assert entry.timestamp_ns == original_entry["timestamp_ns"]
     assert len(entry.data) == len(original_entry["data"])
     for a, b in zip(entry.data, original_entry["data"]):
         assert a == b
@@ -110,22 +110,14 @@ def test_serialises_and_deserialises_da00_float_array():
                 data=np.array([-1, 0, 1], dtype=np.int8),
             ),
         ],
-        "timestamp": datetime(
-            year=1992,
-            month=8,
-            day=11,
-            hour=3,
-            minute=34,
-            second=57,
-            tzinfo=timezone.utc,
-        ),
+        "timestamp_ns": time.time_ns(),
     }
 
     buf = serialise_da00(**original_entry)
     entry = deserialise_da00(buf)
 
     assert entry.source_name == original_entry["source_name"]
-    assert entry.timestamp == original_entry["timestamp"]
+    assert entry.timestamp_ns == original_entry["timestamp_ns"]
     assert len(entry.data) == len(original_entry["data"])
     for a, b in zip(entry.data, original_entry["data"]):
         assert a == b
@@ -138,14 +130,14 @@ def test_serialises_and_deserialises_da00_string():
     original_entry = {
         "source_name": "some source name",
         "data": [Variable(data="hi, this is a string", axes=[], name="the_string")],
-        "timestamp": datetime.now(tz=timezone.utc),
+        "timestamp_ns": time.time_ns(),
     }
 
     buf = serialise_da00(**original_entry)
     entry = deserialise_da00(buf)
 
     assert entry.source_name == original_entry["source_name"]
-    assert entry.timestamp == original_entry["timestamp"]
+    assert entry.timestamp_ns == original_entry["timestamp_ns"]
     assert len(entry.data) == len(original_entry["data"])
     for a, b in zip(entry.data, original_entry["data"]):
         assert a == b
@@ -161,7 +153,7 @@ def test_if_buffer_has_wrong_id_then_throws():
                 data=np.array([[1, 2, 3], [3, 4, 5]], dtype=np.uint64),
             )
         ],
-        "timestamp": datetime.now(),
+        "timestamp_ns": time.time_ns(),
     }
 
     buf = serialise_da00(**original_entry)
