@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from struct import pack
-from typing import NamedTuple, Union
+from typing import List, NamedTuple, Tuple, Union
 
 import flatbuffers
 import numpy as np
@@ -84,8 +84,8 @@ def create_optional_string(builder, string: Union[str, None]):
 class Variable:
     name: str
     data: Union[np.ndarray, str]
-    axes: Union[list[str], None] = None
-    shape: Union[tuple[int, ...], None] = None
+    axes: Union[List[str], None] = None
+    shape: Union[Tuple[int, ...], None] = None
     unit: Union[str, None] = None
     label: Union[str, None] = None
     source: Union[str, None] = None
@@ -174,7 +174,7 @@ class Variable:
         )
 
 
-def insert_variable_list(starter, builder, objects: list[Variable]):
+def insert_variable_list(starter, builder, objects: List[Variable]):
     temp = [obj.pack(builder) for obj in objects]
     starter(builder, len(temp))
     for obj in reversed(temp):
@@ -185,7 +185,7 @@ def insert_variable_list(starter, builder, objects: list[Variable]):
 def serialise_da00(
     source_name: str,
     timestamp_ns: int,
-    data: list[Variable],
+    data: List[Variable],
 ) -> bytes:
     if not data:
         raise RuntimeError("data must contain at least one Variable")
@@ -211,7 +211,7 @@ da00_DataArray_t = NamedTuple(
     (
         ("source_name", str),
         ("timestamp_ns", int),
-        ("data", list[Variable]),
+        ("data", List[Variable]),
     ),
 )
 
