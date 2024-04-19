@@ -3,7 +3,7 @@ from struct import pack
 from typing import NamedTuple
 
 import flatbuffers
-import numpy
+import numpy as np
 
 import streaming_data_types.fbschemas.dataarray_da00.da00_Variable as VariableBuffer
 import streaming_data_types.fbschemas.dataarray_da00.da00_Variable as Buffer
@@ -14,10 +14,10 @@ from streaming_data_types.utils import check_schema_identifier
 FILE_IDENTIFIER = b"da00"
 
 
-def get_dtype(data: numpy.ndarray | str | float | int):
-    if isinstance(data, numpy.ndarray):
+def get_dtype(data: np.ndarray | str | float | int):
+    if isinstance(data, np.ndarray):
         type_map = {
-            numpy.dtype(x): d
+            np.dtype(x): d
             for x, d in (
                 ("int8", da00_dtype.int8),
                 ("int16", da00_dtype.int16),
@@ -41,23 +41,23 @@ def get_dtype(data: numpy.ndarray | str | float | int):
     raise RuntimeError(f"Unsupported data type {type(data)} in get_dtype")
 
 
-def to_buffer(data: numpy.ndarray | str | float | int):
-    if isinstance(data, numpy.ndarray):
+def to_buffer(data: np.ndarray | str | float | int):
+    if isinstance(data, np.ndarray):
         return data
     if isinstance(data, str):
-        return numpy.frombuffer(data.encode(), numpy.uint8)
+        return np.frombuffer(data.encode(), np.uint8)
     if isinstance(data, int):
-        return numpy.frombuffer(pack("q", data), numpy.uint8)
+        return np.frombuffer(pack("q", data), np.uint8)
     if isinstance(data, float):
-        return numpy.frombuffer(pack("d", data), numpy.uint8)
+        return np.frombuffer(pack("d", data), np.uint8)
     raise RuntimeError(f"Unsupported data type {type(data)} in to_buffer")
 
 
-def from_buffer(fb_array) -> numpy.ndarray:
+def from_buffer(fb_array) -> np.ndarray:
     """Convert a flatbuffer array into the correct type"""
     raw_data = fb_array.DataAsNumpy()
     type_map = {
-        d: numpy.dtype(x)
+        d: np.dtype(x)
         for x, d in (
             ("int8", da00_dtype.int8),
             ("int16", da00_dtype.int16),
@@ -84,7 +84,7 @@ def create_optional_string(builder, string: str | None):
 @dataclass
 class Variable:
     name: str
-    data: numpy.ndarray | str
+    data: np.ndarray | str
     axes: list[str] | None = None
     shape: tuple[int, ...] | None = None
     unit: str | None = None
@@ -103,8 +103,8 @@ class Variable:
         if not isinstance(other, Variable):
             return False
         same_data = type(self.data) == type(other.data)  # noqa: E721
-        if isinstance(self.data, numpy.ndarray):
-            same_data &= numpy.array_equal(self.data, other.data)
+        if isinstance(self.data, np.ndarray):
+            same_data &= np.array_equal(self.data, other.data)
         else:
             same_data &= self.data == other.data
         same_axes = len(self.axes) == len(other.axes) and all(
@@ -126,8 +126,8 @@ class Variable:
         unit_offset = create_optional_string(builder, self.unit)
         name_offset = builder.CreateString(self.name)
         buf = to_buffer(self.data)
-        shape_offset = builder.CreateNumpyVector(numpy.asarray(buf.shape))
-        data_offset = builder.CreateNumpyVector(buf.flatten().view(numpy.uint8))
+        shape_offset = builder.CreateNumpyVector(np.asarray(buf.shape))
+        data_offset = builder.CreateNumpyVector(buf.flatten().view(np.uint8))
 
         temp_axes = [builder.CreateString(x) for x in self.axes]
         Buffer.StartAxesVector(builder, len(temp_axes))
@@ -155,7 +155,7 @@ class Variable:
         axes = [b.Axes(i).decode() for i in range(b.AxesLength())]
         if len(axes):
             data = data.reshape(b.ShapeAsNumpy())
-        elif b.DataType() != da00_dtype.c_string and numpy.prod(data.shape) == 1:
+        elif b.DataType() != da00_dtype.c_string and np.prod(data.shape) == 1:
             data = data.item()
 
         unit = None if b.Unit() is None else b.Unit().decode()
