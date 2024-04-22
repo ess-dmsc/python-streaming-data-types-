@@ -31,6 +31,7 @@ https://github.com/ess-dmsc/streaming-data-types
 | senv | **Deprecated**                                                               |
 | json | Generic JSON data                                                            |
 | se00 | Arrays with optional timestamps, for example waveform data. Replaces _senv_. |
+| da00 | Scipp-like data arrays, for histograms, etc.                                  |
 
 ### hs00 and hs01
 Schema for histogram data. It is one of the more complicated to use schemas.
