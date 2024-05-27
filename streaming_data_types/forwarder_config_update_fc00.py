@@ -5,10 +5,10 @@ import flatbuffers
 from flatbuffers.packer import struct as flatbuffer_struct
 
 from streaming_data_types.fbschemas.forwarder_config_update_fc00 import (
-    fc00_ConfigUpdate,
     Protocol,
     Stream,
     UpdateType,
+    fc00_ConfigUpdate,
 )
 from streaming_data_types.utils import check_schema_identifier
 
@@ -16,7 +16,9 @@ FILE_IDENTIFIER = b"fc00"
 
 ConfigurationUpdate = namedtuple("ConfigurationUpdate", ("config_change", "streams"))
 
-StreamInfo = namedtuple("StreamInfo", ("channel", "schema", "topic", "protocol", "periodic"))
+StreamInfo = namedtuple(
+    "StreamInfo", ("channel", "schema", "topic", "protocol", "periodic")
+)
 
 
 def deserialise_fc00(buffer: Union[bytearray, bytes]) -> ConfigurationUpdate:
@@ -28,7 +30,9 @@ def deserialise_fc00(buffer: Union[bytearray, bytes]) -> ConfigurationUpdate:
     """
     check_schema_identifier(buffer, FILE_IDENTIFIER)
 
-    config_message = fc00_ConfigUpdate.fc00_ConfigUpdate.GetRootAsfc00_ConfigUpdate(buffer, 0)
+    config_message = fc00_ConfigUpdate.fc00_ConfigUpdate.GetRootAsfc00_ConfigUpdate(
+        buffer, 0
+    )
 
     streams = []
     try:
