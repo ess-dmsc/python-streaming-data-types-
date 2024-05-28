@@ -40,19 +40,23 @@ def deserialise_fc00(buffer: Union[bytearray, bytes]) -> ConfigurationUpdate:
             stream_message = config_message.Streams(i)
             streams.append(
                 StreamInfo(
-                    stream_message.Channel().decode("utf-8")
-                    if stream_message.Channel()
-                    else "",
-                    stream_message.Schema().decode("utf-8")
-                    if stream_message.Schema()
-                    else "",
-                    stream_message.Topic().decode("utf-8")
-                    if stream_message.Topic()
-                    else "",
+                    (
+                        stream_message.Channel().decode("utf-8")
+                        if stream_message.Channel()
+                        else ""
+                    ),
+                    (
+                        stream_message.Schema().decode("utf-8")
+                        if stream_message.Schema()
+                        else ""
+                    ),
+                    (
+                        stream_message.Topic().decode("utf-8")
+                        if stream_message.Topic()
+                        else ""
+                    ),
                     stream_message.Protocol(),
-                    int(stream_message.Periodic().decode("utf-8"))
-                    if stream_message.Periodic()
-                    else 0,
+                    stream_message.Periodic() if stream_message.Periodic() else 0,
                 )
             )
     except flatbuffer_struct.error:
@@ -67,12 +71,14 @@ def serialise_stream(
     channel_offset: int,
     schema_offset: int,
     topic_offset: int,
+    periodic_offset: int,
 ) -> int:
     Stream.StreamStart(builder)
     Stream.StreamAddProtocol(builder, protocol)
     Stream.StreamAddTopic(builder, topic_offset)
     Stream.StreamAddSchema(builder, schema_offset)
     Stream.StreamAddChannel(builder, channel_offset)
+    Stream.StreamAddPeriodic(builder, periodic_offset)
     return Stream.StreamEnd(builder)
 
 
@@ -99,7 +105,7 @@ def serialise_fc00(config_change: UpdateType, streams: List[StreamInfo]) -> byte
             for stream in streams
         ]
         stream_offsets = [
-            serialise_stream(builder, stream.protocol, *stream_fields)
+            serialise_stream(builder, stream.protocol, *stream_fields, stream.periodic)
             for stream, stream_fields in zip(streams, stream_field_offsets)
         ]
 

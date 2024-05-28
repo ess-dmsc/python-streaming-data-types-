@@ -32,6 +32,7 @@ class TestSerialisationRf5k:
         assert entry.config_change == original_entry["config_change"]
         assert stream_1 in entry.streams
         assert stream_2 in entry.streams
+        assert stream_3 in entry.streams
 
     def test_serialises_and_deserialises_fc00_message_without_streams_correctly(self):
         """
