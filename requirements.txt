@@ -1,2 +1,2 @@
 flatbuffers==22.11.23
-numpy
+numpy<2.0.0

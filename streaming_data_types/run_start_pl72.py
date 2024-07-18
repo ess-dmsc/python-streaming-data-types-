@@ -34,7 +34,7 @@ def serialise_pl72(
     nexus_structure: str = "{}",
     service_id: str = "",
     instrument_name: str = "TEST",
-    broker: str = "localhost:9092",
+    broker: str = "",
     metadata: str = "{}",
     detector_spectrum_map: Optional[DetectorSpectrumMap] = None,
     control_topic: str = "",
