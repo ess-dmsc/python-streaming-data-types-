@@ -34,21 +34,22 @@ def latest_schema(schema_type: str):
     return all_schemas()[schema_type]
 
 
-def all_schemas():
+def all_schemas(return_depracated: bool=False):
     """
-    Returns list of all schemas
+    Returns list of all schemas, with depracated schemas returning a list rather than a single value
     """
+    DEPRACATED = True
     fbs_identifier = {
         "alarm": "al00",
         "area_detector": "ad00",
-        # "array_1d": "se00", # deprecated for sample_environment
+        "array_1d": ["se00", DEPRACATED], # deprecated for sample_environment
         "dataarray": "da00",
         "epics_connection": "ep01",
         "eventdata": "ev44",
         "finished_writing": "wrdn",
         "forwader": "fc00",
-        # "histogram": "hs01", # deprecated for dataarray
-        # "json": "json", # only debugging
+        "histogram": "hs01", # used by just-bin-it and at non-ESS facilities
+        "json": ["json", DEPRACATED], # only debugging
         "logdata": "f144",
         "nicos_cache": "ns10",
         "run_start": "pl72",
@@ -57,4 +58,5 @@ def all_schemas():
         "status": "x5f2",
         "timestamps": "tdct",
     }
-    return fbs_identifier
+
+    return {k: v for k, v in fbs_identifier.items() if not isinstance(v, list) or return_depracated}
