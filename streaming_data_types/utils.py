@@ -29,7 +29,7 @@ def check_schema_identifier(buffer, expected_identifer: bytes):
 
 def latest_schema(schema_type: str):
     """
-    Returns the latest schema identifier for that type of schema
+    Returns the latest schema identifier for that type of schema and a deprecated flag if relevant
     """
     return all_schemas()[schema_type]
 
