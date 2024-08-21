@@ -31,15 +31,24 @@ def latest_schema(schema_type: str):
     """
     Returns the latest schema identifier for that type of schema
     """
+    return all_schemas()[schema_type]
+
+
+def all_schemas():
+    """
+    Returns list of all schemas
+    """
     fbs_identifier = {
         "alarm": "al00",
         "area_detector": "ad00",
+        # "array_1d": "se00", # depreceated for sample_environment
         "dataarray": "da00",
         "epics_connection": "ep01",
         "eventdata": "ev44",
         "finished_writing": "wrdn",
         "forwader": "fc00",
-        # "histogram": "hs01", # depreceated
+        # "histogram": "hs01", # depreceated for dataarray
+        # "json": "json", # only debugging
         "logdata": "f144",
         "nicos_cache": "ns10",
         "run_start": "pl72",
@@ -48,4 +57,4 @@ def latest_schema(schema_type: str):
         "status": "x5f2",
         "timestamps": "tdct",
     }
-    return fbs_identifier[schema_type]
+    return fbs_identifier
