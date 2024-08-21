@@ -1,3 +1,4 @@
+"""Helper functions for data types"""
 from streaming_data_types.exceptions import ShortBufferException, WrongSchemaException
 
 
@@ -24,3 +25,27 @@ def check_schema_identifier(buffer, expected_identifer: bytes):
         raise WrongSchemaException(
             f"Incorrect schema: expected {expected_identifer} but got {get_schema(buffer)}"
         )
+
+
+def latest_schema(schema_type: str):
+    """
+    Returns the latest schema identifier for that type of schema
+    """
+    fbs_identifier = {
+        "alarm": "al00",
+        "area_detector": "ad00",
+        "dataarray": "da00",
+        "epics_connection": "ep01",
+        "eventdata": "ev44",
+        "finished_writing": "wrdn",
+        "forwader": "fc00",
+        # "histogram": "hs01", # depreceated
+        "logdata": "f144",
+        "nicos_cache": "ns10",
+        "run_start": "pl72",
+        "run_stop": "6s4t",
+        "sample_environment": "senv",
+        "status": "x5f2",
+        "timestamps": "tdct",
+    }
+    return fbs_identifier[schema_type]
