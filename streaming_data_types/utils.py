@@ -41,13 +41,13 @@ def all_schemas():
     fbs_identifier = {
         "alarm": "al00",
         "area_detector": "ad00",
-        # "array_1d": "se00", # depreceated for sample_environment
+        # "array_1d": "se00", # deprecated for sample_environment
         "dataarray": "da00",
         "epics_connection": "ep01",
         "eventdata": "ev44",
         "finished_writing": "wrdn",
         "forwader": "fc00",
-        # "histogram": "hs01", # depreceated for dataarray
+        # "histogram": "hs01", # deprecated for dataarray
         # "json": "json", # only debugging
         "logdata": "f144",
         "nicos_cache": "ns10",
