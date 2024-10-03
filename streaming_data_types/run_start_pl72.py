@@ -33,7 +33,7 @@ def serialise_pl72(
     run_name: str = "test_run",
     nexus_structure: str = "{}",
     service_id: str = "",
-    instrument_name: str = "TEST",
+    instrument_name: str = "",
     broker: str = "",
     metadata: str = "{}",
     detector_spectrum_map: Optional[DetectorSpectrumMap] = None,
