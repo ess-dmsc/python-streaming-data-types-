@@ -18,6 +18,7 @@ https://github.com/ess-dmsc/streaming-data-types
 | ev42 | Event data (deprecated in favour of ev44)                                    |
 | ev43 | Event data from multiple pulses                                              |
 | ev44 | Event data with signed data types                                            |
+| an44 | ev44 with ANSTO specific changes                                             |
 | x5f2 | Status messages                                                              |
 | tdct | Timestamps                                                                   |
 | ep00 | EPICS connection info (deprecated in favour of ep01)                         |
